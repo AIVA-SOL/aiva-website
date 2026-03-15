@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>虚拟币智能筛选工具</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <!-- Lightweight Charts (K线图) -->
+  <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+  <!-- Alpine.js (响应式状态) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
+  <!-- Font Awesome 图标 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script>
+    // Tailwind 自定义主题
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50:'#eff6ff',500:'#3b82f6',600:'#2563eb',900:'#1e3a5f' },
+            up:    '#10b981',
+            down:  '#ef4444',
+            hold:  '#f59e0b',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    [x-cloak] { display: none !important; }
+    body { font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+
+    /* 滚动条美化 */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #1e293b; }
+    ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+
+    /* 信号颜色 */
+    .signal-STRONG_BUY  { color: #10b981; font-weight: 700; }
+    .signal-BUY         { color: #34d399; }
+    .signal-HOLD        { color: #f59e0b; }
+    .signal-SELL        { color: #f87171; }
+    .signal-STRONG_SELL { color: #ef4444; font-weight: 700; }
+
+    .badge-ACTIVE      { background:#064e3b; color:#34d399; }
+    .badge-INACTIVE    { background:#78350f; color:#fbbf24; }
+    .badge-NO_ACCOUNT  { background:#374151; color:#9ca3af; }
+
+    /* 进度条动画 */
+    @keyframes pulse-bar { 0%,100%{opacity:1} 50%{opacity:.6} }
+    .live-dot { animation: pulse-bar 1.5s infinite; }
+
+    /* 价格更新闪烁 */
+    @keyframes price-flash { 0%{background:rgba(59,130,246,0.25)} 100%{background:transparent} }
+    .price-flash { animation: price-flash 0.8s ease-out forwards; }
+
+    /* 卡片悬浮效果 */
+    .coin-card {
+      transition: transform 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+    }
+    .coin-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(59,130,246,0.15);
+    }
+
+    /* K线图容器 */
+    #kline-container { width: 100%; height: 380px; }
+
+    /* 渐变背景 */
+    .gradient-header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    }
+
+    .tag-badge {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: rgba(59,130,246,0.15);
+      color: #93c5fd;
+      border: 1px solid rgba(59,130,246,0.3);
+      margin: 2px 2px 0 0;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 min-h-screen" x-data="app()" x-init="init()" x-cloak>
+
+<!-- ═══════════════ 顶部导航栏 ═══════════════ -->
+<header class="gradient-header border-b border-slate-800 sticky top-0 z-50">
+  <div class="max-w-[1800px] mx-auto px-4 py-3 flex items-center justify-between">
+    <!-- Logo -->
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-lg font-bold">₿</div>
+      <div>
+        <div class="font-bold text-base leading-tight">虚拟币智能筛选</div>
+        <div class="text-xs text-slate-400">实时筛选 · 买卖信号 · 推特监控</div>
+      </div>
+    </div>
+
+    <!-- 连接状态 & 时间 -->
+    <div class="flex items-center gap-5">
+      <div class="flex items-center gap-2 text-sm">
+        <div :class="wsConnected ? 'bg-emerald-400' : 'bg-red-400'"
+             class="w-2 h-2 rounded-full live-dot"></div>
+        <span :class="wsConnected ? 'text-emerald-400' : 'text-red-400'"
+              x-text="wsConnected ? '实时连接中' : '连接断开'"></span>
+      </div>
+      <div class="text-xs text-slate-400" x-text="currentTime"></div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════ 顶部统计栏 ═══════════════ -->
+<div class="max-w-[1800px] mx-auto px-4 mt-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+  <template x-for="stat in summaryStats" :key="stat.label">
+    <div class="bg-slate-900 rounded-xl p-3 border border-slate-800">
+      <div class="text-xs text-slate-400" x-text="stat.label"></div>
+      <div class="text-xl font-bold mt-1" :class="stat.color" x-text="stat.value"></div>
+    </div>
+  </template>
+</div>
+
+<!-- ═══════════════ 筛选控制面板 ═══════════════ -->
+<div class="max-w-[1800px] mx-auto px-4 mt-4">
+  <div class="bg-slate-900 rounded-xl border border-slate-800 p-4">
+    <div class="flex flex-wrap items-end gap-4">
+
+      <!-- 价格区间 -->
+      <div>
+        <label class="text-xs text-slate-400 block mb-1">价格上限 (USDT)</label>
+        <div class="flex items-center gap-1.5">
+          <input type="number" x-model.number="filter.priceMax" step="0.1"
+                 @keydown.enter="applyPriceMax()"
+                 class="w-28 bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm
+                        focus:outline-none focus:border-blue-500"
+                 :class="priceMaxDirty ? 'border-amber-500 ring-1 ring-amber-500/40' : ''" />
+          <button @click="applyPriceMax()"
+                  :disabled="!priceMaxDirty || isRefreshing"
+                  class="px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all
+                         flex items-center gap-1"
+                  :class="priceMaxDirty
+                    ? 'bg-amber-500 hover:bg-amber-400 text-slate-900 shadow shadow-amber-500/30'
+                    : 'bg-slate-700 text-slate-500 cursor-not-allowed'">
+            <i class="fa-solid fa-check text-[11px]"></i>
+            确定
+          </button>
+        </div>
+        <div x-show="priceMaxDirty" class="text-[10px] text-amber-400 mt-0.5">
+          点确定应用新价格上限
+        </div>
+      </div>
+
+      <!-- 预测涨幅 -->
+      <div>
+        <label class="text-xs text-slate-400 block mb-1">最低预测涨幅 (%)</label>
+        <input type="number" x-model.number="filter.minGain"
+               class="w-28 bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm
+                      focus:outline-none focus:border-blue-500" />
+      </div>
+
+      <!-- 最低成交量 -->
+      <div>
+        <label class="text-xs text-slate-400 block mb-1">最低成交量 (USDT)</label>
+        <select x-model="filter.minVolume"
+                class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm
+                       focus:outline-none focus:border-blue-500">
+          <option value="500000">50万</option>
+          <option value="1000000">100万</option>
+          <option value="5000000">500万</option>
+          <option value="10000000">1000万</option>
+        </select>
+      </div>
+
+      <!-- 风险等级 -->
+      <div>
+        <label class="text-xs text-slate-400 block mb-1">最大风险系数</label>
+        <select x-model="filter.maxRisk"
+                class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm
+                       focus:outline-none focus:border-blue-500">
+          <option value="0.3">低风险 ≤0.3</option>
+          <option value="0.5">中风险 ≤0.5</option>
+          <option value="0.7">高风险 ≤0.7</option>
+        </select>
+      </div>
+
+      <!-- 交易所 -->
+      <div>
+        <label class="text-xs text-slate-400 block mb-1">交易所</label>
+        <div class="flex gap-2">
+          <label class="flex items-center gap-1.5 text-sm cursor-pointer">
+            <input type="checkbox" x-model="filter.binance" class="accent-blue-500" /> 币安
+          </label>
+          <label class="flex items-center gap-1.5 text-sm cursor-pointer">
+            <input type="checkbox" x-model="filter.gate" class="accent-blue-500" /> Gate
+          </label>
+        </div>
+      </div>
+
+      <!-- 推特活跃 -->
+      <div>
+        <label class="text-xs text-slate-400 block mb-1">推特状态</label>
+        <label class="flex items-center gap-1.5 text-sm cursor-pointer">
+          <input type="checkbox" x-model="filter.activeTwitter" class="accent-blue-500" />
+          只看活跃推特
+        </label>
+      </div>
+
+      <!-- 搜索 -->
+      <div class="flex-1 min-w-[160px]">
+        <label class="text-xs text-slate-400 block mb-1">搜索币种</label>
+        <input type="text" x-model="searchQuery" placeholder="如 BTC、SOL..."
+               class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm
+                      focus:outline-none focus:border-blue-500" />
+      </div>
+
+      <!-- 排序 -->
+      <div>
+        <label class="text-xs text-slate-400 block mb-1">排序方式</label>
+        <select x-model="sortBy"
+                class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm
+                       focus:outline-none focus:border-blue-500">
+          <option value="score">综合评分</option>
+          <option value="predicted_gain_5d">5日预测涨幅</option>
+          <option value="predicted_gain_10d">10日预测涨幅</option>
+          <option value="price">价格</option>
+          <option value="volume_24h">成交量</option>
+        </select>
+      </div>
+
+      <!-- 立即筛选 -->
+      <div>
+        <label class="text-xs text-slate-400 block mb-1">&nbsp;</label>
+        <button @click="triggerRefresh()"
+                :disabled="isRefreshing"
+                class="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-sm font-medium
+                       flex items-center gap-1.5 transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+          <i class="fa-solid fa-rotate" :class="isRefreshing ? 'animate-spin' : ''"></i>
+          <span x-text="isRefreshing ? '筛选中...' : '立即筛选'"></span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 主体内容区 ═══════════════ -->
+<div class="max-w-[1800px] mx-auto px-4 mt-4 pb-10">
+  <div class="flex gap-4">
+
+    <!-- ── 左侧：筛选结果列表 ── -->
+    <div class="flex-1 min-w-0">
+
+      <!-- 结果头部 -->
+      <div class="flex items-center justify-between mb-3">
+        <div class="text-sm text-slate-400">
+          共 <span class="text-white font-semibold" x-text="filteredCoins.length"></span> 个符合条件
+          <span class="ml-3 text-xs" x-show="lastUpdateTime">
+            最后更新: <span x-text="lastUpdateTime"></span>
+          </span>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-slate-500">
+          <i class="fa-solid fa-circle-info"></i>
+          预测涨幅基于技术分析，仅供参考
+        </div>
+      </div>
+
+      <!-- 加载中 -->
+      <div x-show="isRefreshing && filteredCoins.length === 0"
+           class="flex flex-col items-center justify-center py-24 text-slate-400">
+        <i class="fa-solid fa-spinner fa-spin text-3xl mb-4 text-blue-500"></i>
+        <p>正在从交易所抓取数据并分析，请稍候...</p>
+        <p class="text-xs mt-2">首次运行约需 3-5 分钟</p>
+      </div>
+
+      <!-- 空状态 -->
+      <div x-show="!isRefreshing && filteredCoins.length === 0 && screenResults.length > 0"
+           class="flex flex-col items-center justify-center py-20 text-slate-400">
+        <i class="fa-solid fa-filter-circle-xmark text-3xl mb-4"></i>
+        <p>没有符合当前筛选条件的币种</p>
+        <p class="text-xs mt-1">尝试放宽筛选条件</p>
+      </div>
+
+      <!-- 结果表格 -->
+      <div x-show="filteredCoins.length > 0" class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="text-xs text-slate-400 border-b border-slate-800">
+              <th class="text-left py-2 px-3 font-medium">币种</th>
+              <th class="text-right py-2 px-3 font-medium">价格</th>
+              <th class="text-right py-2 px-3 font-medium">24h涨跌</th>
+              <th class="text-right py-2 px-3 font-medium">5日预测</th>
+              <th class="text-right py-2 px-3 font-medium">10日预测</th>
+              <th class="text-center py-2 px-3 font-medium">买卖信号</th>
+              <th class="text-center py-2 px-3 font-medium">评分</th>
+              <th class="text-center py-2 px-3 font-medium">风险</th>
+              <th class="text-center py-2 px-3 font-medium">推特</th>
+              <th class="text-left py-2 px-3 font-medium">标签</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="coin in filteredCoins" :key="coin.symbol + coin.exchange">
+              <tr class="coin-card border-b border-slate-800/50 hover:bg-slate-800/40"
+                  @click="selectCoin(coin)">
+
+                <!-- 币种 -->
+                <td class="py-3 px-3">
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-blue-900/50 flex items-center justify-center
+                                text-xs font-bold text-blue-300"
+                         x-text="coin.base.slice(0,3)"></div>
+                    <div>
+                      <div class="font-semibold" x-text="coin.base"></div>
+                      <div class="text-xs text-slate-500 flex items-center gap-1.5">
+                        <span x-text="coin.symbol"></span>
+                        <span class="text-slate-700">·</span>
+                        <span x-text="coin.exchange"></span>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- 价格 -->
+                <td class="py-3 px-3 text-right font-mono"
+                    :class="coin._priceFlash ? 'price-flash' : ''">
+                  <span x-text="formatPrice(coin.price)"></span>
+                  <div class="text-xs text-slate-500">USDT</div>
+                </td>
+
+                <!-- 24h涨跌 -->
+                <td class="py-3 px-3 text-right">
+                  <span :class="coin.price_change_24h >= 0 ? 'text-emerald-400' : 'text-red-400'"
+                        x-text="(coin.price_change_24h >= 0 ? '+' : '') + coin.price_change_24h.toFixed(2) + '%'">
+                  </span>
+                </td>
+
+                <!-- 5日预测 -->
+                <td class="py-3 px-3 text-right">
+                  <span :class="coin.predicted_gain_5d >= 0 ? 'text-emerald-400' : 'text-red-400'"
+                        x-text="(coin.predicted_gain_5d >= 0 ? '+' : '') + coin.predicted_gain_5d.toFixed(1) + '%'">
+                  </span>
+                </td>
+
+                <!-- 10日预测 -->
+                <td class="py-3 px-3 text-right">
+                  <span :class="coin.predicted_gain_10d >= 0 ? 'text-emerald-400' : 'text-red-400'"
+                        x-text="(coin.predicted_gain_10d >= 0 ? '+' : '') + coin.predicted_gain_10d.toFixed(1) + '%'">
+                  </span>
+                </td>
+
+                <!-- 买卖信号 -->
+                <td class="py-3 px-3 text-center">
+                  <span :class="'signal-' + (coin.signal?.signal || 'HOLD')"
+                        x-text="signalLabel(coin.signal?.signal)">
+                  </span>
+                  <div class="text-xs text-slate-500 mt-0.5"
+                       x-text="'强度 ' + (coin.signal?.strength || 0).toFixed(0)"></div>
+                </td>
+
+                <!-- 综合评分 -->
+                <td class="py-3 px-3 text-center">
+                  <div class="inline-flex flex-col items-center">
+                    <span class="text-base font-bold"
+                          :class="coin.score >= 75 ? 'text-emerald-400' : coin.score >= 55 ? 'text-amber-400' : 'text-slate-300'"
+                          x-text="coin.score.toFixed(0)"></span>
+                    <div class="w-16 h-1.5 bg-slate-700 rounded-full mt-1 overflow-hidden">
+                      <div class="h-full rounded-full transition-all"
+                           :class="coin.score >= 75 ? 'bg-emerald-400' : coin.score >= 55 ? 'bg-amber-400' : 'bg-slate-400'"
+                           :style="'width:' + coin.score + '%'"></div>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- 风险 -->
+                <td class="py-3 px-3 text-center">
+                  <span class="px-2 py-0.5 rounded-full text-xs font-medium"
+                        :class="{
+                          'bg-emerald-900/50 text-emerald-400': coin.risk?.risk_level === 'LOW',
+                          'bg-amber-900/50 text-amber-400':     coin.risk?.risk_level === 'MEDIUM',
+                          'bg-red-900/50 text-red-400':         coin.risk?.risk_level === 'HIGH',
+                        }"
+                        x-text="riskLabel(coin.risk?.risk_level)">
+                  </span>
+                </td>
+
+                <!-- 推特 -->
+                <td class="py-3 px-3 text-center">
+                  <span class="px-2 py-0.5 rounded-full text-xs"
+                        :class="'badge-' + (coin.sentiment?.tweet_status || 'NO_ACCOUNT')"
+                        x-text="twitterLabel(coin.sentiment?.tweet_status)">
+                  </span>
+                </td>
+
+                <!-- 标签 -->
+                <td class="py-3 px-3 max-w-[200px]">
+                  <div class="flex flex-wrap gap-1">
+                    <template x-for="tag in (coin.tags || []).slice(0,3)" :key="tag">
+                      <span class="tag-badge" x-text="tag"></span>
+                    </template>
+                  </div>
+                </td>
+
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── 右侧：详情面板 ── -->
+    <div class="w-[400px] flex-shrink-0" x-show="selectedCoin">
+      <div class="bg-slate-900 rounded-xl border border-slate-800 sticky top-[72px]">
+        <!-- 详情头部 -->
+        <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-blue-900/50 flex items-center justify-center
+                        font-bold text-blue-300" x-text="selectedCoin?.base?.slice(0,3)"></div>
+            <div>
+              <div class="font-bold text-lg" x-text="selectedCoin?.base"></div>
+              <div class="text-xs text-slate-400 flex items-center gap-1.5">
+                <span x-text="selectedCoin?.symbol"></span>
+                <span class="text-slate-600">·</span>
+                <span x-text="selectedCoin?.exchange"></span>
+              </div>
+            </div>
+          </div>
+          <button @click="selectedCoin = null" class="text-slate-500 hover:text-white">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- 详情内容（滚动） -->
+        <div class="p-4 overflow-y-auto max-h-[calc(100vh-200px)] space-y-4">
+
+          <!-- 实时价格 -->
+          <div class="bg-slate-800 rounded-lg p-3">
+            <div class="text-xs text-slate-400 mb-1">实时价格</div>
+            <div class="text-2xl font-bold font-mono" x-text="formatPrice(selectedCoin?.price)"></div>
+            <div class="text-sm mt-1"
+                 :class="selectedCoin?.price_change_24h >= 0 ? 'text-emerald-400' : 'text-red-400'"
+                 x-text="'24h: ' + (selectedCoin?.price_change_24h >= 0 ? '+' : '') + selectedCoin?.price_change_24h?.toFixed(2) + '%'">
+            </div>
+          </div>
+
+          <!-- 买卖信号卡 -->
+          <div x-show="selectedCoin?.signal" class="bg-slate-800 rounded-lg p-3">
+            <div class="text-xs text-slate-400 mb-2">买卖信号</div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xl font-bold"
+                    :class="'signal-' + (selectedCoin?.signal?.signal || 'HOLD')"
+                    x-text="signalLabel(selectedCoin?.signal?.signal)"></span>
+              <span class="text-sm text-slate-400">
+                强度 <span class="font-semibold text-white"
+                           x-text="selectedCoin?.signal?.strength?.toFixed(0)"></span>/100
+              </span>
+            </div>
+
+            <!-- 入场/止损/目标价 -->
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div class="bg-slate-700/50 rounded p-2">
+                <div class="text-slate-400">入场价</div>
+                <div class="font-mono font-semibold mt-0.5"
+                     x-text="formatPrice(selectedCoin?.signal?.entry_price)"></div>
+              </div>
+              <div class="bg-red-900/30 rounded p-2">
+                <div class="text-red-400">止损价</div>
+                <div class="font-mono font-semibold mt-0.5 text-red-300"
+                     x-text="formatPrice(selectedCoin?.signal?.stop_loss)"></div>
+              </div>
+              <div class="bg-emerald-900/30 rounded p-2">
+                <div class="text-emerald-400">目标1</div>
+                <div class="font-mono font-semibold mt-0.5 text-emerald-300"
+                     x-text="formatPrice(selectedCoin?.signal?.take_profit_1)"></div>
+              </div>
+              <div class="bg-emerald-900/30 rounded p-2">
+                <div class="text-emerald-400">目标2</div>
+                <div class="font-mono font-semibold mt-0.5 text-emerald-300"
+                     x-text="formatPrice(selectedCoin?.signal?.take_profit_2)"></div>
+              </div>
+            </div>
+
+            <!-- 触发原因 -->
+            <div class="mt-3">
+              <div class="text-xs text-slate-400 mb-1">触发原因</div>
+              <ul class="space-y-1">
+                <template x-for="r in (selectedCoin?.signal?.reasons || [])" :key="r">
+                  <li class="text-xs flex items-start gap-1.5">
+                    <i class="fa-solid fa-circle-check text-blue-400 mt-0.5 flex-shrink-0"></i>
+                    <span x-text="r"></span>
+                  </li>
+                </template>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 技术指标 -->
+          <div x-show="selectedCoin?.technicals" class="bg-slate-800 rounded-lg p-3">
+            <div class="text-xs text-slate-400 mb-2">技术指标</div>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+              <div class="flex justify-between">
+                <span class="text-slate-400">RSI(14)</span>
+                <span :class="(selectedCoin?.technicals?.rsi_14 || 50) < 40 ? 'text-emerald-400' : (selectedCoin?.technicals?.rsi_14 || 50) > 70 ? 'text-red-400' : 'text-white'"
+                      x-text="selectedCoin?.technicals?.rsi_14?.toFixed(1)"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">MACD</span>
+                <span :class="(selectedCoin?.technicals?.macd_hist || 0) > 0 ? 'text-emerald-400' : 'text-red-400'"
+                      x-text="selectedCoin?.technicals?.macd?.toFixed(6)"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">EMA7</span>
+                <span x-text="formatPrice(selectedCoin?.technicals?.ema_7)"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">EMA25</span>
+                <span x-text="formatPrice(selectedCoin?.technicals?.ema_25)"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">布林上轨</span>
+                <span x-text="formatPrice(selectedCoin?.technicals?.bb_upper)"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">布林下轨</span>
+                <span x-text="formatPrice(selectedCoin?.technicals?.bb_lower)"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">KDJ-K</span>
+                <span x-text="selectedCoin?.technicals?.stoch_k?.toFixed(1)"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">ATR</span>
+                <span x-text="formatPrice(selectedCoin?.technicals?.atr)"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 回测数据 -->
+          <div x-show="selectedCoin?.backtest?.signal_count > 0" class="bg-slate-800 rounded-lg p-3">
+            <div class="text-xs text-slate-400 mb-2">3年回测 (7日持仓)</div>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <div class="text-slate-400">历史胜率</div>
+                <div class="text-lg font-bold"
+                     :class="(selectedCoin?.backtest?.win_rate || 0) >= 60 ? 'text-emerald-400' : 'text-amber-400'"
+                     x-text="(selectedCoin?.backtest?.win_rate || 0).toFixed(1) + '%'"></div>
+              </div>
+              <div>
+                <div class="text-slate-400">平均收益</div>
+                <div class="text-lg font-bold text-emerald-400"
+                     x-text="'+' + (selectedCoin?.backtest?.avg_gain || 0).toFixed(1) + '%'"></div>
+              </div>
+              <div>
+                <div class="text-slate-400">最大回撤</div>
+                <div class="font-semibold text-red-400"
+                     x-text="(selectedCoin?.backtest?.max_drawdown || 0).toFixed(1) + '%'"></div>
+              </div>
+              <div>
+                <div class="text-slate-400">夏普比率</div>
+                <div class="font-semibold"
+                     x-text="(selectedCoin?.backtest?.sharpe_ratio || 0).toFixed(2)"></div>
+              </div>
+              <div class="col-span-2 text-slate-500 text-right">
+                样本 <span x-text="selectedCoin?.backtest?.signal_count"></span> 次信号
+              </div>
+            </div>
+          </div>
+
+          <!-- 推特状态 -->
+          <div x-show="selectedCoin?.sentiment" class="bg-slate-800 rounded-lg p-3">
+            <div class="flex items-center justify-between mb-2">
+              <div class="text-xs text-slate-400">推特监控</div>
+              <span class="px-2 py-0.5 rounded-full text-xs"
+                    :class="'badge-' + (selectedCoin?.sentiment?.tweet_status || 'NO_ACCOUNT')"
+                    x-text="twitterLabel(selectedCoin?.sentiment?.tweet_status)"></span>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <div class="text-slate-400">情绪评分</div>
+                <div class="font-semibold"
+                     :class="(selectedCoin?.sentiment?.tweet_score || 50) > 60 ? 'text-emerald-400' : (selectedCoin?.sentiment?.tweet_score || 50) < 40 ? 'text-red-400' : 'text-white'"
+                     x-text="(selectedCoin?.sentiment?.tweet_score || 50).toFixed(1) + ' / 100'"></div>
+              </div>
+              <div>
+                <div class="text-slate-400">7天推文</div>
+                <div class="font-semibold" x-text="selectedCoin?.sentiment?.tweet_count_7d + ' 条'"></div>
+              </div>
+              <div>
+                <div class="text-slate-400">正向比例</div>
+                <div class="font-semibold"
+                     x-text="((selectedCoin?.sentiment?.positive_ratio || 0) * 100).toFixed(0) + '%'"></div>
+              </div>
+              <div>
+                <div class="text-slate-400">最新推文</div>
+                <div class="text-slate-300 truncate"
+                     x-text="selectedCoin?.sentiment?.last_tweet_time ? timeAgo(selectedCoin.sentiment.last_tweet_time) : '未知'">
+                </div>
+              </div>
+            </div>
+            <button @click="fetchTweets(selectedCoin?.base)"
+                    class="mt-3 w-full py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-xs text-center transition-colors">
+              <i class="fa-brands fa-x-twitter mr-1"></i> 查看最新推文
+            </button>
+          </div>
+
+          <!-- 合约地址 -->
+          <div class="bg-slate-800 rounded-lg p-3">
+            <div class="flex items-center justify-between mb-2">
+              <div class="text-xs text-slate-400">合约地址</div>
+              <button @click="fetchContracts(selectedCoin?.base)"
+                      :disabled="contractInfo.loading"
+                      class="px-2 py-0.5 rounded text-[11px] bg-slate-700 hover:bg-slate-600
+                             text-slate-300 transition-colors flex items-center gap-1 disabled:opacity-50">
+                <i class="fa-solid fa-rotate text-[10px]" :class="contractInfo.loading ? 'animate-spin' : ''"></i>
+                <span x-text="contractInfo.loading ? '查询中...' : '查询'"></span>
+              </button>
+            </div>
+
+            <!-- 加载中 -->
+            <div x-show="contractInfo.loading" class="text-center py-3 text-slate-500 text-xs">
+              <i class="fa-solid fa-spinner fa-spin mr-1"></i>正在从 CoinGecko 查询...
+            </div>
+
+            <!-- 无数据 / 未查询 -->
+            <div x-show="!contractInfo.loading && contractInfo.queried && Object.keys(contractInfo.contracts).length === 0"
+                 class="text-xs text-slate-500 py-2 text-center">
+              未找到合约地址（可能是原生币或暂不支持）
+            </div>
+
+            <!-- 未查询提示 -->
+            <div x-show="!contractInfo.loading && !contractInfo.queried"
+                 class="text-xs text-slate-600 py-2 text-center">
+              点击「查询」获取各链合约地址
+            </div>
+
+            <!-- 合约地址列表 -->
+            <div x-show="!contractInfo.loading && Object.keys(contractInfo.contracts).length > 0"
+                 class="space-y-2">
+              <template x-for="[chain, addr] in Object.entries(contractInfo.contracts)" :key="chain">
+                <div class="flex items-center justify-between gap-2 bg-slate-700/50 rounded-lg px-2.5 py-2">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <!-- 链标签 -->
+                    <span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-blue-900/60 text-blue-300
+                                 flex-shrink-0 min-w-[36px] text-center"
+                          x-text="chain"></span>
+                    <!-- 地址（截断显示） -->
+                    <span class="text-[11px] font-mono text-slate-300 truncate"
+                          :title="addr"
+                          x-text="addr.length > 16 ? addr.slice(0,8) + '...' + addr.slice(-6) : addr"></span>
+                  </div>
+                  <!-- 复制按钮 -->
+                  <button @click="copyContract(chain, addr)"
+                          class="flex-shrink-0 text-[11px] px-2 py-0.5 rounded transition-all"
+                          :class="contractInfo.copied === chain
+                            ? 'bg-emerald-600 text-white'
+                            : 'bg-slate-600 hover:bg-slate-500 text-slate-300'">
+                    <i :class="contractInfo.copied === chain ? 'fa-solid fa-check' : 'fa-regular fa-copy'"></i>
+                    <span class="ml-1" x-text="contractInfo.copied === chain ? '已复制' : '复制'"></span>
+                  </button>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- 风险指标 -->
+          <div x-show="selectedCoin?.risk" class="bg-slate-800 rounded-lg p-3">
+            <div class="text-xs text-slate-400 mb-2">风险指标</div>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <div class="text-slate-400">综合风险</div>
+                <div class="font-bold text-base"
+                     :class="(selectedCoin?.risk?.risk_score || 0.5) < 0.3 ? 'text-emerald-400' : (selectedCoin?.risk?.risk_score || 0.5) < 0.6 ? 'text-amber-400' : 'text-red-400'"
+                     x-text="((selectedCoin?.risk?.risk_score || 0) * 100).toFixed(0)"></div>
+              </div>
+              <div>
+                <div class="text-slate-400">30日波动率</div>
+                <div x-text="(selectedCoin?.risk?.volatility_30d || 0).toFixed(1) + '%'"></div>
+              </div>
+              <div>
+                <div class="text-slate-400">流动性</div>
+                <div x-text="((selectedCoin?.risk?.liquidity_score || 0) * 100).toFixed(0) + '%'"></div>
+              </div>
+              <div>
+                <div class="text-slate-400">BTC相关性</div>
+                <div x-text="(selectedCoin?.risk?.correlation_btc || 0).toFixed(2)"></div>
+              </div>
+              <div>
+                <div class="text-slate-400">拉盘风险</div>
+                <div :class="(selectedCoin?.risk?.pump_dump_risk || 0) > 0.5 ? 'text-red-400' : 'text-white'"
+                     x-text="((selectedCoin?.risk?.pump_dump_risk || 0) * 100).toFixed(0) + '%'"></div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /详情内容 -->
+      </div><!-- /详情卡片 -->
+    </div><!-- /右侧面板 -->
+
+  </div><!-- /主内容flex -->
+</div>
+
+<!-- ═══════════════ 推文弹窗 ═══════════════ -->
+<div x-show="tweetModal.show"
+     x-transition:enter="transition ease-out duration-200"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
+     class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
+     @click.self="tweetModal.show = false">
+  <div class="bg-slate-900 rounded-2xl border border-slate-700 w-full max-w-lg max-h-[80vh] flex flex-col">
+    <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+      <div class="font-semibold">
+        <i class="fa-brands fa-x-twitter mr-2 text-slate-400"></i>
+        <span x-text="tweetModal.coin"></span> 最新推文
+      </div>
+      <button @click="tweetModal.show = false" class="text-slate-400 hover:text-white">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="p-4 overflow-y-auto flex-1 space-y-3">
+      <div x-show="tweetModal.loading" class="text-center text-slate-400 py-10">
+        <i class="fa-solid fa-spinner fa-spin text-2xl"></i>
+      </div>
+      <template x-for="tw in tweetModal.tweets" :key="tw.time + tw.text">
+        <div class="bg-slate-800 rounded-xl p-3">
+          <p class="text-sm leading-relaxed" x-text="tw.text"></p>
+          <div class="mt-2 flex items-center gap-4 text-xs text-slate-500">
+            <span><i class="fa-regular fa-clock mr-1"></i><span x-text="timeAgo(tw.time)"></span></span>
+            <span><i class="fa-regular fa-heart mr-1"></i><span x-text="tw.likes"></span></span>
+            <span><i class="fa-solid fa-retweet mr-1"></i><span x-text="tw.retweets"></span></span>
+            <span><i class="fa-regular fa-comment mr-1"></i><span x-text="tw.replies"></span></span>
+          </div>
+        </div>
+      </template>
+      <div x-show="!tweetModal.loading && tweetModal.tweets.length === 0"
+           class="text-center text-slate-400 py-10">
+        暂无推文数据
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ Alpine.js 逻辑 ═══════════════ -->
+<script>
+// ── 后端地址配置 ──
+// 如果后端不在本机，修改这里的地址（如 'http://192.168.1.100:8000'）
+const API_BASE = window.CRYPTO_API_BASE || 'http://localhost:8000';
+const WS_BASE  = API_BASE.replace('http', 'ws').replace('https', 'wss');
+
+function app() {
+  return {
+    // ── 状态 ──
+    wsConnected: false,
+    isRefreshing: false,
+    screenResults: [],
+    selectedCoin: null,
+    lastUpdateTime: '',
+    currentTime: '',
+    searchQuery: '',
+    sortBy: 'score',
+    priceMaxDirty: false,      // 价格上限是否有未提交的修改
+    _appliedPriceMax: 1.0,     // 已生效的价格上限
+
+    filter: {
+      priceMax: 1.0,
+      minGain: 20,
+      minVolume: '1000000',
+      maxRisk: '0.5',
+      binance: true,
+      gate: true,
+      activeTwitter: false,
+    },
+
+    tweetModal: {
+      show: false,
+      coin: '',
+      tweets: [],
+      loading: false,
+    },
+
+    contractModal: {
+      show: false,
+      coin: '',
+      contracts: {},
+      loading: false,
+      copied: '',
+    },
+
+    // 当前选中币的合约信息（非弹窗，直接在详情面板展示）
+    contractInfo: {
+      coin: '',
+      contracts: {},
+      loading: false,
+      queried: false,
+      copied: '',
+    },
+
+    // ── 初始化 ──
+    async init() {
+      this.tickClock();
+      setInterval(() => this.tickClock(), 1000);
+
+      // 监听价格上限变化，标记为"待确认"
+      this.$watch('filter.priceMax', (val) => {
+        if (val !== this._appliedPriceMax) {
+          this.priceMaxDirty = true;
+        } else {
+          this.priceMaxDirty = false;
+        }
+      });
+
+      this.connectWebSocket();
+      await this.loadCachedResults();
+    },
+
+    tickClock() {
+      const now = new Date();
+      this.currentTime = now.toLocaleString('zh-CN', {
+        month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+      });
+    },
+
+    // ── WebSocket连接 ──
+    connectWebSocket() {
+      const ws = new WebSocket(`${WS_BASE}/ws/screen`);
+      ws.onopen = () => { this.wsConnected = true; console.log('WS connected'); };
+      ws.onclose = () => {
+        this.wsConnected = false;
+        setTimeout(() => this.connectWebSocket(), 5000);
+      };
+      ws.onerror = () => { this.wsConnected = false; };
+      ws.onmessage = (e) => {
+        const msg = JSON.parse(e.data);
+        if (msg.type === 'screen_results') {
+          const raw = msg.data || [];
+          // 标准化 symbol 和 base
+          this.screenResults = raw.map(c => ({
+            ...c,
+            symbol: c.symbol.replace('_USDT','/USDT').replace('-USDT','/USDT'),
+            base: c.base || c.symbol.split('/')[0].replace('_USDT',''),
+          }));
+          this.lastUpdateTime = new Date().toLocaleTimeString('zh-CN');
+          this.isRefreshing = false;
+        }
+        if (msg.type === 'price_update') {
+          this.updatePrices(msg.data);
+        }
+      };
+      this._ws = ws;
+    },
+
+    updatePrices(data) {
+      // 建立标准化 key 映射：统一转大写、统一用 /USDT 格式
+      const normalizeKey = (s) => s.toUpperCase()
+        .replace('_USDT', '/USDT').replace('-USDT', '/USDT');
+
+      // 把推送数据的 key 全部标准化
+      const normData = {};
+      for (const [k, v] of Object.entries(data)) {
+        normData[normalizeKey(k)] = v;
+      }
+
+      // 用新数组替换，触发 Alpine.js reactivity
+      let changed = false;
+      const updated = this.screenResults.map(coin => {
+        const key = normalizeKey(coin.symbol);
+        if (normData[key]) {
+          const newPrice = normData[key].price;
+          const newChange = normData[key].change_24h;
+          if (coin.price !== newPrice || coin.price_change_24h !== newChange) {
+            changed = true;
+            return {
+              ...coin,
+              price: newPrice,
+              price_change_24h: newChange,
+              _priceFlash: true,   // 用于触发高亮动画
+            };
+          }
+        }
+        return { ...coin, _priceFlash: false };
+      });
+
+      if (changed) {
+        this.screenResults = updated;
+        this.lastUpdateTime = new Date().toLocaleTimeString('zh-CN');
+      }
+
+      // 同步更新详情面板里的选中币
+      if (this.selectedCoin) {
+        const key = normalizeKey(this.selectedCoin.symbol);
+        if (normData[key]) {
+          this.selectedCoin = {
+            ...this.selectedCoin,
+            price: normData[key].price,
+            price_change_24h: normData[key].change_24h,
+          };
+        }
+      }
+    },
+
+    // ── 加载缓存结果 ──
+    async loadCachedResults() {
+      try {
+        const exchanges = [
+          this.filter.binance ? 'binance' : '',
+          this.filter.gate ? 'gate' : '',
+        ].filter(Boolean).join(',');
+
+        const params = new URLSearchParams({
+          price_max: this._appliedPriceMax,
+          price_min: 0.0,
+          min_gain: this.filter.minGain,
+          min_volume: this.filter.minVolume,
+          max_risk: this.filter.maxRisk,
+          exchanges,
+          active_twitter: this.filter.activeTwitter,
+        });
+
+        const resp = await fetch(`${API_BASE}/api/screen?${params}`);
+        if (resp.ok) {
+          const raw = await resp.json();
+          // 标准化每个币种的 symbol 和 base，防止格式不一致
+          // 同时前端二次过滤价格上限（兜底保障）
+          const pmax = Number(this._appliedPriceMax);
+          this.screenResults = raw
+            .map(c => ({
+              ...c,
+              symbol: c.symbol.replace('_USDT', '/USDT').replace('-USDT', '/USDT'),
+              base: c.base || c.symbol.split('/')[0].replace('_USDT', ''),
+            }))
+            .filter(c => pmax <= 0 || c.price <= pmax);
+          this.lastUpdateTime = new Date().toLocaleTimeString('zh-CN');
+        }
+      } catch (e) {
+        console.warn('API未启动或无法连接，展示模拟数据');
+        this.screenResults = this.mockData();
+        this.lastUpdateTime = new Date().toLocaleTimeString('zh-CN');
+      }
+    },
+
+    // ── 应用新价格上限（点确定按钮触发）──
+    async applyPriceMax() {
+      if (!this.priceMaxDirty || this.isRefreshing) return;
+      this._appliedPriceMax = this.filter.priceMax;
+      this.priceMaxDirty = false;
+      // 直接用新参数从后端拉已有缓存结果，前端立即过滤显示（不用等后台重新跑筛选）
+      await this.loadCachedResults();
+    },
+
+    // ── 触发筛选 ──
+    async triggerRefresh() {
+      this.isRefreshing = true;
+      try {
+        await fetch(`${API_BASE}/api/screen/trigger`, { method: 'POST' });
+      } catch (e) {
+        // API 未启动
+        setTimeout(() => { this.isRefreshing = false; }, 2000);
+      }
+    },
+
+    // ── 计算属性：筛选+排序后的结果 ──
+    get filteredCoins() {
+      const pmax = Number(this._appliedPriceMax);
+      let coins = this.screenResults.filter(c => {
+        // 价格上限实时过滤（已生效的值）
+        if (pmax > 0 && c.price > pmax) return false;
+        // 搜索
+        if (this.searchQuery) {
+          const q = this.searchQuery.toLowerCase();
+          if (!c.base.toLowerCase().includes(q) && !c.symbol.toLowerCase().includes(q)) return false;
+        }
+        // 推特活跃
+        if (this.filter.activeTwitter) {
+          if (!c.sentiment || c.sentiment.tweet_status !== 'ACTIVE') return false;
+        }
+        return true;
+      });
+
+      coins.sort((a, b) => {
+        const key = this.sortBy;
+        return (b[key] || 0) - (a[key] || 0);
+      });
+
+      return coins;
+    },
+
+    // ── 统计栏数据 ──
+    get summaryStats() {
+      const coins = this.screenResults;
+      const buySignals = coins.filter(c => c.signal?.signal?.includes('BUY')).length;
+      const avgScore = coins.length ? (coins.reduce((s, c) => s + c.score, 0) / coins.length).toFixed(1) : 0;
+      const lowRisk = coins.filter(c => c.risk?.risk_level === 'LOW').length;
+      const activeTwitter = coins.filter(c => c.sentiment?.tweet_status === 'ACTIVE').length;
+      const avgGain5d = coins.length ? (coins.reduce((s, c) => s + (c.predicted_gain_5d || 0), 0) / coins.length).toFixed(1) : 0;
+      return [
+        { label: '筛选结果', value: coins.length, color: 'text-white' },
+        { label: '买入信号', value: buySignals, color: 'text-emerald-400' },
+        { label: '平均评分', value: avgScore, color: 'text-blue-400' },
+        { label: '低风险币', value: lowRisk, color: 'text-emerald-400' },
+        { label: '推特活跃', value: activeTwitter, color: 'text-sky-400' },
+        { label: '平均预测(5d)', value: avgGain5d + '%', color: 'text-amber-400' },
+      ];
+    },
+
+    // ── 选中币种 ──
+    selectCoin(coin) {
+      this.selectedCoin = coin;
+      // 切换币种时重置合约信息
+      this.contractInfo = { coin: coin.base, contracts: {}, loading: false, queried: false, copied: '' };
+    },
+
+    // ── 查询合约地址 ──
+    async fetchContracts(coinBase) {
+      if (!coinBase || this.contractInfo.loading) return;
+      this.contractInfo.loading = true;
+      this.contractInfo.queried = false;
+      this.contractInfo.copied = '';
+      try {
+        const resp = await fetch(`${API_BASE}/api/coin/${encodeURIComponent(coinBase)}/contracts`);
+        if (resp.ok) {
+          const data = await resp.json();
+          this.contractInfo.contracts = data.contracts || {};
+        } else {
+          this.contractInfo.contracts = {};
+        }
+      } catch (e) {
+        console.warn('查询合约地址失败:', e);
+        this.contractInfo.contracts = {};
+      } finally {
+        this.contractInfo.loading = false;
+        this.contractInfo.queried = true;
+      }
+    },
+
+    // ── 复制合约地址 ──
+    async copyContract(chain, addr) {
+      try {
+        await navigator.clipboard.writeText(addr);
+        this.contractInfo.copied = chain;
+        setTimeout(() => { this.contractInfo.copied = ''; }, 2000);
+      } catch (e) {
+        // 降级：创建临时 input 复制
+        const el = document.createElement('input');
+        el.value = addr;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        this.contractInfo.copied = chain;
+        setTimeout(() => { this.contractInfo.copied = ''; }, 2000);
+      }
+    },
+
+    // ── 查看推文 ──
+    async fetchTweets(coin) {
+      this.tweetModal = { show: true, coin, tweets: [], loading: true };
+      try {
+        const resp = await fetch(`${API_BASE}/api/twitter/${coin}/tweets`);
+        const data = await resp.json();
+        this.tweetModal.tweets = data.tweets || [];
+      } catch (e) {
+        this.tweetModal.tweets = [];
+      } finally {
+        this.tweetModal.loading = false;
+      }
+    },
+
+    // ── 格式化工具 ──
+    formatPrice(v) {
+      if (v == null) return '—';
+      if (v < 0.0001) return v.toExponential(3);
+      if (v < 0.01)   return v.toFixed(6);
+      if (v < 1)      return v.toFixed(4);
+      if (v < 100)    return v.toFixed(3);
+      return v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    },
+
+    signalLabel(signal) {
+      const map = {
+        STRONG_BUY: '强烈买入', BUY: '买入',
+        HOLD: '观望', SELL: '卖出', STRONG_SELL: '强烈卖出',
+      };
+      return map[signal] || '观望';
+    },
+
+    riskLabel(level) {
+      return { LOW: '低风险', MEDIUM: '中风险', HIGH: '高风险' }[level] || '—';
+    },
+
+    twitterLabel(status) {
+      return { ACTIVE: '活跃', INACTIVE: '停更', NO_ACCOUNT: '无账号' }[status] || '—';
+    },
+
+    timeAgo(isoStr) {
+      if (!isoStr) return '未知';
+      try {
+        const diff = (Date.now() - new Date(isoStr).getTime()) / 1000;
+        if (diff < 60) return Math.floor(diff) + '秒前';
+        if (diff < 3600) return Math.floor(diff/60) + '分钟前';
+        if (diff < 86400) return Math.floor(diff/3600) + '小时前';
+        return Math.floor(diff/86400) + '天前';
+      } catch { return isoStr; }
+    },
+
+    // ── 模拟演示数据（后端未启动时展示） ──
+    mockData() {
+      const SIGNALS = ['STRONG_BUY','BUY','BUY','HOLD','BUY'];
+      const RISKS   = ['LOW','LOW','MEDIUM','MEDIUM','LOW'];
+      const TWSTATS = ['ACTIVE','ACTIVE','INACTIVE','ACTIVE','NO_ACCOUNT'];
+      const coins   = ['PEPE','BONK','WIF','ARB','TIA','INJ','NEAR','SUI'];
+      const exchanges = ['binance','gate'];
+      return coins.map((base, i) => ({
+        symbol: `${base}/USDT`, base, exchange: exchanges[i%2],
+        price: +(Math.random() * 0.5 + 0.001).toFixed(6),
+        price_change_24h: +(Math.random() * 20 - 5).toFixed(2),
+        volume_24h: +(Math.random() * 50_000_000 + 1_000_000).toFixed(0),
+        predicted_gain_5d:  +(Math.random() * 40 + 10).toFixed(1),
+        predicted_gain_10d: +(Math.random() * 60 + 15).toFixed(1),
+        score: +(Math.random() * 30 + 60).toFixed(1),
+        tags: ['RSI超卖','MACD金叉','低风险'].slice(0, Math.ceil(Math.random()*3)),
+        signal: {
+          signal: SIGNALS[i%SIGNALS.length],
+          strength: +(Math.random()*30+60).toFixed(1),
+          reasons: ['RSI超卖(32.4)','MACD零轴下金叉','触及布林下轨'],
+          entry_price: +(Math.random()*0.5+0.001).toFixed(6),
+          stop_loss:   +(Math.random()*0.4+0.001).toFixed(6),
+          take_profit_1: +(Math.random()*0.6+0.01).toFixed(6),
+          take_profit_2: +(Math.random()*0.7+0.02).toFixed(6),
+          take_profit_3: +(Math.random()*0.9+0.03).toFixed(6),
+        },
+        technicals: {
+          rsi_14: +(Math.random()*40+20).toFixed(1),
+          macd: +(Math.random()*0.0001-0.00005).toFixed(8),
+          macd_hist: +(Math.random()*0.00005).toFixed(8),
+          ema_7: +(Math.random()*0.5+0.001).toFixed(6),
+          ema_25: +(Math.random()*0.5+0.001).toFixed(6),
+          bb_upper: +(Math.random()*0.6+0.002).toFixed(6),
+          bb_lower: +(Math.random()*0.4+0.001).toFixed(6),
+          stoch_k: +(Math.random()*40+15).toFixed(1),
+          atr: +(Math.random()*0.01+0.001).toFixed(6),
+        },
+        backtest: {
+          win_rate: +(Math.random()*30+50).toFixed(1),
+          avg_gain: +(Math.random()*15+8).toFixed(1),
+          max_drawdown: -(Math.random()*20+5).toFixed(1),
+          sharpe_ratio: +(Math.random()*1.5+0.5).toFixed(2),
+          signal_count: Math.floor(Math.random()*30+10),
+          profitable_signals: Math.floor(Math.random()*20+8),
+        },
+        risk: {
+          risk_score: +(Math.random()*0.4+0.1).toFixed(3),
+          risk_level: RISKS[i%RISKS.length],
+          volatility_30d: +(Math.random()*80+30).toFixed(1),
+          liquidity_score: +(Math.random()*0.4+0.3).toFixed(3),
+          correlation_btc: +(Math.random()*0.5+0.3).toFixed(3),
+          pump_dump_risk: +(Math.random()*0.3).toFixed(3),
+        },
+        sentiment: {
+          tweet_status: TWSTATS[i%TWSTATS.length],
+          tweet_score: +(Math.random()*40+40).toFixed(1),
+          tweet_count_7d: Math.floor(Math.random()*20+2),
+          positive_ratio: +(Math.random()*0.4+0.4).toFixed(3),
+          last_tweet_time: new Date(Date.now() - Math.random()*86400000*2).toISOString(),
+        },
+      }));
+    },
+
+  }; // end return
+} // end app()
+</script>
+
+</body>
+</html>

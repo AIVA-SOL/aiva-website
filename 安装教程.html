@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>虚拟币筛选工具 — 安装教程</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 32px 20px;
+      line-height: 1.7;
+    }
+    .container { max-width: 860px; margin: 0 auto; }
+    h1 { font-size: 2rem; color: #60a5fa; margin-bottom: 8px; }
+    .subtitle { color: #94a3b8; margin-bottom: 40px; }
+    h2 { font-size: 1.2rem; color: #f0f9ff; margin: 32px 0 12px;
+         padding-left: 12px; border-left: 4px solid #3b82f6; }
+    h3 { font-size: 1rem; color: #bfdbfe; margin: 20px 0 8px; }
+    p  { color: #cbd5e1; margin-bottom: 12px; }
+    .step {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .step-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #3b82f6; color: white; font-weight: 700;
+      font-size: 13px; margin-right: 10px; flex-shrink: 0;
+    }
+    .step-title { display: flex; align-items: center; font-size: 1.05rem;
+                  font-weight: 600; color: #f1f5f9; margin-bottom: 12px; }
+    code {
+      background: #0f172a; border: 1px solid #334155; border-radius: 6px;
+      padding: 2px 8px; font-family: Consolas, monospace; font-size: 13px;
+      color: #86efac;
+    }
+    pre {
+      background: #0f172a; border: 1px solid #334155; border-radius: 8px;
+      padding: 14px 18px; overflow-x: auto; margin: 10px 0;
+      font-family: Consolas, monospace; font-size: 13px; color: #86efac;
+      line-height: 1.6;
+    }
+    .tip {
+      background: #164e63; border: 1px solid #0e7490;
+      border-radius: 8px; padding: 12px 16px; margin: 12px 0;
+      color: #a5f3fc; font-size: 14px;
+    }
+    .warn {
+      background: #451a03; border: 1px solid #92400e;
+      border-radius: 8px; padding: 12px 16px; margin: 12px 0;
+      color: #fcd34d; font-size: 14px;
+    }
+    .success {
+      background: #052e16; border: 1px solid #166534;
+      border-radius: 8px; padding: 12px 16px; margin: 12px 0;
+      color: #86efac; font-size: 14px;
+    }
+    a { color: #60a5fa; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    img { max-width: 100%; border-radius: 8px; margin: 8px 0; }
+    .btn {
+      display: inline-block; padding: 10px 20px; background: #3b82f6;
+      color: white; border-radius: 8px; font-weight: 600; margin: 4px;
+      text-decoration: none;
+    }
+    .btn:hover { background: #2563eb; text-decoration: none; }
+    .btn-green { background: #16a34a; }
+    .btn-green:hover { background: #15803d; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+    th { background: #1e3a5f; padding: 10px 14px; text-align: left; color: #93c5fd; }
+    td { padding: 9px 14px; border-bottom: 1px solid #1e293b; }
+    tr:hover td { background: #1e293b; }
+    .faq-q { color: #fbbf24; font-weight: 600; margin-top: 16px; }
+    .faq-a { color: #cbd5e1; margin-left: 12px; }
+    .badge {
+      display: inline-block; padding: 2px 10px; border-radius: 999px;
+      font-size: 12px; font-weight: 600;
+    }
+    .badge-ok { background: #052e16; color: #86efac; }
+    .badge-req { background: #1e3a5f; color: #93c5fd; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+<h1>🪙 虚拟币智能筛选工具</h1>
+<p class="subtitle">完整安装指南 — 从零开始到正常运行</p>
+
+<!-- ===== 快速总览 ===== -->
+<h2>📋 运行环境要求</h2>
+<table>
+  <tr><th>软件</th><th>版本要求</th><th>状态</th><th>用途</th></tr>
+  <tr><td>Python</td><td>3.10 或以上（推荐 3.12）</td><td><span class="badge badge-req">必须安装</span></td><td>运行后端服务</td></tr>
+  <tr><td>pip</td><td>随 Python 自动安装</td><td><span class="badge badge-ok">自动</span></td><td>安装依赖包</td></tr>
+  <tr><td>浏览器</td><td>Chrome / Edge / Firefox</td><td><span class="badge badge-ok">已有</span></td><td>访问前端页面</td></tr>
+  <tr><td>网络</td><td>能访问币安/Gate.io 或使用 VPN</td><td><span class="badge badge-req">必须</span></td><td>拉取行情数据</td></tr>
+</table>
+
+<!-- ===== STEP 1 ===== -->
+<h2>🔧 第一步：安装 Python</h2>
+
+<div class="step">
+  <div class="step-title"><span class="step-num">1</span>下载 Python 安装包</div>
+  <p>点击下面的链接，下载 Python 官方安装包（Windows 64位）：</p>
+  <a class="btn" href="https://www.python.org/ftp/python/3.12.3/python-3.12.3-amd64.exe" target="_blank">
+    ⬇ 下载 Python 3.12.3 (官方)
+  </a>
+  <a class="btn" href="https://mirrors.huaweicloud.com/python/3.12.3/python-3.12.3-amd64.exe" target="_blank">
+    ⬇ 下载 Python 3.12.3 (华为镜像，国内加速)
+  </a>
+  <div class="tip">💡 推荐使用华为镜像，国内下载速度更快</div>
+</div>
+
+<div class="step">
+  <div class="step-title"><span class="step-num">2</span>运行安装程序（重要：勾选 PATH）</div>
+  <p>双击下载的 <code>.exe</code> 文件，安装时 <strong style="color:#fbbf24">务必勾选</strong> 以下选项：</p>
+  <pre>☑  Add Python 3.12 to PATH   ← 这个必须勾！！！
+☑  Install for all users
+然后点击 "Install Now"</pre>
+  <div class="warn">⚠ 如果忘记勾选 "Add Python to PATH"，安装完后运行 <code>启动.bat</code> 会提示找不到Python。解决方法：重新运行安装包 → 选 "Modify" → 勾选 PATH 选项。</div>
+</div>
+
+<div class="step">
+  <div class="step-title"><span class="step-num">3</span>验证 Python 安装成功</div>
+  <p>按 <code>Win + R</code>，输入 <code>cmd</code>，回车打开命令提示符，然后输入：</p>
+  <pre>python --version</pre>
+  <div class="success">✅ 正确输出示例：<code>Python 3.12.3</code></div>
+  <p>如果显示 <code>'python' 不是内部或外部命令</code>，说明 PATH 没有配置，需要重新安装并勾选 PATH 选项。</p>
+</div>
+
+<!-- ===== STEP 2 ===== -->
+<h2>🚀 第二步：一键启动</h2>
+
+<div class="step">
+  <div class="step-title"><span class="step-num">1</span>双击启动脚本</div>
+  <p>在项目根目录（<code>虚拟币/</code>）找到 <code>启动.bat</code>，双击运行：</p>
+  <pre>虚拟币/
+├── 启动.bat          ← 双击这个
+├── backend/
+└── frontend/</pre>
+  <p>脚本会自动：</p>
+  <pre>1. 检查 Python 是否存在
+2. 用阿里云镜像安装所有依赖（约 3-5 分钟）
+3. 启动后端服务（端口 8000）
+4. 自动打开前端页面</pre>
+</div>
+
+<div class="step">
+  <div class="step-title"><span class="step-num">2</span>等待依赖安装完成</div>
+  <p>第一次运行需要安装依赖，会出现类似以下内容（正常现象）：</p>
+  <pre>Collecting fastapi==0.110.0
+  Downloading fastapi-0.110.0-py3-none-any.whl
+...
+Successfully installed fastapi uvicorn ccxt pandas ...</pre>
+  <div class="tip">💡 安装时间取决于网速，一般 3-8 分钟。使用阿里云镜像会快很多。</div>
+</div>
+
+<!-- ===== STEP 3 ===== -->
+<h2>🌐 第三步：使用工具</h2>
+
+<div class="step">
+  <div class="step-title"><span class="step-num">1</span>前端页面说明</div>
+  <p>启动后浏览器会自动打开 <code>frontend/index.html</code>。如果没有自动打开，手动双击该文件。</p>
+  <table>
+    <tr><th>区域</th><th>说明</th></tr>
+    <tr><td>顶部状态栏</td><td>实时连接状态、时间、"立即筛选"按钮</td></tr>
+    <tr><td>统计卡片</td><td>筛选结果总数、买入信号数、平均评分等</td></tr>
+    <tr><td>筛选控制</td><td>设置价格区间、预测涨幅、风险等级、交易所</td></tr>
+    <tr><td>结果表格</td><td>符合条件的币种列表，点击任意行查看详情</td></tr>
+    <tr><td>右侧详情</td><td>技术指标、买卖信号、回测数据、推特监控</td></tr>
+  </table>
+</div>
+
+<div class="step">
+  <div class="step-title"><span class="step-num">2</span>首次筛选说明</div>
+  <p>点击"立即筛选"后，系统会：</p>
+  <pre>1. 从币安+Gate获取所有USDT交易对行情（约30-60秒）
+2. 筛选价格 &lt; 1 USDT 的低价币（排除流动性差的）
+3. 对每个候选币下载3年日K线数据
+4. 计算技术指标（RSI/MACD/布林/EMA/KDJ）
+5. 做3年回测（验证历史胜率）
+6. 计算风险评分
+7. 爬取推特情绪
+8. 输出综合评分并推送到页面</pre>
+  <div class="warn">⏳ 首次筛选约需 3-5 分钟，之后每5分钟自动更新一次。期间页面会显示"正在从交易所抓取数据..."</div>
+</div>
+
+<!-- ===== 常见问题 ===== -->
+<h2>❓ 常见问题 FAQ</h2>
+
+<div class="step">
+  <div class="faq-q">Q1: 打开页面没有数据，一直显示"加载中"？</div>
+  <div class="faq-a">
+    <p><strong>原因：</strong>后端还在筛选中（首次运行需要3-5分钟）</p>
+    <p><strong>解决：</strong>耐心等待，查看后端命令行窗口是否有输出。如果5分钟后仍无数据，检查网络是否能访问 api.binance.com（可能需要VPN）。</p>
+  </div>
+
+  <div class="faq-q">Q2: 顶部显示"连接断开"（红色点）？</div>
+  <div class="faq-a">
+    <p><strong>原因：</strong>后端服务未启动，或后端崩溃</p>
+    <p><strong>解决：</strong>1) 确认后端命令行窗口没有关闭；2) 检查是否有报错信息；3) 重新运行 <code>启动.bat</code></p>
+  </div>
+
+  <div class="faq-q">Q3: 安装依赖时报错 "timeout" 或 "connection error"？</div>
+  <div class="faq-a">
+    <p><strong>解决：</strong>手动安装，在 cmd 中执行：</p>
+    <pre>cd /d D:\workbuddy智能AI\虚拟币\backend
+pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/</pre>
+    <p>如果还是超时，换用腾讯云镜像：</p>
+    <pre>pip install -r requirements.txt -i https://mirrors.cloud.tencent.com/pypi/simple/</pre>
+  </div>
+
+  <div class="faq-q">Q4: 访问 api.binance.com 超时（在中国大陆）？</div>
+  <div class="faq-a">
+    <p><strong>原因：</strong>币安和 Gate.io 的 API 在中国大陆需要代理才能访问</p>
+    <p><strong>解决方案一：</strong>使用 VPN 或代理，确保能访问外网</p>
+    <p><strong>解决方案二（无需VPN）：</strong>在 <code>backend/.env</code> 中配置代理：</p>
+    <pre>HTTP_PROXY=http://127.0.0.1:7890
+HTTPS_PROXY=http://127.0.0.1:7890</pre>
+    <p>（7890 改为你本地代理的端口号）</p>
+  </div>
+
+  <div class="faq-q">Q5: 推特数据显示"无账号"或情绪分为50？</div>
+  <div class="faq-a">
+    <p><strong>原因：</strong>Nitter 公共镜像访问受限，或目标币种没有对应推特账号</p>
+    <p><strong>说明：</strong>这不影响主要功能。推特情绪只占综合评分的10%权重，技术指标+回测才是核心。</p>
+  </div>
+
+  <div class="faq-q">Q6: 想接入 API Key 获得更高 API 限制怎么办？</div>
+  <div class="faq-a">
+    <p>编辑 <code>backend/.env</code> 文件，填入对应交易所的 API Key：</p>
+    <pre>BINANCE_API_KEY=你的币安API Key
+BINANCE_SECRET_KEY=你的币安Secret Key
+GATE_API_KEY=你的Gate API Key
+GATE_SECRET_KEY=你的Gate Secret Key</pre>
+    <p>（不填也可以正常使用公开行情数据，只是有请求频率限制）</p>
+  </div>
+
+  <div class="faq-q">Q7: 如何修改筛选参数（比如改成价格 &lt; 5 USDT）？</div>
+  <div class="faq-a">
+    <p>两种方式：</p>
+    <p>1. <strong>前端实时调整：</strong>直接在页面的"价格上限"输入框改值，然后点"立即筛选"</p>
+    <p>2. <strong>修改默认值：</strong>编辑 <code>backend/src/config.py</code> 中的 <code>PRICE_MAX = 1.0</code> 改为 <code>5.0</code></p>
+  </div>
+</div>
+
+<!-- ===== 文件结构 ===== -->
+<h2>📁 项目文件结构说明</h2>
+<div class="step">
+<pre>虚拟币/
+├── 启动.bat                   ← 双击一键启动
+├── 安装教程.html               ← 本文件
+├── backend/
+│   ├── requirements.txt       ← Python 依赖列表
+│   ├── .env                   ← API Key 配置（可选）
+│   ├── test_twitter.py        ← 推特爬取测试脚本
+│   └── src/
+│       ├── main.py            ← FastAPI 主程序（所有API接口）
+│       ├── config.py          ← 全局配置参数
+│       ├── models.py          ← 数据模型定义
+│       ├── exchange.py        ← 币安/Gate 数据采集
+│       ├── indicators.py      ← 技术指标计算
+│       ├── backtest.py        ← 3年历史回测
+│       ├── risk.py            ← 风险评估
+│       ├── twitter.py         ← 推特爬取与情绪分析
+│       ├── screener.py        ← 核心筛选引擎
+│       ├── signal_engine.py   ← 多时框买卖信号
+│       └── websocket_manager.py ← 实时推送
+└── frontend/
+    └── index.html             ← 前端看板页面（直接浏览器打开）</pre>
+</div>
+
+<!-- ===== API 文档 ===== -->
+<h2>📡 API 接口说明</h2>
+<div class="step">
+  <p>后端启动后，可访问自动生成的 API 文档：</p>
+  <a class="btn btn-green" href="http://localhost:8000/docs" target="_blank">📖 打开 API 文档 (Swagger)</a>
+  <table>
+    <tr><th>接口</th><th>说明</th></tr>
+    <tr><td><code>GET /api/screen</code></td><td>获取筛选结果列表</td></tr>
+    <tr><td><code>POST /api/screen/trigger</code></td><td>手动触发筛选</td></tr>
+    <tr><td><code>GET /api/coin/{symbol}/analysis</code></td><td>单币详细分析</td></tr>
+    <tr><td><code>GET /api/coin/{symbol}/klines</code></td><td>K线数据</td></tr>
+    <tr><td><code>GET /api/twitter/{coin}/sentiment</code></td><td>推特情绪</td></tr>
+    <tr><td><code>WS  /ws/screen</code></td><td>筛选结果实时推送</td></tr>
+    <tr><td><code>WS  /ws/realtime</code></td><td>实时价格推送</td></tr>
+  </table>
+</div>
+
+<div style="margin-top:40px;padding:20px;background:#1e293b;border-radius:12px;text-align:center;color:#64748b;font-size:13px;">
+  虚拟币智能筛选工具 · 仅供学习研究使用 · 投资有风险，决策需谨慎
+</div>
+
+</div>
+</body>
+</html>

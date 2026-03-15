@@ -1,0 +1,32 @@
+# ── Web 框架 ──
+fastapi==0.110.0
+uvicorn[standard]==0.29.0
+python-multipart==0.0.9
+
+# ── WebSocket ──
+websockets==12.0
+
+# ── HTTP 客户端 ──
+httpx==0.27.0
+aiohttp==3.9.5
+
+# ── 数据处理 ──
+pandas==2.2.2
+numpy==1.26.4
+
+# ── 交易所接入 ──
+ccxt==4.3.28
+
+# ── 技术指标 ──
+ta==0.11.0
+
+# ── 推特爬取 ──
+beautifulsoup4==4.12.3
+lxml==5.2.1
+fake-useragent==1.5.1
+
+# ── 工具 ──
+python-dotenv==1.0.1
+pydantic==2.7.1
+pytz==2024.1
+apscheduler==3.10.4

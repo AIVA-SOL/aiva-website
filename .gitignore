@@ -1,0 +1,45 @@
+# ============ 环境变量 / 密钥（绝对不能上传）============
+.env
+.env.local
+.env.production
+.env.development
+*.env
+
+# ============ Python 缓存 ============
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+.Python
+
+# ============ Python 虚拟环境 ============
+venv/
+.venv/
+env/
+ENV/
+
+# ============ 可执行文件（体积大，不适合 git）============
+*.exe
+*.dll
+*.so
+
+# ============ 系统文件 ============
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============ IDE / 编辑器 ============
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ============ 日志文件 ============
+*.log
+logs/
+
+# ============ 临时文件 ============
+*.tmp
+*.bak
+*.swp

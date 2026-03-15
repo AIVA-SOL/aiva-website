@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AIVA — Tokenomics Visualizer</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#04060f;--bg2:#080d1e;--bg3:#0d1530;--bg4:#111827;
+    --accent:#4f8eff;--a2:#a78bfa;--a3:#34d399;--a4:#fbbf24;--a5:#f87171;
+    --text:#e2e8f0;--muted:#94a3b8;--border:rgba(79,142,255,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;}
+
+  /* ── ANIMATED BG ── */
+  .bg-orbs{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+  .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.15;animation:drift 14s ease-in-out infinite alternate;}
+  .orb1{width:600px;height:600px;background:radial-gradient(circle,#4f8eff,transparent);top:-200px;left:-200px;animation-delay:0s;}
+  .orb2{width:500px;height:500px;background:radial-gradient(circle,#a78bfa,transparent);bottom:-150px;right:-150px;animation-delay:-5s;}
+  .orb3{width:400px;height:400px;background:radial-gradient(circle,#34d399,transparent);top:40%;left:50%;transform:translateX(-50%);animation-delay:-9s;}
+  @keyframes drift{0%{transform:translate(0,0) scale(1);}100%{transform:translate(40px,30px) scale(1.08);}}
+
+  /* ── LAYOUT ── */
+  .page{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:40px 24px 80px;}
+
+  /* ── HEADER ── */
+  .hdr{text-align:center;padding:40px 0 56px;}
+  .hdr .tag{display:inline-block;padding:5px 18px;border-radius:99px;
+    background:rgba(79,142,255,.1);border:1px solid rgba(79,142,255,.3);
+    font-size:.72rem;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:18px;}
+  .hdr h1{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:900;line-height:1.1;
+    background:linear-gradient(135deg,#fff 20%,#a78bfa 60%,#4f8eff);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:14px;}
+  .hdr p{color:var(--muted);font-size:1.05rem;max-width:580px;margin:0 auto;}
+
+  /* ── SUPPLY HERO STRIP ── */
+  .supply-strip{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;
+    margin-bottom:48px;
+  }
+  .scard{
+    background:linear-gradient(135deg,var(--bg2),var(--bg3));
+    border:1px solid var(--border);border-radius:16px;padding:22px 18px;text-align:center;
+    transition:transform .25s,box-shadow .25s;cursor:default;
+  }
+  .scard:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(79,142,255,.12);}
+  .scard .icon{font-size:1.6rem;margin-bottom:10px;}
+  .scard .val{font-size:1.4rem;font-weight:900;}
+  .scard .lbl{font-size:.72rem;color:var(--muted);margin-top:4px;letter-spacing:.04em;}
+
+  /* ── SECTION TITLE ── */
+  .sec-title{font-size:1.3rem;font-weight:800;margin-bottom:6px;
+    background:linear-gradient(120deg,#fff,#a78bfa);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .sec-sub{color:var(--muted);font-size:.85rem;margin-bottom:28px;}
+
+  /* ── MAIN GRID ── */
+  .main-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:40px;}
+  @media(max-width:760px){.main-grid{grid-template-columns:1fr;}}
+
+  /* ── CHART CARD ── */
+  .chart-card{
+    background:linear-gradient(135deg,var(--bg2),var(--bg3));
+    border:1px solid var(--border);border-radius:20px;padding:28px;
+  }
+  .chart-card .ctitle{font-size:1rem;font-weight:700;color:#fff;margin-bottom:4px;}
+  .chart-card .csub{font-size:.78rem;color:var(--muted);margin-bottom:22px;}
+  .chart-wrap{position:relative;height:260px;}
+
+  /* ── ALLOCATION TABLE ── */
+  .alloc-wrap{
+    background:linear-gradient(135deg,var(--bg2),var(--bg3));
+    border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:40px;
+  }
+  .alloc-table{width:100%;border-collapse:collapse;}
+  .alloc-table thead tr{border-bottom:1px solid var(--border);}
+  .alloc-table th{padding:10px 14px;text-align:left;font-size:.72rem;letter-spacing:.08em;
+    color:var(--accent);font-weight:700;text-transform:uppercase;}
+  .alloc-table td{padding:13px 14px;font-size:.85rem;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.04);}
+  .alloc-table tr:last-child td{border-bottom:none;}
+  .alloc-table tr:hover td{background:rgba(79,142,255,.04);}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:8px;vertical-align:middle;}
+  .pct-bar-bg{height:6px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden;}
+  .pct-bar{height:100%;border-radius:99px;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+  .badge{display:inline-block;padding:2px 9px;border-radius:99px;font-size:.68rem;font-weight:700;
+    letter-spacing:.04em;}
+  .badge-immediate{background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3);}
+  .badge-vested{background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3);}
+  .badge-locked{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3);}
+
+  /* ── VESTING TIMELINE ── */
+  .vesting-wrap{
+    background:linear-gradient(135deg,var(--bg2),var(--bg3));
+    border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:40px;
+  }
+  .timeline-chart-wrap{height:320px;position:relative;}
+
+  /* ── FLOW DIAGRAM ── */
+  .flow-wrap{
+    background:linear-gradient(135deg,var(--bg2),var(--bg3));
+    border:1px solid var(--border);border-radius:20px;padding:32px;margin-bottom:40px;
+  }
+  .flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;row-gap:20px;}
+  .flow-node{
+    background:var(--bg3);border:1px solid var(--border);border-radius:14px;
+    padding:16px 18px;text-align:center;min-width:130px;flex-shrink:0;
+  }
+  .flow-node .n-icon{font-size:1.5rem;margin-bottom:6px;}
+  .flow-node .n-title{font-size:.78rem;font-weight:700;color:#fff;margin-bottom:3px;}
+  .flow-node .n-sub{font-size:.68rem;color:var(--muted);}
+  .flow-arrow{color:var(--accent);font-size:1.4rem;padding:0 6px;flex-shrink:0;}
+  .flow-arrow.down{transform:rotate(90deg);}
+
+  /* ── METRICS ROW ── */
+  .metrics-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:40px;}
+  .metric-card{
+    background:linear-gradient(135deg,var(--bg2),var(--bg3));
+    border:1px solid var(--border);border-radius:16px;padding:22px 20px;
+  }
+  .metric-card .m-label{font-size:.72rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
+  .metric-card .m-val{font-size:1.6rem;font-weight:900;line-height:1;}
+  .metric-card .m-desc{font-size:.75rem;color:var(--muted);margin-top:6px;}
+
+  /* ── EMISSION SCHEDULE ── */
+  .emission-wrap{
+    background:linear-gradient(135deg,var(--bg2),var(--bg3));
+    border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:40px;
+  }
+  .emission-chart-wrap{height:280px;}
+
+  /* ── UTILITY SECTION ── */
+  .utility-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:40px;}
+  .util-card{
+    background:linear-gradient(135deg,var(--bg2),var(--bg3));
+    border:1px solid var(--border);border-radius:16px;padding:24px 20px;
+    transition:transform .25s,border-color .25s;cursor:default;
+  }
+  .util-card:hover{transform:translateY(-3px);border-color:rgba(79,142,255,.5);}
+  .util-card .u-icon{font-size:1.8rem;margin-bottom:12px;}
+  .util-card .u-title{font-size:.92rem;font-weight:700;color:#fff;margin-bottom:8px;}
+  .util-card .u-desc{font-size:.8rem;color:var(--muted);line-height:1.6;}
+  .util-card .u-apy{font-size:.72rem;margin-top:10px;padding:3px 10px;border-radius:99px;
+    background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25);
+    display:inline-block;}
+
+  /* ── BUYBACK BURN ── */
+  .bb-wrap{
+    background:linear-gradient(135deg,rgba(248,113,113,.06),rgba(79,142,255,.06));
+    border:1px solid rgba(248,113,113,.2);border-radius:20px;padding:32px;margin-bottom:40px;
+  }
+  .bb-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+  @media(max-width:600px){.bb-grid{grid-template-columns:1fr;}}
+  .bb-stat{text-align:center;padding:20px;}
+  .bb-stat .bval{font-size:2.2rem;font-weight:900;}
+  .bb-stat .blbl{font-size:.78rem;color:var(--muted);margin-top:4px;}
+
+  /* ── FOOTER ── */
+  .footer{text-align:center;padding:40px 0 0;border-top:1px solid var(--border);
+    color:var(--muted);font-size:.78rem;}
+  .footer .flogo{font-size:1.3rem;font-weight:900;letter-spacing:.1em;
+    background:linear-gradient(135deg,#4f8eff,#a78bfa);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;color:var(--accent);
+    text-decoration:none;font-size:.82rem;margin-bottom:32px;
+    padding:7px 16px;border:1px solid var(--border);border-radius:99px;
+    transition:background .2s;}
+  .nav-back:hover{background:rgba(79,142,255,.1);}
+</style>
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <a class="nav-back" href="whitepaper.html">← Back to White Paper</a>
+    <a class="nav-back" href="marketing-kit.html" style="margin-left:16px;">📣 Marketing Kit</a>
+    <div class="tag">📊 Token Economics · $AIVA</div>
+    <h1>Tokenomics</h1>
+    <p>A transparent, community-first token design built for long-term sustainable growth — not short-term pumps.</p>
+  </div>
+
+  <!-- SUPPLY HERO STRIP -->
+  <div class="supply-strip">
+    <div class="scard">
+      <div class="icon">🪙</div>
+      <div class="val" style="color:var(--accent);">10,000,000,000</div>
+      <div class="lbl">Total Supply (Fixed)</div>
+    </div>
+    <div class="scard">
+      <div class="icon">🔥</div>
+      <div class="val" style="color:#f87171;">0</div>
+      <div class="lbl">Pre-Sale / VC Allocation</div>
+    </div>
+    <div class="scard">
+      <div class="icon">🌐</div>
+      <div class="val" style="color:var(--a3);">60%</div>
+      <div class="lbl">Public / Community</div>
+    </div>
+    <div class="scard">
+      <div class="icon">🔒</div>
+      <div class="val" style="color:var(--a2);">12 mo</div>
+      <div class="lbl">Team Lock-up Cliff</div>
+    </div>
+    <div class="scard">
+      <div class="icon">⚡</div>
+      <div class="val" style="color:var(--a4);">SPL</div>
+      <div class="lbl">Token Standard · Solana</div>
+    </div>
+  </div>
+
+  <!-- CHARTS ROW 1 -->
+  <div style="margin-bottom:12px;"><div class="sec-title">Distribution Overview</div><div class="sec-sub">How the 10 billion $AIVA tokens are allocated — and why.</div></div>
+  <div class="main-grid">
+    <!-- DOUGHNUT -->
+    <div class="chart-card">
+      <div class="ctitle">Allocation Breakdown</div>
+      <div class="csub">Hover segments for details</div>
+      <div class="chart-wrap">
+        <canvas id="donutChart"></canvas>
+      </div>
+    </div>
+
+    <!-- POLAR AREA -->
+    <div class="chart-card">
+      <div class="ctitle">Lock-up Intensity</div>
+      <div class="csub">Longer bars = more locked / vested (less immediate sell pressure)</div>
+      <div class="chart-wrap">
+        <canvas id="polarChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALLOCATION TABLE -->
+  <div class="alloc-wrap">
+    <div class="ctitle" style="margin-bottom:4px;">Full Allocation Table</div>
+    <div class="csub" style="margin-bottom:20px;">Complete breakdown of all token categories, amounts, and release terms</div>
+    <table class="alloc-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Tokens</th>
+          <th>%</th>
+          <th>Distribution</th>
+          <th>TGE Unlock</th>
+          <th>Vesting</th>
+          <th>Release Type</th>
+        </tr>
+      </thead>
+      <tbody id="allocTableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- VESTING TIMELINE -->
+  <div class="vesting-wrap">
+    <div class="ctitle" style="margin-bottom:4px;">Vesting & Unlock Timeline</div>
+    <div class="csub" style="margin-bottom:20px;">Cumulative tokens unlocked over 36 months from Token Generation Event (TGE)</div>
+    <div class="timeline-chart-wrap">
+      <canvas id="vestingChart"></canvas>
+    </div>
+  </div>
+
+  <!-- EMISSION SCHEDULE -->
+  <div class="emission-wrap">
+    <div class="ctitle" style="margin-bottom:4px;">Monthly Emission Schedule</div>
+    <div class="csub" style="margin-bottom:20px;">New tokens entering circulation each month (B = Billions). Designed to front-load community, back-load team.</div>
+    <div class="emission-chart-wrap">
+      <canvas id="emissionChart"></canvas>
+    </div>
+  </div>
+
+  <!-- VALUE FLOW DIAGRAM -->
+  <div class="flow-wrap">
+    <div class="sec-title" style="margin-bottom:4px;">Value Flow Diagram</div>
+    <div class="sec-sub">How AI agent revenue circulates through the AIVA ecosystem</div>
+    <div class="flow">
+      <div class="flow-node">
+        <div class="n-icon">🤖</div>
+        <div class="n-title">AI Agents</div>
+        <div class="n-sub">Work on Solana 24/7</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="n-icon">💰</div>
+        <div class="n-title">Revenue Capture</div>
+        <div class="n-sub">Yield + Fees + Arb</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="border-color:var(--accent);background:rgba(79,142,255,.1);">
+        <div class="n-icon">🏦</div>
+        <div class="n-title">AIVA Treasury</div>
+        <div class="n-sub">On-chain smart contract</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="n-icon">📊</div>
+        <div class="n-title">Split</div>
+        <div class="n-sub">70% holders · 30% dev</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="border-color:var(--a3);background:rgba(52,211,153,.08);">
+        <div class="n-icon">👥</div>
+        <div class="n-title">Stakers</div>
+        <div class="n-sub">Every 24h epoch</div>
+      </div>
+    </div>
+
+    <!-- Revenue split visual -->
+    <div style="margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:500px;margin-left:auto;margin-right:auto;">
+      <div style="background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.25);border-radius:14px;padding:20px;text-align:center;">
+        <div style="font-size:2rem;font-weight:900;color:#34d399;">70%</div>
+        <div style="font-size:.8rem;color:var(--muted);margin-top:4px;">→ $AIVA Stakers</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:6px;">Distributed proportionally<br/>every 24-hour epoch</div>
+      </div>
+      <div style="background:rgba(79,142,255,.08);border:1px solid rgba(79,142,255,.25);border-radius:14px;padding:20px;text-align:center;">
+        <div style="font-size:2rem;font-weight:900;color:#4f8eff;">30%</div>
+        <div style="font-size:.8rem;color:var(--muted);margin-top:4px;">→ Development Fund</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:6px;">Agent R&D, audits,<br/>DAO-controlled spending</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY METRICS -->
+  <div style="margin-bottom:14px;"><div class="sec-title">Key Economic Metrics</div><div class="sec-sub">Critical numbers every investor should know.</div></div>
+  <div class="metrics-row">
+    <div class="metric-card">
+      <div class="m-label">Initial Circulating Supply</div>
+      <div class="m-val" style="color:var(--accent);">4.12B</div>
+      <div class="m-desc">Community + Liquidity unlocked at TGE (41.2% of total)</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">Fully Diluted Valuation</div>
+      <div class="m-val" style="color:var(--a2);">FDV</div>
+      <div class="m-desc">Total supply × launch price. Monitor FDV/MC ratio for dilution risk.</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">Team Token Release</div>
+      <div class="m-val" style="color:var(--a3);">Month 13</div>
+      <div class="m-desc">Team tokens are fully locked for 12 months. First release at month 13.</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">Staking Reward Source</div>
+      <div class="m-val" style="color:var(--a4);">Real Yield</div>
+      <div class="m-desc">Rewards come from actual AI agent revenue — not inflationary token emissions.</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">Liquidity Lock</div>
+      <div class="m-val" style="color:var(--a5);">Permanent</div>
+      <div class="m-desc">DEX liquidity LP tokens are burned at launch. Rug-pull impossible.</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">Governance Threshold</div>
+      <div class="m-val" style="color:#fff;">0.01%</div>
+      <div class="m-desc">Any holder with ≥0.01% of supply (1M $AIVA) can submit a governance proposal.</div>
+    </div>
+  </div>
+
+  <!-- TOKEN UTILITY -->
+  <div style="margin-bottom:14px;"><div class="sec-title">Token Utility</div><div class="sec-sub">$AIVA is a working asset — not just a speculative token.</div></div>
+  <div class="utility-grid">
+    <div class="util-card">
+      <div class="u-icon">🏆</div>
+      <div class="u-title">Staking → Real Yield</div>
+      <div class="u-desc">Stake $AIVA to receive a proportional share of all AI agent revenues distributed every 24 hours. Yield is paid in SOL + $AIVA.</div>
+      <div class="u-apy">Real yield — not printed tokens</div>
+    </div>
+    <div class="util-card">
+      <div class="u-icon">🗳️</div>
+      <div class="u-title">Governance Voting</div>
+      <div class="u-desc">Vote on which agents to deploy next, which DeFi protocols to integrate, and how to spend the 30% development treasury. 1 token = 1 vote.</div>
+      <div class="u-apy">DAO-controlled decisions</div>
+    </div>
+    <div class="util-card">
+      <div class="u-icon">⚡</div>
+      <div class="u-title">Agent Access Tiers</div>
+      <div class="u-desc">Higher $AIVA holdings unlock premium agents with advanced strategies. Tier 1: 10K $AIVA. Tier 2: 100K. Tier 3: 1M+ for institutional-grade agents.</div>
+      <div class="u-apy">Hold more → earn more</div>
+    </div>
+    <div class="util-card">
+      <div class="u-icon">🛠️</div>
+      <div class="u-title">Developer Registration Fee</div>
+      <div class="u-desc">Third-party developers must stake $AIVA to register agents on the network. This creates constant demand as the agent ecosystem grows.</div>
+      <div class="u-apy">Demand-side utility</div>
+    </div>
+    <div class="util-card">
+      <div class="u-icon">🔥</div>
+      <div class="u-title">Buyback & Burn</div>
+      <div class="u-desc">5% of all treasury revenue is used to buy $AIVA on the open market and burn it permanently — reducing supply over time, increasing scarcity.</div>
+      <div class="u-apy">Deflationary pressure</div>
+    </div>
+    <div class="util-card">
+      <div class="u-icon">🎁</div>
+      <div class="u-title">Community Incentives</div>
+      <div class="u-desc">Ecosystem fund rewards community contributors: bug bounties, content creation, agent testing, liquidity provision, and referral campaigns.</div>
+      <div class="u-apy">25% allocated to ecosystem</div>
+    </div>
+  </div>
+
+  <!-- BUYBACK & BURN -->
+  <div class="bb-wrap">
+    <div class="sec-title" style="margin-bottom:4px;">🔥 Buyback & Burn Mechanism</div>
+    <div class="sec-sub" style="margin-bottom:24px;">Every dollar agents earn creates deflationary pressure on $AIVA supply</div>
+    <div class="bb-grid">
+      <div>
+        <canvas id="burnChart" height="200"></canvas>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;justify-content:center;">
+        <div class="bb-stat">
+          <div class="bval" style="color:#f87171;">5%</div>
+          <div class="blbl">of treasury revenue → Buyback & Burn each epoch</div>
+        </div>
+        <div style="height:1px;background:var(--border);"></div>
+        <div style="font-size:.82rem;color:var(--muted);line-height:1.8;padding:0 10px;">
+          <p>As agent revenue grows, the burn rate accelerates. This creates a <strong style="color:#fff;">virtuous cycle</strong>:</p>
+          <br/>
+          <p>More agents working → More revenue → More buybacks → Less supply → Higher $AIVA price → More developers building agents → Repeat.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="flogo">AIVA</div>
+    <p>AI Value Agent Protocol · Tokenomics v1.0 · March 2026</p>
+    <p style="margin-top:6px;">All figures are projections based on protocol design. Subject to DAO governance changes.</p>
+  </div>
+</div>
+
+<script>
+// ── DATA ──
+const COLORS = ['#4f8eff','#a78bfa','#34d399','#fbbf24','#f87171'];
+const ALLOC = [
+  { name:'Community / Public Sale', pct:40, tokens:4e9, cliff:'None',  vesting:'Immediate',       tge:100, type:'immediate', color:COLORS[0] },
+  { name:'Ecosystem & Agent Rewards', pct:25, tokens:2.5e9, cliff:'None', vesting:'36 mo linear', tge:5,   type:'vested',    color:COLORS[1] },
+  { name:'Team & Development',      pct:15, tokens:1.5e9, cliff:'12 mo', vesting:'24 mo linear',  tge:0,   type:'vested',    color:COLORS[2] },
+  { name:'Liquidity Provision',     pct:12, tokens:1.2e9, cliff:'None', vesting:'DEX locked',     tge:100, type:'locked',    color:COLORS[3] },
+  { name:'Strategic Reserve',       pct:8,  tokens:0.8e9, cliff:'6 mo', vesting:'18 mo linear',   tge:0,   type:'vested',    color:COLORS[4] },
+];
+
+// ── CHART DEFAULTS ──
+const FONT = { family:"'Segoe UI', system-ui, sans-serif", color:'#94a3b8' };
+Chart.defaults.color = FONT.color;
+Chart.defaults.font.family = FONT.family;
+
+// ── DOUGHNUT ──
+new Chart(document.getElementById('donutChart'), {
+  type:'doughnut',
+  data:{
+    labels: ALLOC.map(a=>a.name),
+    datasets:[{
+      data: ALLOC.map(a=>a.pct),
+      backgroundColor: ALLOC.map(a=>a.color+'cc'),
+      borderColor: ALLOC.map(a=>a.color),
+      borderWidth:2, hoverOffset:12,
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    cutout:'62%',
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'rgba(8,13,30,.95)',
+        borderColor:'rgba(79,142,255,.3)',borderWidth:1,
+        callbacks:{
+          label: ctx => ` ${ctx.label}: ${ctx.parsed}%  (${(ctx.parsed*1e8/1e9).toFixed(2)}B tokens)`
+        }
+      }
+    }
+  }
+});
+
+// ── POLAR AREA (lock-up months) ──
+const lockMonths = [0, 36, 24, 36, 18]; // effective lock duration in months
+new Chart(document.getElementById('polarChart'), {
+  type:'polarArea',
+  data:{
+    labels: ALLOC.map(a=>a.name.split(' ').slice(0,2).join(' ')),
+    datasets:[{
+      data: lockMonths,
+      backgroundColor: ALLOC.map(a=>a.color+'55'),
+      borderColor: ALLOC.map(a=>a.color),
+      borderWidth:2,
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    scales:{ r:{ ticks:{color:'#94a3b8',font:{size:10}}, grid:{color:'rgba(255,255,255,.06)'} }},
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'rgba(8,13,30,.95)',
+        borderColor:'rgba(79,142,255,.3)',borderWidth:1,
+        callbacks:{label: ctx => ` Lock duration: ${ctx.parsed.r} months`}
+      }
+    }
+  }
+});
+
+// ── ALLOCATION TABLE ──
+const tbody = document.getElementById('allocTableBody');
+ALLOC.forEach(a=>{
+  const badge = a.type==='immediate'?'badge-immediate':a.type==='locked'?'badge-locked':'badge-vested';
+  const badgeText = a.type==='immediate'?'Immediate':a.type==='locked'?'Locked':'Vested';
+  tbody.innerHTML += `
+    <tr>
+      <td><span class="dot" style="background:${a.color}"></span>${a.name}</td>
+      <td style="font-variant-numeric:tabular-nums;color:#fff;">${(a.tokens/1e9).toFixed(1)}B</td>
+      <td style="color:${a.color};font-weight:700;">${a.pct}%
+        <div class="pct-bar-bg" style="margin-top:5px;width:80px;">
+          <div class="pct-bar" style="width:${a.pct*2.5}%;background:${a.color};"></div>
+        </div>
+      </td>
+      <td>${a.cliff}</td>
+      <td style="color:var(--a3);">${a.tge}%</td>
+      <td style="color:var(--muted);">${a.vesting}</td>
+      <td><span class="badge ${badge}">${badgeText}</span></td>
+    </tr>`;
+});
+
+// ── VESTING TIMELINE (area chart) ──
+// Generate cumulative unlock data month 0-36
+function getUnlocked(month){
+  let total = 0;
+  // Community: 100% at TGE
+  total += 4e9;
+  // Ecosystem: 5% TGE then linear 36mo
+  total += 2.5e9 * (0.05 + Math.min(1, month/36)*0.95);
+  // Team: 0 until month 12, then linear 24mo
+  if(month > 12) total += 1.5e9 * Math.min(1,(month-12)/24);
+  // Liquidity: 100% at TGE
+  total += 1.2e9;
+  // Reserve: 0 until month 6, then linear 18mo
+  if(month > 6) total += 0.8e9 * Math.min(1,(month-6)/18);
+  return total/1e9; // in Billions
+}
+
+const months = Array.from({length:37},(_,i)=>i);
+const communityLine = months.map(()=>4);
+const ecoLine      = months.map(m=>2.5*(0.05+Math.min(1,m/36)*0.95));
+const teamLine     = months.map(m=>m>12?1.5*Math.min(1,(m-12)/24):0);
+const liqLine      = months.map(()=>1.2);
+const resLine      = months.map(m=>m>6?0.8*Math.min(1,(m-6)/18):0);
+
+new Chart(document.getElementById('vestingChart'),{
+  type:'line',
+  data:{
+    labels: months.map(m=>`M${m}`),
+    datasets:[
+      {label:'Community',data:communityLine,fill:true,backgroundColor:'rgba(79,142,255,.12)',borderColor:COLORS[0],borderWidth:2,pointRadius:0,tension:.4},
+      {label:'Ecosystem',data:ecoLine,fill:true,backgroundColor:'rgba(167,139,250,.1)',borderColor:COLORS[1],borderWidth:2,pointRadius:0,tension:.4},
+      {label:'Team',data:teamLine,fill:true,backgroundColor:'rgba(52,211,153,.1)',borderColor:COLORS[2],borderWidth:2,pointRadius:0,tension:.4},
+      {label:'Liquidity',data:liqLine,fill:true,backgroundColor:'rgba(251,191,36,.08)',borderColor:COLORS[3],borderWidth:2,pointRadius:0,tension:.4},
+      {label:'Reserve',data:resLine,fill:true,backgroundColor:'rgba(248,113,113,.08)',borderColor:COLORS[4],borderWidth:2,pointRadius:0,tension:.4},
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    interaction:{mode:'index',intersect:false},
+    scales:{
+      x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{maxTicksLimit:13,font:{size:11}}},
+      y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>`${v.toFixed(1)}B`},title:{display:true,text:'Tokens (Billions)',color:'#94a3b8'}}
+    },
+    plugins:{
+      legend:{labels:{boxWidth:12,font:{size:11},padding:16}},
+      tooltip:{
+        backgroundColor:'rgba(8,13,30,.95)',
+        borderColor:'rgba(79,142,255,.3)',borderWidth:1,
+        callbacks:{label:ctx=>`  ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}B tokens`}
+      }
+    }
+  }
+});
+
+// ── MONTHLY EMISSION ──
+function monthlyEmission(month){
+  let e=0;
+  // Eco: starts month 0, ~2.375B/36 per month
+  e += 2.5e9/36;
+  // Team: month 13+, 1.5B/24 per month
+  if(month>=13) e += 1.5e9/24;
+  // Reserve: month 7+, 0.8B/18 per month
+  if(month>=7)  e += 0.8e9/18;
+  return e/1e9;
+}
+new Chart(document.getElementById('emissionChart'),{
+  type:'bar',
+  data:{
+    labels: Array.from({length:36},(_,i)=>`M${i+1}`),
+    datasets:[{
+      label:'Monthly New Tokens (B)',
+      data: Array.from({length:36},(_,i)=>monthlyEmission(i+1)),
+      backgroundColor: Array.from({length:36},(_,i)=>{
+        if(i<6) return '#4f8eff99';
+        if(i<12) return '#a78bfa99';
+        return '#34d39999';
+      }),
+      borderColor:'transparent',borderRadius:6,borderSkipped:false,
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    scales:{
+      x:{grid:{display:false},ticks:{maxTicksLimit:12,font:{size:10}}},
+      y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>`${v.toFixed(2)}B`}}
+    },
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'rgba(8,13,30,.95)',
+        borderColor:'rgba(79,142,255,.3)',borderWidth:1,
+        callbacks:{label:ctx=>` ${ctx.parsed.y.toFixed(3)}B new tokens this month`}
+      }
+    }
+  }
+});
+
+// ── BURN PROJECTION ──
+const burnLabels = ['Q2 2026','Q3 2026','Q4 2026','Q1 2027','Q2 2027','Q3 2027','Q4 2027'];
+const burnData   = [0.8, 1.9, 3.4, 5.2, 7.8, 11.2, 16.0]; // projected B burned
+new Chart(document.getElementById('burnChart'),{
+  type:'line',
+  data:{
+    labels: burnLabels,
+    datasets:[{
+      label:'Cumulative Burned (B)',
+      data: burnData,
+      fill:true,
+      backgroundColor:'rgba(248,113,113,.12)',
+      borderColor:'#f87171',
+      borderWidth:2.5,
+      pointBackgroundColor:'#f87171',
+      pointRadius:5,
+      tension:.45,
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    scales:{
+      x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{font:{size:10}}},
+      y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>`${v}B`}}
+    },
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'rgba(8,13,30,.95)',
+        borderColor:'rgba(248,113,113,.3)',borderWidth:1,
+        callbacks:{label:ctx=>` ${ctx.parsed.y}B $AIVA burned to date`}
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>

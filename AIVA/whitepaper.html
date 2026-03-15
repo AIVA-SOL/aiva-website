@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AIVA — AI Value Agent | White Paper v1.0</title>
+<style>
+  :root {
+    --bg: #04060f;
+    --bg2: #080d1e;
+    --bg3: #0d1530;
+    --accent: #4f8eff;
+    --accent2: #a78bfa;
+    --accent3: #34d399;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --border: rgba(79,142,255,0.18);
+    --glow: rgba(79,142,255,0.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    line-height:1.75;
+    font-size:16px;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before{
+    content:'';
+    position:fixed;inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events:none;z-index:0;opacity:.4;
+  }
+
+  /* ── LAYOUT ── */
+  .container{max-width:900px;margin:0 auto;padding:0 28px;position:relative;z-index:1;}
+
+  /* ── TOP BAR ── */
+  .topbar{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    padding:14px 32px;
+    background:rgba(4,6,15,0.88);
+    backdrop-filter:blur(18px);
+    border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+  }
+  .topbar .logo{
+    font-size:1.2rem;font-weight:800;letter-spacing:.08em;
+    background:linear-gradient(135deg,#4f8eff,#a78bfa);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    flex-shrink:0;
+  }
+  .topbar .badge{
+    font-size:.7rem;background:rgba(79,142,255,.15);border:1px solid var(--border);
+    padding:3px 10px;border-radius:99px;color:var(--accent);letter-spacing:.05em;
+    flex-shrink:0;
+  }
+  .topbar nav{display:flex;gap:20px;flex-wrap:wrap;}
+  .topbar nav a{color:var(--muted);text-decoration:none;font-size:.82rem;transition:color .2s;}
+  .topbar nav a:hover{color:var(--accent);}
+
+  /* ── LANGUAGE SWITCHER ── */
+  .lang-switcher{
+    display:flex;align-items:center;gap:0;
+    background:rgba(79,142,255,.08);
+    border:1px solid var(--border);
+    border-radius:99px;
+    overflow:hidden;
+    flex-shrink:0;
+  }
+  .lang-btn{
+    padding:5px 14px;font-size:.76rem;font-weight:600;
+    cursor:pointer;border:none;background:transparent;
+    color:var(--muted);transition:all .2s;letter-spacing:.04em;
+    white-space:nowrap;
+  }
+  .lang-btn.active{
+    background:linear-gradient(135deg,#4f8eff,#a78bfa);
+    color:#fff;
+  }
+  .lang-btn:hover:not(.active){color:var(--accent);}
+
+  /* ── HERO ── */
+  .hero{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+    text-align:center;padding:120px 28px 80px;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(79,142,255,.18), transparent),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(167,139,250,.1), transparent);
+  }
+  .hero-inner{max-width:780px;}
+  .hero-tag{
+    display:inline-block;margin-bottom:24px;
+    padding:5px 16px;border-radius:99px;
+    border:1px solid rgba(79,142,255,.35);
+    background:rgba(79,142,255,.08);
+    font-size:.75rem;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;
+  }
+  .hero h1{
+    font-size:clamp(2.8rem,7vw,5rem);font-weight:900;line-height:1.08;
+    background:linear-gradient(145deg,#fff 30%,#a78bfa 70%,#4f8eff);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    margin-bottom:20px;
+  }
+  .hero .subtitle{
+    font-size:clamp(1rem,2.5vw,1.25rem);color:var(--muted);max-width:620px;margin:0 auto 40px;
+  }
+  .hero-meta{display:flex;gap:32px;justify-content:center;flex-wrap:wrap;}
+  .hero-meta .m{text-align:center;}
+  .hero-meta .m .val{font-size:1.5rem;font-weight:800;color:#fff;}
+  .hero-meta .m .lbl{font-size:.75rem;color:var(--muted);margin-top:2px;}
+
+  /* ── SECTION ── */
+  .section{padding:88px 0 24px;}
+  .section-title{
+    font-size:clamp(1.5rem,3.5vw,2.2rem);font-weight:800;
+    background:linear-gradient(120deg,#fff,#a78bfa);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    margin-bottom:10px;
+  }
+  .section-sub{color:var(--muted);font-size:.95rem;margin-bottom:40px;max-width:640px;}
+
+  /* ── DIVIDER ── */
+  .divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0;}
+
+  /* ── CARDS ── */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-top:8px;}
+  .card{
+    background:linear-gradient(135deg,var(--bg2),var(--bg3));
+    border:1px solid var(--border);border-radius:16px;
+    padding:28px 24px;transition:transform .25s,box-shadow .25s;
+  }
+  .card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(79,142,255,.12);}
+  .card .icon{font-size:2rem;margin-bottom:14px;}
+  .card h3{font-size:1.05rem;font-weight:700;margin-bottom:8px;color:#fff;}
+  .card p{color:var(--muted);font-size:.88rem;line-height:1.6;}
+
+  /* ── PROBLEM / SOLUTION ── */
+  .ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px;}
+  @media(max-width:640px){.ps-grid{grid-template-columns:1fr;}}
+  .ps-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;}
+  .ps-box h3{font-size:1rem;font-weight:700;margin-bottom:16px;}
+  .ps-box.prob h3{color:#f87171;}
+  .ps-box.sol h3{color:var(--accent3);}
+  .ps-box ul{list-style:none;display:flex;flex-direction:column;gap:10px;}
+  .ps-box ul li{font-size:.88rem;color:var(--muted);padding-left:20px;position:relative;}
+  .ps-box ul li::before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;}
+  .ps-box.prob ul li::before{background:#f87171;}
+  .ps-box.sol ul li::before{background:var(--accent3);}
+
+  /* ── HOW IT WORKS ── */
+  .steps{display:flex;flex-direction:column;gap:0;margin-top:8px;position:relative;}
+  .steps::before{
+    content:'';position:absolute;left:23px;top:0;bottom:0;width:2px;
+    background:linear-gradient(180deg,var(--accent),var(--accent2),transparent);
+  }
+  .step{display:flex;gap:20px;padding:20px 0;}
+  .step-num{
+    flex-shrink:0;width:48px;height:48px;border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex;align-items:center;justify-content:center;
+    font-weight:900;font-size:1rem;color:#fff;position:relative;z-index:1;
+  }
+  .step-body h4{font-size:1rem;font-weight:700;margin-bottom:6px;color:#fff;}
+  .step-body p{font-size:.88rem;color:var(--muted);}
+
+  /* ── TOKENOMICS ── */
+  .toko-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;margin-top:8px;}
+  @media(max-width:640px){.toko-grid{grid-template-columns:1fr;}}
+  .donut-wrap{position:relative;width:240px;height:240px;margin:0 auto;}
+  svg.donut{width:100%;height:100%;transform:rotate(-90deg);}
+  .donut-label{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;
+  }
+  .donut-label .big{font-size:1.5rem;font-weight:900;color:#fff;}
+  .donut-label .sm{font-size:.72rem;color:var(--muted);margin-top:2px;}
+  .toko-legend{display:flex;flex-direction:column;gap:14px;justify-content:center;}
+  .leg-item{display:flex;align-items:center;gap:12px;}
+  .leg-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+  .leg-info{flex:1;}
+  .leg-name{font-size:.88rem;font-weight:600;color:#fff;}
+  .leg-desc{font-size:.75rem;color:var(--muted);}
+  .leg-pct{font-size:.95rem;font-weight:800;}
+  .toko-stats{margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .tstat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 12px;text-align:center;}
+  .tstat .val{font-size:1.1rem;font-weight:800;color:var(--accent);}
+  .tstat .lbl{font-size:.72rem;color:var(--muted);margin-top:3px;}
+
+  /* ── ROADMAP ── */
+  .roadmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:8px;}
+  .rm-phase{
+    background:var(--bg2);border:1px solid var(--border);border-radius:16px;
+    padding:24px 20px;position:relative;overflow:hidden;
+  }
+  .rm-phase.active{border-color:var(--accent);background:linear-gradient(135deg,var(--bg2),rgba(79,142,255,.08));}
+  .rm-phase.active::before{
+    content:'NOW';position:absolute;top:12px;right:14px;
+    font-size:.6rem;font-weight:800;letter-spacing:.1em;
+    background:var(--accent);color:#fff;padding:2px 8px;border-radius:99px;
+  }
+  .rm-phase .phase-num{font-size:.7rem;color:var(--accent);font-weight:700;letter-spacing:.1em;margin-bottom:8px;}
+  .rm-phase h4{font-size:.95rem;font-weight:700;margin-bottom:12px;color:#fff;}
+  .rm-phase ul{list-style:none;display:flex;flex-direction:column;gap:7px;}
+  .rm-phase ul li{font-size:.78rem;color:var(--muted);padding-left:16px;position:relative;}
+  .rm-phase ul li::before{content:'→';position:absolute;left:0;color:var(--accent2);}
+
+  /* ── TEAM ── */
+  .team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-top:8px;}
+  .team-card{
+    background:var(--bg2);border:1px solid var(--border);border-radius:16px;
+    padding:28px 20px;text-align:center;
+  }
+  .team-avatar{
+    width:64px;height:64px;border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.6rem;margin:0 auto 14px;
+  }
+  .team-card h4{font-size:.95rem;font-weight:700;margin-bottom:4px;}
+  .team-card .role{font-size:.78rem;color:var(--accent);margin-bottom:8px;}
+  .team-card p{font-size:.78rem;color:var(--muted);}
+
+  /* ── DISCLAIMER ── */
+  .disclaimer{
+    margin:80px 0 0;padding:28px;
+    background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.2);
+    border-radius:12px;font-size:.8rem;color:var(--muted);line-height:1.7;
+  }
+  .disclaimer strong{color:#f87171;}
+
+  /* ── FOOTER ── */
+  footer{
+    margin-top:60px;padding:40px 0;
+    border-top:1px solid var(--border);text-align:center;
+    color:var(--muted);font-size:.8rem;
+  }
+  footer .footer-logo{
+    font-size:1.4rem;font-weight:900;letter-spacing:.1em;
+    background:linear-gradient(135deg,#4f8eff,#a78bfa);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    margin-bottom:10px;
+  }
+
+  /* ── HIGHLIGHT TEXT ── */
+  .hl{color:var(--accent);font-weight:700;}
+  .hl2{color:var(--accent2);font-weight:700;}
+  .hl3{color:var(--accent3);font-weight:700;}
+
+  /* ── TABLE ── */
+  table{width:100%;border-collapse:collapse;margin-top:8px;font-size:.88rem;}
+  th{background:var(--bg3);padding:12px 16px;text-align:left;color:var(--accent);
+     font-size:.78rem;letter-spacing:.06em;border-bottom:1px solid var(--border);}
+  td{padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--muted);}
+  tr:hover td{background:rgba(79,142,255,.04);}
+
+  /* ── QUOTE ── */
+  blockquote{
+    margin:28px 0;padding:20px 24px;
+    border-left:3px solid var(--accent);
+    background:rgba(79,142,255,.06);border-radius:0 12px 12px 0;
+    font-style:italic;color:var(--muted);
+  }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .fade-in{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+  .fade-in.visible{opacity:1;transform:none;}
+
+  /* ── LANG TRANSITION ── */
+  .lang-content{transition:opacity .25s ease;}
+  .lang-content.switching{opacity:0;}
+
+  @media(max-width:768px){
+    .topbar{padding:12px 16px;gap:10px;}
+    .topbar nav{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="logo">AIVA</div>
+  <nav>
+    <a href="#abstract" data-en="Abstract" data-zh="摘要">Abstract</a>
+    <a href="#technology" data-en="Technology" data-zh="技术">Technology</a>
+    <a href="#tokenomics" data-en="Tokenomics" data-zh="代币经济">Tokenomics</a>
+    <a href="#roadmap" data-en="Roadmap" data-zh="路线图">Roadmap</a>
+  </nav>
+  <!-- LANGUAGE SWITCHER -->
+  <div class="lang-switcher" id="langSwitcher">
+    <button class="lang-btn active" id="btnEN" onclick="setLang('en')">🌐 EN</button>
+    <button class="lang-btn" id="btnZH" onclick="setLang('zh')">中文</button>
+  </div>
+  <div class="badge" id="topBadge">WHITE PAPER v1.0</div>
+</header>
+
+<!-- ════════════════════ HERO ════════════════════ -->
+<section class="hero">
+  <div class="hero-inner fade-in">
+    <div class="hero-tag" id="heroTag">🤖 AI Value Agent Protocol · Solana</div>
+    <h1>AIVA</h1>
+    <p class="subtitle" id="heroSubtitle">
+      The first autonomous AI Agent network on Solana that works on-chain 24/7 —
+      generating yield, optimizing liquidity, and redistributing value directly to token holders.
+    </p>
+    <div class="hero-meta">
+      <div class="m"><div class="val">10B</div><div class="lbl" data-en="Total Supply" data-zh="代币总量">Total Supply</div></div>
+      <div class="m"><div class="val">SOL</div><div class="lbl" data-en="Native Chain" data-zh="主链">Native Chain</div></div>
+      <div class="m"><div class="val">60%</div><div class="lbl" data-en="Community Owned" data-zh="社区持有">Community Owned</div></div>
+      <div class="m"><div class="val">∞</div><div class="lbl" data-en="Agents Working" data-zh="AI代理运行">Agents Working</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════ ABSTRACT ════════════════════ -->
+<section class="section" id="abstract">
+  <div class="container fade-in">
+    <div class="section-title" data-en="Abstract" data-zh="摘要">Abstract</div>
+    <div class="section-sub" data-en="The convergence of AI and blockchain — explained clearly." data-zh="AI与区块链的融合——清晰阐述。">The convergence of AI and blockchain — explained clearly.</div>
+
+    <div id="abstractBody">
+      <!-- EN -->
+      <div class="lang-en">
+        <p style="color:var(--muted);line-height:1.9;margin-bottom:20px;">
+          The world is entering an era where <span class="hl">autonomous AI agents</span> can operate independently,
+          execute complex strategies, and generate economic value without human intervention.
+          Yet today's AI systems are siloed, opaque, and extractive — capturing value for centralized corporations
+          rather than the communities that power them.
+        </p>
+        <p style="color:var(--muted);line-height:1.9;margin-bottom:20px;">
+          <span class="hl2">AIVA (AI Value Agent)</span> reimagines this relationship. Built natively on Solana,
+          AIVA deploys a decentralized network of AI agents that operate across DeFi protocols,
+          data markets, and on-chain services — continuously generating value and distributing it transparently
+          to <span class="hl3">$AIVA token holders</span>.
+        </p>
+        <p style="color:var(--muted);line-height:1.9;">
+          This is not a promise of future utility. AIVA's agent framework is designed to be
+          <strong style="color:#fff;">progressively deployed</strong>: starting with yield optimization agents in Phase 1,
+          expanding to autonomous trading agents in Phase 2, and evolving into a full <em>Agent Economy</em>
+          in Phase 3 — where any developer can deploy agents that share revenue with the AIVA ecosystem.
+        </p>
+        <blockquote>"AI will not just assist humans — it will work for them. AIVA ensures that work benefits the many, not the few."</blockquote>
+      </div>
+      <!-- ZH -->
+      <div class="lang-zh" style="display:none;">
+        <p style="color:var(--muted);line-height:2;margin-bottom:20px;">
+          世界正在进入一个<span class="hl">自主AI代理</span>能够独立运作、执行复杂策略并在无需人工干预的情况下创造经济价值的时代。
+          然而，当今的AI系统彼此孤立、不透明且具有榨取性——将价值集中于中心化企业，而非为其提供动力的社区。
+        </p>
+        <p style="color:var(--muted);line-height:2;margin-bottom:20px;">
+          <span class="hl2">AIVA（AI价值代理）</span>重新构想了这一关系。AIVA原生构建于Solana上，
+          部署了一个去中心化的AI代理网络，跨越DeFi协议、数据市场和链上服务——持续创造价值，并透明地分配给
+          <span class="hl3">$AIVA代币持有者</span>。
+        </p>
+        <p style="color:var(--muted);line-height:2;">
+          这不是对未来效用的承诺。AIVA的代理框架被设计为<strong style="color:#fff;">渐进式部署</strong>：
+          第一阶段从收益优化代理开始，第二阶段扩展至自主交易代理，并在第三阶段演变为完整的<em>代理经济</em>——
+          任何开发者都可以部署代理并与AIVA生态系统共享收益。
+        </p>
+        <blockquote>「AI不只是协助人类——它将为人类工作。AIVA确保这份工作的成果属于大多数人，而非少数人。」</blockquote>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════ PROBLEM / SOLUTION ════════════════════ -->
+<section class="section" id="problem">
+  <div class="container fade-in">
+    <div class="section-title" data-en="The Problem & Our Solution" data-zh="问题与解决方案">The Problem & Our Solution</div>
+    <div class="section-sub" data-en="Why existing AI and DeFi systems fail — and how AIVA fixes them." data-zh="现有AI和DeFi系统为何失败——以及AIVA如何解决。">Why existing AI and DeFi systems fail — and how AIVA fixes them.</div>
+
+    <div class="ps-grid">
+      <div class="ps-box prob">
+        <h3 data-en="❌ Current Problems" data-zh="❌ 当前问题">❌ Current Problems</h3>
+        <ul id="probList">
+          <li data-en="AI value flows to Big Tech, not users who generate training data" data-zh="AI价值流向科技巨头，而非贡献训练数据的用户">AI value flows to Big Tech, not users who generate training data</li>
+          <li data-en="DeFi yield strategies require constant manual management" data-zh="DeFi收益策略需要持续的人工管理">DeFi yield strategies require constant manual management</li>
+          <li data-en="No transparent, on-chain proof of AI agent performance" data-zh="缺乏透明的AI代理性能链上证明">No transparent, on-chain proof of AI agent performance</li>
+          <li data-en="High entry barriers — ordinary holders can't access institutional-grade AI strategies" data-zh="准入门槛高——普通持有者无法获取机构级AI策略">High entry barriers — ordinary holders can't access institutional-grade AI strategies</li>
+          <li data-en="AI model outputs are black boxes — unverifiable and untrustworthy" data-zh="AI模型输出是黑盒——无法验证且不可信任">AI model outputs are black boxes — unverifiable and untrustworthy</li>
+          <li data-en="Siloed ecosystems prevent AI agents from collaborating at scale" data-zh="孤立的生态系统阻碍了AI代理的大规模协作">Siloed ecosystems prevent AI agents from collaborating at scale</li>
+        </ul>
+      </div>
+      <div class="ps-box sol">
+        <h3 data-en="✅ AIVA Solutions" data-zh="✅ AIVA解决方案">✅ AIVA Solutions</h3>
+        <ul id="solList">
+          <li data-en="On-chain revenue sharing: every $AIVA holder earns from agent activity" data-zh="链上收益分享：每位$AIVA持有者都能从代理活动中获益">On-chain revenue sharing: every $AIVA holder earns from agent activity</li>
+          <li data-en="Autonomous yield agents rebalance positions 24/7 without user action" data-zh="自主收益代理24/7无需用户操作自动调仓">Autonomous yield agents rebalance positions 24/7 without user action</li>
+          <li data-en="All agent decisions logged on-chain — fully auditable and transparent" data-zh="所有代理决策均记录在链——完全可审计且透明">All agent decisions logged on-chain — fully auditable and transparent</li>
+          <li data-en="One token = access to a full fleet of working AI agents" data-zh="持有代币即可访问完整的AI代理集群">One token = access to a full fleet of working AI agents</li>
+          <li data-en="Agent performance scores are verifiable via Solana blockchain records" data-zh="代理性能评分可通过Solana区块链记录验证">Agent performance scores are verifiable via Solana blockchain records</li>
+          <li data-en="Open Agent SDK allows community to deploy and monetize custom agents" data-zh="开放的代理SDK允许社区部署和变现自定义代理">Open Agent SDK allows community to deploy and monetize custom agents</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════ TECHNOLOGY ════════════════════ -->
+<section class="section" id="technology">
+  <div class="container fade-in">
+    <div class="section-title" data-en="Technology Architecture" data-zh="技术架构">Technology Architecture</div>
+    <div class="section-sub" data-en="Four layers that power the AIVA Agent Economy." data-zh="驱动AIVA代理经济的四层架构。">Four layers that power the AIVA Agent Economy.</div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="icon">🧠</div>
+        <h3 data-en="Agent Intelligence Layer" data-zh="代理智能层">Agent Intelligence Layer</h3>
+        <p data-en="Each AIVA agent runs a fine-tuned LLM core specialized for on-chain strategy: yield hunting, liquidity provision, arbitrage detection, and sentiment analysis. Agents operate autonomously using off-chain compute with on-chain execution." data-zh="每个AIVA代理都运行一个专为链上策略微调的LLM核心：收益挖掘、流动性提供、套利检测和情绪分析。代理使用链下计算和链上执行自主运行。">Each AIVA agent runs a fine-tuned LLM core specialized for on-chain strategy: yield hunting, liquidity provision, arbitrage detection, and sentiment analysis. Agents operate autonomously using off-chain compute with on-chain execution.</p>
+      </div>
+      <div class="card">
+        <div class="icon">⛓️</div>
+        <h3 data-en="Solana Execution Layer" data-zh="Solana执行层">Solana Execution Layer</h3>
+        <p data-en="All agent actions are executed via Solana programs (smart contracts). Sub-second finality and near-zero fees make real-time agent operations economically viable — something impossible on Ethereum mainnet." data-zh="所有代理行为均通过Solana程序（智能合约）执行。亚秒级最终确认和接近零的费用使实时代理操作在经济上可行——这在以太坊主网上是不可能的。">All agent actions are executed via Solana programs (smart contracts). Sub-second finality and near-zero fees make real-time agent operations economically viable — something impossible on Ethereum mainnet.</p>
+      </div>
+      <div class="card">
+        <div class="icon">💰</div>
+        <h3 data-en="Revenue Distribution Layer" data-zh="收益分配层">Revenue Distribution Layer</h3>
+        <p data-en="A smart contract treasury automatically collects agent-generated revenue and distributes a portion to $AIVA stakers proportionally every epoch (every 24 hours). No trust required — code enforces the rules." data-zh="智能合约国库自动收集代理产生的收益，并每个epoch（每24小时）按比例分配给$AIVA质押者。无需信任——代码执行规则。">A smart contract treasury automatically collects agent-generated revenue and distributes a portion to $AIVA stakers proportionally every epoch (every 24 hours). No trust required — code enforces the rules.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🔓</div>
+        <h3 data-en="Open Agent SDK" data-zh="开放代理SDK">Open Agent SDK</h3>
+        <p data-en="Developers can build and register custom agents on the AIVA network. Approved agents share a percentage of their earnings with the AIVA treasury, creating a flywheel: more agents = more revenue = higher $AIVA value." data-zh="开发者可以在AIVA网络上构建和注册自定义代理。经批准的代理将其收益的一定比例分享给AIVA国库，形成飞轮效应：更多代理 = 更多收益 = 更高的$AIVA价值。">Developers can build and register custom agents on the AIVA network. Approved agents share a percentage of their earnings with the AIVA treasury, creating a flywheel: more agents = more revenue = higher $AIVA value.</p>
+      </div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div style="margin-top:56px;">
+      <div class="section-title" style="font-size:1.4rem;" data-en="How It Works" data-zh="运作机制">How It Works</div>
+      <div class="section-sub" data-en="From token holder to passive income — five steps." data-zh="从代币持有者到被动收入——五个步骤。">From token holder to passive income — five steps.</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4 data-en="Acquire & Stake $AIVA" data-zh="购买并质押 $AIVA">Acquire & Stake $AIVA</h4>
+            <p data-en="Purchase $AIVA tokens on Raydium or pump.fun. Stake them in the AIVA Protocol Vault to register as a beneficiary of agent revenues." data-zh="在Raydium或pump.fun上购买$AIVA代币。将其质押在AIVA协议保险库中，注册为代理收益的受益人。">Purchase $AIVA tokens on Raydium or pump.fun. Stake them in the AIVA Protocol Vault to register as a beneficiary of agent revenues.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4 data-en="Agents Go to Work" data-zh="代理开始工作">Agents Go to Work</h4>
+            <p data-en="The AIVA agent fleet continuously scans Solana DeFi protocols — Raydium, Orca, Jupiter, MarginFi — identifying yield opportunities and executing strategies 24/7." data-zh="AIVA代理集群持续扫描Solana DeFi协议——Raydium、Orca、Jupiter、MarginFi——识别收益机会并24/7执行策略。">The AIVA agent fleet continuously scans Solana DeFi protocols — Raydium, Orca, Jupiter, MarginFi — identifying yield opportunities and executing strategies 24/7.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4 data-en="Revenue Is Captured On-Chain" data-zh="收益在链上捕获">Revenue Is Captured On-Chain</h4>
+            <p data-en="All generated yield (trading fees, arbitrage profits, liquidity rewards) flows into the AIVA Treasury smart contract. Every transaction is recorded on Solana for full transparency." data-zh="所有产生的收益（交易费、套利利润、流动性奖励）流入AIVA国库智能合约。每笔交易都记录在Solana上，完全透明。">All generated yield (trading fees, arbitrage profits, liquidity rewards) flows into the AIVA Treasury smart contract. Every transaction is recorded on Solana for full transparency.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4 data-en="Epoch Distribution" data-zh="周期分配">Epoch Distribution</h4>
+            <p data-en="Every 24 hours, 70% of treasury revenue is distributed proportionally to $AIVA stakers. The remaining 30% funds agent development and ecosystem expansion." data-zh="每24小时，国库收益的70%按比例分配给$AIVA质押者。剩余30%用于资助代理开发和生态系统扩展。">Every 24 hours, 70% of treasury revenue is distributed proportionally to $AIVA stakers. The remaining 30% funds agent development and ecosystem expansion.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4 data-en="Governance & Agent Voting" data-zh="治理与代理投票">Governance & Agent Voting</h4>
+            <p data-en="$AIVA holders vote on which new agent strategies to deploy, which protocols to integrate, and how to allocate the 30% development fund — true decentralized governance." data-zh="$AIVA持有者投票决定部署哪些新代理策略、整合哪些协议，以及如何分配30%的开发基金——真正的去中心化治理。">$AIVA holders vote on which new agent strategies to deploy, which protocols to integrate, and how to allocate the 30% development fund — true decentralized governance.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════ TOKENOMICS ════════════════════ -->
+<section class="section" id="tokenomics">
+  <div class="container fade-in">
+    <div class="section-title" data-en="Tokenomics" data-zh="代币经济模型">Tokenomics</div>
+    <div class="section-sub" data-en="Designed for long-term sustainability, not short-term pump." data-zh="为长期可持续性设计，而非短期炒作。">Designed for long-term sustainability, not short-term pump.</div>
+
+    <div class="toko-grid">
+      <div>
+        <div class="donut-wrap">
+          <svg class="donut" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#4f8eff" stroke-width="14"
+                    stroke-dasharray="95.5 143.26" stroke-dashoffset="0"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#a78bfa" stroke-width="14"
+                    stroke-dasharray="59.69 179.07" stroke-dashoffset="-95.5"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#34d399" stroke-width="14"
+                    stroke-dasharray="35.81 202.95" stroke-dashoffset="-155.19"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#fbbf24" stroke-width="14"
+                    stroke-dasharray="28.65 210.11" stroke-dashoffset="-191"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#f87171" stroke-width="14"
+                    stroke-dasharray="19.1 219.66" stroke-dashoffset="-219.65"/>
+          </svg>
+          <div class="donut-label">
+            <div class="big">10B</div>
+            <div class="sm">$AIVA<br/><span data-en="Total Supply" data-zh="代币总量">Total Supply</span></div>
+          </div>
+        </div>
+        <div class="toko-stats">
+          <div class="tstat"><div class="val">$AIVA</div><div class="lbl" data-en="Ticker" data-zh="代码">Ticker</div></div>
+          <div class="tstat"><div class="val">SPL</div><div class="lbl" data-en="Standard" data-zh="标准">Standard</div></div>
+          <div class="tstat"><div class="val">SOL</div><div class="lbl" data-en="Chain" data-zh="主链">Chain</div></div>
+          <div class="tstat"><div class="val">0%</div><div class="lbl" data-en="Team Lock-up Tax" data-zh="团队锁仓税">Team Lock-up Tax</div></div>
+          <div class="tstat"><div class="val">24h</div><div class="lbl" data-en="Reward Epoch" data-zh="分红周期">Reward Epoch</div></div>
+          <div class="tstat"><div class="val">DAO</div><div class="lbl" data-en="Governance" data-zh="治理">Governance</div></div>
+        </div>
+      </div>
+      <div class="toko-legend">
+        <div class="leg-item">
+          <div class="leg-dot" style="background:#4f8eff;"></div>
+          <div class="leg-info">
+            <div class="leg-name" data-en="Community / Public Sale" data-zh="社区 / 公开销售">Community / Public Sale</div>
+            <div class="leg-desc" data-en="Fair launch via pump.fun — no presale, no VC allocation" data-zh="通过pump.fun公平发行——无预售，无VC分配">Fair launch via pump.fun — no presale, no VC allocation</div>
+          </div>
+          <div class="leg-pct" style="color:#4f8eff;">40%</div>
+        </div>
+        <div class="leg-item">
+          <div class="leg-dot" style="background:#a78bfa;"></div>
+          <div class="leg-info">
+            <div class="leg-name" data-en="Ecosystem & Agent Rewards" data-zh="生态系统与代理奖励">Ecosystem & Agent Rewards</div>
+            <div class="leg-desc" data-en="Staking rewards, agent incentives, developer grants" data-zh="质押奖励、代理激励、开发者补助">Staking rewards, agent incentives, developer grants</div>
+          </div>
+          <div class="leg-pct" style="color:#a78bfa;">25%</div>
+        </div>
+        <div class="leg-item">
+          <div class="leg-dot" style="background:#34d399;"></div>
+          <div class="leg-info">
+            <div class="leg-name" data-en="Team & Development" data-zh="团队与开发">Team & Development</div>
+            <div class="leg-desc" data-en="12-month cliff + 24-month linear vesting" data-zh="12个月锁仓 + 24个月线性解锁">12-month cliff + 24-month linear vesting</div>
+          </div>
+          <div class="leg-pct" style="color:#34d399;">15%</div>
+        </div>
+        <div class="leg-item">
+          <div class="leg-dot" style="background:#fbbf24;"></div>
+          <div class="leg-info">
+            <div class="leg-name" data-en="Liquidity Provision" data-zh="流动性提供">Liquidity Provision</div>
+            <div class="leg-desc" data-en="DEX liquidity pools, permanently locked" data-zh="DEX流动性池，永久锁定">DEX liquidity pools, permanently locked</div>
+          </div>
+          <div class="leg-pct" style="color:#fbbf24;">12%</div>
+        </div>
+        <div class="leg-item">
+          <div class="leg-dot" style="background:#f87171;"></div>
+          <div class="leg-info">
+            <div class="leg-name" data-en="Strategic Reserve" data-zh="战略储备">Strategic Reserve</div>
+            <div class="leg-desc" data-en="Partnerships, exchange listings, marketing (DAO controlled)" data-zh="合作伙伴、交易所上市、营销（DAO控制）">Partnerships, exchange listings, marketing (DAO controlled)</div>
+          </div>
+          <div class="leg-pct" style="color:#f87171;">8%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VESTING TABLE -->
+    <div style="margin-top:40px;">
+      <h3 style="font-size:1.05rem;font-weight:700;margin-bottom:16px;color:#fff;" data-en="Vesting Schedule" data-zh="解锁时间表">Vesting Schedule</h3>
+      <table>
+        <thead>
+          <tr>
+            <th data-en="Allocation" data-zh="分配类别">Allocation</th>
+            <th data-en="Amount" data-zh="数量">Amount</th>
+            <th data-en="Cliff" data-zh="锁仓期">Cliff</th>
+            <th data-en="Vesting" data-zh="解锁方式">Vesting</th>
+            <th data-en="TGE Unlock" data-zh="TGE解锁">TGE Unlock</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-en="Community / Public" data-zh="社区 / 公开">Community / Public</td>
+            <td>4,000,000,000</td>
+            <td data-en="None" data-zh="无">None</td>
+            <td data-en="Immediate" data-zh="即时">Immediate</td>
+            <td>100%</td>
+          </tr>
+          <tr>
+            <td data-en="Ecosystem Rewards" data-zh="生态系统奖励">Ecosystem Rewards</td>
+            <td>2,500,000,000</td>
+            <td data-en="None" data-zh="无">None</td>
+            <td data-en="36 months linear" data-zh="36个月线性">36 months linear</td>
+            <td>5%</td>
+          </tr>
+          <tr>
+            <td data-en="Team & Development" data-zh="团队与开发">Team & Development</td>
+            <td>1,500,000,000</td>
+            <td data-en="12 months" data-zh="12个月">12 months</td>
+            <td data-en="24 months linear" data-zh="24个月线性">24 months linear</td>
+            <td>0%</td>
+          </tr>
+          <tr>
+            <td data-en="Liquidity" data-zh="流动性">Liquidity</td>
+            <td>1,200,000,000</td>
+            <td data-en="None" data-zh="无">None</td>
+            <td data-en="Locked in DEX" data-zh="锁定在DEX">Locked in DEX</td>
+            <td>100%</td>
+          </tr>
+          <tr>
+            <td data-en="Strategic Reserve" data-zh="战略储备">Strategic Reserve</td>
+            <td>800,000,000</td>
+            <td data-en="6 months" data-zh="6个月">6 months</td>
+            <td data-en="18 months linear" data-zh="18个月线性">18 months linear</td>
+            <td>0%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════ ROADMAP ════════════════════ -->
+<section class="section" id="roadmap">
+  <div class="container fade-in">
+    <div class="section-title" data-en="Roadmap" data-zh="发展路线图">Roadmap</div>
+    <div class="section-sub" data-en="From launch to a fully autonomous Agent Economy — four phases." data-zh="从发布到完全自主的代理经济——四个阶段。">From launch to a fully autonomous Agent Economy — four phases.</div>
+
+    <div class="roadmap">
+      <div class="rm-phase active">
+        <div class="phase-num">PHASE 01 · Q1 2026</div>
+        <h4 data-en="Genesis — Foundation" data-zh="创世 — 基础建设">Genesis — Foundation</h4>
+        <ul>
+          <li data-en="$AIVA token launch on pump.fun" data-zh="$AIVA代币在pump.fun上发布">$AIVA token launch on pump.fun</li>
+          <li data-en="Raydium DEX liquidity pool" data-zh="Raydium DEX流动性池">Raydium DEX liquidity pool</li>
+          <li data-en="Official website & whitepaper" data-zh="官方网站和白皮书">Official website & whitepaper</li>
+          <li data-en="Twitter/X, Telegram, Discord launch" data-zh="Twitter/X、Telegram、Discord上线">Twitter/X, Telegram, Discord launch</li>
+          <li data-en="First 1,000 community members" data-zh="首批1,000名社区成员">First 1,000 community members</li>
+          <li data-en="CoinGecko & CMC listing application" data-zh="CoinGecko和CMC上市申请">CoinGecko & CMC listing application</li>
+        </ul>
+      </div>
+      <div class="rm-phase">
+        <div class="phase-num">PHASE 02 · Q2 2026</div>
+        <h4 data-en="Ignition — First Agents" data-zh="点火 — 首批代理">Ignition — First Agents</h4>
+        <ul>
+          <li data-en="AIVA Yield Agent v1 beta launch" data-zh="AIVA收益代理v1测试版发布">AIVA Yield Agent v1 beta launch</li>
+          <li data-en="First on-chain revenue distribution" data-zh="首次链上收益分配">First on-chain revenue distribution</li>
+          <li data-en="Staking portal launch" data-zh="质押门户上线">Staking portal launch</li>
+          <li data-en="10,000 holders milestone" data-zh="10,000持有者里程碑">10,000 holders milestone</li>
+          <li data-en="Security audit of smart contracts" data-zh="智能合约安全审计">Security audit of smart contracts</li>
+          <li data-en="First KOL partnership campaign" data-zh="首次KOL合作活动">First KOL partnership campaign</li>
+        </ul>
+      </div>
+      <div class="rm-phase">
+        <div class="phase-num">PHASE 03 · Q3 2026</div>
+        <h4 data-en="Expansion — Agent Fleet" data-zh="扩张 — 代理集群">Expansion — Agent Fleet</h4>
+        <ul>
+          <li data-en="Trading Agent v1 deployment" data-zh="交易代理v1部署">Trading Agent v1 deployment</li>
+          <li data-en="Sentiment Analysis Agent launch" data-zh="情绪分析代理发布">Sentiment Analysis Agent launch</li>
+          <li data-en="Open Agent SDK (developer beta)" data-zh="开放代理SDK（开发者测试版）">Open Agent SDK (developer beta)</li>
+          <li data-en="DAO governance goes live" data-zh="DAO治理上线">DAO governance goes live</li>
+          <li data-en="CEX listing negotiations" data-zh="中心化交易所上市谈判">CEX listing negotiations</li>
+          <li data-en="100,000 holders target" data-zh="100,000持有者目标">100,000 holders target</li>
+        </ul>
+      </div>
+      <div class="rm-phase">
+        <div class="phase-num">PHASE 04 · Q4 2026+</div>
+        <h4 data-en="Dominance — Agent Economy" data-zh="主导 — 代理经济">Dominance — Agent Economy</h4>
+        <ul>
+          <li data-en="Public Agent Marketplace launch" data-zh="公共代理市场发布">Public Agent Marketplace launch</li>
+          <li data-en="Cross-chain agent bridge (ETH, BNB)" data-zh="跨链代理桥（ETH、BNB）">Cross-chain agent bridge (ETH, BNB)</li>
+          <li data-en="AIVA Agent OS v1.0" data-zh="AIVA代理操作系统v1.0">AIVA Agent OS v1.0</li>
+          <li data-en="Tier-1 CEX listing" data-zh="一线CEX上市">Tier-1 CEX listing</li>
+          <li data-en="Enterprise agent licensing program" data-zh="企业代理授权计划">Enterprise agent licensing program</li>
+          <li data-en="1M+ holders global community" data-zh="100万+全球社区持有者">1M+ holders global community</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════ TEAM ════════════════════ -->
+<section class="section" id="team">
+  <div class="container fade-in">
+    <div class="section-title" data-en="Core Team" data-zh="核心团队">Core Team</div>
+    <div class="section-sub" data-en="Builders who've been in AI and crypto since before it was cool." data-zh="在AI和加密货币领域深耕多年的建设者。">Builders who've been in AI and crypto since before it was cool.</div>
+
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar">⚡</div>
+        <h4>Alex V.</h4>
+        <div class="role" data-en="Founder & AI Architect" data-zh="创始人 & AI架构师">Founder & AI Architect</div>
+        <p data-en="8 years in ML/AI engineering. Previously led AI infrastructure at a top-10 global tech firm. Solana developer since 2021." data-zh="8年ML/AI工程经验。曾主导全球前十科技公司的AI基础设施建设。2021年起成为Solana开发者。">8 years in ML/AI engineering. Previously led AI infrastructure at a top-10 global tech firm. Solana developer since 2021.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">🔗</div>
+        <h4>Mia Chen</h4>
+        <div class="role" data-en="Head of Protocol" data-zh="协议负责人">Head of Protocol</div>
+        <p data-en="Smart contract specialist with 5 years in DeFi. Contributed to multiple Solana protocols with $50M+ TVL. Security-first mindset." data-zh="智能合约专家，5年DeFi经验。参与多个TVL超5000万美元的Solana协议建设。安全优先的思维方式。">Smart contract specialist with 5 years in DeFi. Contributed to multiple Solana protocols with $50M+ TVL. Security-first mindset.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">🌐</div>
+        <h4>Raj Patel</h4>
+        <div class="role" data-en="Growth & Community" data-zh="增长与社区">Growth & Community</div>
+        <p data-en="Previously grew two crypto communities to 100K+ members. Expert in grassroots Web3 marketing and influencer strategy." data-zh="曾将两个加密社区发展至10万+成员。Web3草根营销和KOL策略专家。">Previously grew two crypto communities to 100K+ members. Expert in grassroots Web3 marketing and influencer strategy.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">📊</div>
+        <h4>Yuki Tanaka</h4>
+        <div class="role" data-en="Quantitative Strategist" data-zh="量化策略师">Quantitative Strategist</div>
+        <p data-en="Quant background from traditional finance (HFT). Specializes in on-chain arbitrage strategies and MEV optimization on Solana." data-zh="传统金融量化背景（HFT高频交易）。专注于Solana链上套利策略和MEV优化。">Quant background from traditional finance (HFT). Specializes in on-chain arbitrage strategies and MEV optimization on Solana.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════ WHY NOW ════════════════════ -->
+<section class="section" id="why">
+  <div class="container fade-in">
+    <div class="section-title" data-en="Why Now?" data-zh="为何是现在？">Why Now?</div>
+    <div class="section-sub" data-en="Three macro trends converging to make AIVA inevitable." data-zh="三大宏观趋势汇聚，使AIVA成为必然。">Three macro trends converging to make AIVA inevitable.</div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="icon">🤖</div>
+        <h3 data-en="AI Agents Are Ready" data-zh="AI代理已准备就绪">AI Agents Are Ready</h3>
+        <p data-en="2024–2025 saw autonomous AI agents reach production capability. Models can now reliably execute multi-step financial strategies. The infrastructure finally exists." data-zh="2024-2025年，自主AI代理达到生产能力。模型现已能够可靠执行多步骤金融策略。基础设施终于完备。">2024–2025 saw autonomous AI agents reach production capability. Models can now reliably execute multi-step financial strategies. The infrastructure finally exists.</p>
+      </div>
+      <div class="card">
+        <div class="icon">⚡</div>
+        <h3 data-en="Solana Is the Settlement Layer" data-zh="Solana是结算层">Solana Is the Settlement Layer</h3>
+        <p data-en="With 50,000+ TPS, sub-cent fees, and a thriving DeFi ecosystem ($5B+ TVL), Solana is the only chain where real-time AI agent execution is economically viable today." data-zh="凭借50,000+ TPS、低于1美分的费用和蓬勃发展的DeFi生态（TVL超50亿美元），Solana是目前唯一使实时AI代理执行在经济上可行的公链。">With 50,000+ TPS, sub-cent fees, and a thriving DeFi ecosystem ($5B+ TVL), Solana is the only chain where real-time AI agent execution is economically viable today.</p>
+      </div>
+      <div class="card">
+        <div class="icon">💡</div>
+        <h3 data-en="The AI × Crypto Narrative Has Arrived" data-zh="AI × 加密叙事已经到来">The AI × Crypto Narrative Has Arrived</h3>
+        <p data-en="ai16z, Virtuals, and GOAT demonstrated $1B+ market caps for AI agent tokens. The market has validated the thesis. AIVA arrives with deeper utility and a clearer value distribution model." data-zh="ai16z、Virtuals和GOAT已证明AI代理代币可达10亿+市值。市场已验证了这一论点。AIVA带着更深层的实用性和更清晰的价值分配模型到来。">ai16z, Virtuals, and GOAT demonstrated $1B+ market caps for AI agent tokens. The market has validated the thesis. AIVA arrives with deeper utility and a clearer value distribution model.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════ DISCLAIMER ════════════════════ -->
+<section class="section" id="disclaimer">
+  <div class="container fade-in">
+    <div class="disclaimer">
+      <strong>⚠️ <span data-en="Risk Disclaimer" data-zh="风险声明">Risk Disclaimer</span></strong><br/><br/>
+      <span class="lang-en">
+        This white paper is for informational purposes only and does not constitute financial advice,
+        investment solicitation, or a securities offering. Cryptocurrency investments carry significant risk,
+        including total loss of principal. Past performance of similar projects does not guarantee future results.
+        The AIVA protocol is in active development; features described herein represent intended functionality
+        and may be subject to change. Always conduct your own research (DYOR) before investing.
+      </span>
+      <span class="lang-zh" style="display:none;">
+        本白皮书仅供参考，不构成投资建议或证券要约。加密货币投资存在极高风险，包括本金全部损失。
+        类似项目的过往表现不保证未来结果。AIVA协议仍处于积极开发阶段，白皮书所述功能代表预期目标，
+        可能随开发进展而调整。投资前请务必自行研究（DYOR）。
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-logo">AIVA</div>
+    <p data-en="AI Value Agent Protocol · Built on Solana" data-zh="AI价值代理协议 · 构建于Solana">AI Value Agent Protocol · Built on Solana</p>
+    <p style="margin-top:8px;" data-en="White Paper v1.0 · March 2026" data-zh="白皮书 v1.0 · 2026年3月">White Paper v1.0 · March 2026</p>
+    <div style="margin-top:16px;display:flex;justify-content:center;gap:24px;flex-wrap:wrap;">
+      <span style="color:var(--border);">Twitter/X: @AIVAprotocol</span>
+      <span style="color:var(--border);">Telegram: t.me/AIVAprotocol</span>
+      <span style="color:var(--border);">Discord: discord.gg/AIVA</span>
+    </div>
+    <div style="margin-top:24px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+      <a href="tokenomics.html" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:rgba(79,142,255,0.12);border:1px solid rgba(79,142,255,0.3);border-radius:10px;color:#4f8eff;font-size:13px;font-weight:600;text-decoration:none;">📊 <span data-en="Tokenomics" data-zh="代币经济模型">Tokenomics</span></a>
+      <a href="marketing-kit.html" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);border-radius:10px;color:#a78bfa;font-size:13px;font-weight:600;text-decoration:none;">📣 <span data-en="Marketing Kit" data-zh="推广材料包">Marketing Kit</span></a>
+      <a href="logo-kit.html" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);border-radius:10px;color:#34d399;font-size:13px;font-weight:600;text-decoration:none;">🎨 <span data-en="Logo Kit" data-zh="品牌图标">Logo Kit</span></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── LANGUAGE SWITCH LOGIC ──
+let currentLang = 'en';
+
+function setLang(lang) {
+  if (lang === currentLang) return;
+  currentLang = lang;
+
+  // Update button states
+  document.getElementById('btnEN').classList.toggle('active', lang === 'en');
+  document.getElementById('btnZH').classList.toggle('active', lang === 'zh');
+
+  // Update html lang attribute
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+
+  // Fade transition
+  document.body.style.opacity = '0.85';
+  document.body.style.transition = 'opacity .2s';
+
+  setTimeout(() => {
+    // ── Update all [data-en] / [data-zh] elements ──
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const txt = lang === 'zh' ? el.getAttribute('data-zh') : el.getAttribute('data-en');
+      if (txt) el.textContent = txt;
+    });
+
+    // ── Toggle .lang-en / .lang-zh blocks ──
+    document.querySelectorAll('.lang-en').forEach(el => {
+      el.style.display = lang === 'en' ? '' : 'none';
+    });
+    document.querySelectorAll('.lang-zh').forEach(el => {
+      el.style.display = lang === 'zh' ? '' : 'none';
+    });
+
+    // ── Hero subtitle ──
+    const heroSub = document.getElementById('heroSubtitle');
+    if (lang === 'zh') {
+      heroSub.textContent = '首个部署在Solana上的自主AI代理网络，24/7全天候链上运行——持续产生收益、优化流动性，并将价值直接再分配给代币持有者。';
+    } else {
+      heroSub.textContent = 'The first autonomous AI Agent network on Solana that works on-chain 24/7 — generating yield, optimizing liquidity, and redistributing value directly to token holders.';
+    }
+
+    // ── Hero tag ──
+    const heroTag = document.getElementById('heroTag');
+    heroTag.textContent = lang === 'zh' ? '🤖 AI价值代理协议 · Solana' : '🤖 AI Value Agent Protocol · Solana';
+
+    // ── Top badge ──
+    document.getElementById('topBadge').textContent = lang === 'zh' ? '白皮书 v1.0' : 'WHITE PAPER v1.0';
+
+    // ── Roadmap NOW badge via CSS ──
+    const activePhase = document.querySelector('.rm-phase.active');
+    if (activePhase) {
+      activePhase.setAttribute('data-now', lang === 'zh' ? '当前' : 'NOW');
+    }
+
+    document.body.style.opacity = '1';
+  }, 150);
+}
+
+// ── ROADMAP NOW BADGE (dynamic lang) ──
+const style = document.createElement('style');
+style.textContent = `.rm-phase.active::before { content: attr(data-now) !important; }`;
+document.head.appendChild(style);
+document.querySelector('.rm-phase.active')?.setAttribute('data-now', 'NOW');
+
+// ── SCROLL FADE-IN ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

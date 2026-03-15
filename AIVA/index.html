@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AIVA — AI Value Agent | Official Website</title>
+<meta name="description" content="AIVA is an AI-powered virtual asset protocol built on Solana. Combining artificial intelligence with decentralized finance."/>
+<meta property="og:title" content="AIVA — AI Value Agent"/>
+<meta property="og:description" content="AI-powered virtual asset protocol on Solana. 10B Supply. Built for the future of DeFi."/>
+<style>
+:root{
+  --bg:#04060f;--bg2:#080d1e;--bg3:#0d1530;--bg4:#111827;
+  --accent:#4f8eff;--accent2:#a78bfa;--accent3:#34d399;--accent4:#fbbf24;
+  --text:#e2e8f0;--muted:#94a3b8;--border:rgba(79,142,255,.18);
+  --glow:rgba(79,142,255,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.75;overflow-x:hidden;}
+
+/* ── NOISE OVERLAY ── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.4;
+}
+
+/* ── ANIMATED ORBS ── */
+.orbs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:.12;animation:drift 16s ease-in-out infinite alternate;}
+.orb1{width:700px;height:700px;background:radial-gradient(circle,#4f8eff,transparent);top:-250px;left:-200px;animation-delay:0s;}
+.orb2{width:600px;height:600px;background:radial-gradient(circle,#a78bfa,transparent);bottom:-200px;right:-150px;animation-delay:-6s;}
+.orb3{width:500px;height:500px;background:radial-gradient(circle,#34d399,transparent);top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:-11s;}
+@keyframes drift{0%{transform:translate(0,0) scale(1);}100%{transform:translate(50px,40px) scale(1.1);}}
+
+/* ── NAVBAR ── */
+.navbar{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  padding:16px 40px;
+  background:rgba(4,6,15,0.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+}
+.nav-logo{
+  display:flex;align-items:center;gap:10px;text-decoration:none;
+  font-size:1.35rem;font-weight:900;letter-spacing:.06em;
+  background:linear-gradient(135deg,#4f8eff,#a78bfa);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.nav-logo .dot{
+  width:32px;height:32px;border-radius:8px;flex-shrink:0;
+  background:linear-gradient(135deg,#4f8eff,#a78bfa);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;font-weight:900;color:#fff;
+  -webkit-text-fill-color:#fff;
+}
+.nav-links{display:flex;align-items:center;gap:28px;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.88rem;font-weight:500;transition:color .2s;}
+.nav-links a:hover{color:var(--accent);}
+.nav-cta{
+  padding:9px 22px;border-radius:99px;font-size:.85rem;font-weight:700;
+  background:linear-gradient(135deg,#4f8eff,#a78bfa);
+  color:#fff;text-decoration:none;
+  transition:opacity .2s,transform .2s;
+  white-space:nowrap;
+}
+.nav-cta:hover{opacity:.88;transform:translateY(-1px);}
+@media(max-width:768px){
+  .navbar{padding:14px 20px;}
+  .nav-links{display:none;}
+}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:140px 24px 100px;
+  position:relative;z-index:1;
+  background:radial-gradient(ellipse 90% 60% at 50% -5%,rgba(79,142,255,.15),transparent);
+}
+.hero-inner{max-width:860px;margin:0 auto;}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 18px;border-radius:99px;margin-bottom:28px;
+  border:1px solid rgba(79,142,255,.35);background:rgba(79,142,255,.08);
+  font-size:.75rem;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;
+  animation:fadeDown .8s ease both;
+}
+.hero-badge .pulse{
+  width:8px;height:8px;border-radius:50%;background:var(--accent3);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.6);}50%{box-shadow:0 0 0 6px rgba(52,211,153,0);}}
+.hero h1{
+  font-size:clamp(3rem,8vw,5.5rem);font-weight:900;line-height:1.05;
+  background:linear-gradient(145deg,#fff 25%,#a78bfa 60%,#4f8eff 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:12px;
+  animation:fadeUp .9s ease .1s both;
+}
+.hero-sub{
+  font-size:clamp(1.1rem,2.5vw,1.4rem);color:var(--muted);
+  max-width:640px;margin:0 auto 16px;
+  animation:fadeUp .9s ease .2s both;
+}
+.hero-tagline{
+  font-size:.95rem;color:var(--accent3);font-weight:600;letter-spacing:.05em;
+  margin-bottom:44px;
+  animation:fadeUp .9s ease .3s both;
+}
+.hero-btns{
+  display:flex;gap:14px;justify-content:center;flex-wrap:wrap;
+  animation:fadeUp .9s ease .4s both;
+}
+.btn-primary{
+  padding:14px 32px;border-radius:99px;font-size:1rem;font-weight:700;
+  background:linear-gradient(135deg,#4f8eff,#a78bfa);
+  color:#fff;text-decoration:none;border:none;cursor:pointer;
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 8px 32px rgba(79,142,255,.3);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(79,142,255,.45);}
+.btn-secondary{
+  padding:14px 32px;border-radius:99px;font-size:1rem;font-weight:600;
+  background:transparent;color:var(--text);text-decoration:none;
+  border:1px solid var(--border);
+  transition:border-color .2s,background .2s,transform .2s;
+}
+.btn-secondary:hover{border-color:var(--accent);background:rgba(79,142,255,.08);transform:translateY(-2px);}
+
+.hero-stats{
+  display:flex;gap:40px;justify-content:center;flex-wrap:wrap;
+  margin-top:64px;padding-top:40px;
+  border-top:1px solid var(--border);
+  animation:fadeUp .9s ease .5s both;
+}
+.hero-stat .val{font-size:1.8rem;font-weight:900;color:#fff;}
+.hero-stat .val span{
+  background:linear-gradient(135deg,#4f8eff,#a78bfa);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero-stat .lbl{font-size:.78rem;color:var(--muted);margin-top:2px;letter-spacing:.04em;}
+
+/* ── CONTRACT ADDR ── */
+.contract-section{
+  position:relative;z-index:1;padding:48px 24px;
+  background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);
+}
+.contract-box{
+  max-width:680px;margin:0 auto;text-align:center;
+}
+.contract-box .label{
+  font-size:.75rem;letter-spacing:.14em;color:var(--muted);
+  text-transform:uppercase;margin-bottom:16px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.contract-box .label span{
+  width:32px;height:1px;background:var(--border);display:inline-block;
+}
+.contract-addr-wrap{
+  display:flex;align-items:center;gap:0;
+  background:var(--bg3);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;
+}
+.contract-addr-text{
+  flex:1;padding:14px 18px;font-family:'Courier New',Courier,monospace;
+  font-size:clamp(.72rem,.95vw,.85rem);color:var(--accent);
+  word-break:break-all;text-align:left;letter-spacing:.03em;
+  line-height:1.5;
+}
+.contract-copy-btn{
+  flex-shrink:0;padding:14px 20px;
+  background:linear-gradient(135deg,rgba(79,142,255,.15),rgba(167,139,250,.15));
+  border-left:1px solid var(--border);border:none;
+  color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;
+  transition:background .2s,color .2s;white-space:nowrap;display:flex;
+  align-items:center;gap:6px;
+}
+.contract-copy-btn:hover{background:rgba(79,142,255,.25);color:#fff;}
+.contract-copy-btn.copied{background:rgba(52,211,153,.15);color:var(--accent3);}
+.contract-chain-badge{
+  display:inline-flex;align-items:center;gap:6px;margin-bottom:12px;
+  padding:4px 14px;border-radius:99px;font-size:.72rem;font-weight:700;
+  background:rgba(147,197,253,.08);border:1px solid rgba(147,197,253,.25);
+  color:#93c5fd;letter-spacing:.06em;
+}
+.contract-note{font-size:.75rem;color:var(--muted);margin-top:10px;}
+.contract-note a{color:var(--accent);text-decoration:none;}
+.contract-note a:hover{text-decoration:underline;}
+
+/* ── SOCIAL PROOF ── */
+.social-proof{
+  position:relative;z-index:1;
+  padding:60px 24px;
+  background:var(--bg2);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+}
+.sp-inner{max-width:1100px;margin:0 auto;}
+.sp-title{text-align:center;font-size:.82rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:40px;}
+.sp-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px;
+}
+.sp-card{
+  background:var(--bg3);border:1px solid var(--border);border-radius:16px;
+  padding:24px 20px;text-align:center;
+  transition:transform .2s,box-shadow .2s;
+}
+.sp-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(79,142,255,.1);}
+.sp-card .num{
+  font-size:2rem;font-weight:900;line-height:1;
+  background:linear-gradient(135deg,#4f8eff,#a78bfa);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:6px;
+}
+.sp-card .desc{font-size:.8rem;color:var(--muted);}
+.sp-card .icon{font-size:1.5rem;margin-bottom:10px;}
+
+/* ── TICKER ── */
+.ticker-wrap{
+  position:relative;z-index:1;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  background:var(--bg2);overflow:hidden;padding:12px 0;
+}
+.ticker-track{
+  display:flex;gap:60px;white-space:nowrap;
+  animation:ticker 30s linear infinite;
+}
+.ticker-track:hover{animation-play-state:paused;}
+@keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}};
+.ticker-item{
+  display:flex;align-items:center;gap:10px;
+  font-size:.82rem;font-weight:600;color:var(--muted);flex-shrink:0;
+}
+.ticker-item .chip{
+  padding:2px 10px;border-radius:99px;font-size:.72rem;
+  background:rgba(52,211,153,.12);color:var(--accent3);border:1px solid rgba(52,211,153,.2);
+}
+
+/* ── SECTION COMMONS ── */
+.section{padding:100px 0 40px;position:relative;z-index:1;}
+.container{max-width:1100px;margin:0 auto;padding:0 28px;}
+.section-label{
+  display:inline-block;font-size:.72rem;letter-spacing:.14em;
+  color:var(--accent);text-transform:uppercase;margin-bottom:12px;
+  padding:4px 14px;border-radius:99px;
+  background:rgba(79,142,255,.08);border:1px solid rgba(79,142,255,.2);
+}
+.section-title{
+  font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;line-height:1.15;
+  background:linear-gradient(120deg,#fff 30%,#a78bfa);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:14px;
+}
+.section-sub{color:var(--muted);font-size:1rem;max-width:580px;margin-bottom:52px;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0;position:relative;z-index:1;}
+
+/* ── FEATURES ── */
+.features-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;
+}
+.feat-card{
+  background:linear-gradient(135deg,var(--bg2),var(--bg3));
+  border:1px solid var(--border);border-radius:20px;
+  padding:32px 28px;
+  transition:transform .25s,box-shadow .25s,border-color .25s;
+  position:relative;overflow:hidden;
+}
+.feat-card::before{
+  content:'';position:absolute;inset:0;border-radius:20px;
+  background:linear-gradient(135deg,rgba(79,142,255,.05),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.feat-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(79,142,255,.15);border-color:rgba(79,142,255,.35);}
+.feat-card:hover::before{opacity:1;}
+.feat-icon{
+  width:52px;height:52px;border-radius:14px;margin-bottom:20px;
+  background:linear-gradient(135deg,rgba(79,142,255,.15),rgba(167,139,250,.15));
+  border:1px solid rgba(79,142,255,.2);
+  display:flex;align-items:center;justify-content:center;font-size:1.5rem;
+}
+.feat-card h3{font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:10px;}
+.feat-card p{font-size:.88rem;color:var(--muted);line-height:1.7;}
+
+/* ── HOW IT WORKS ── */
+.how-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0;
+  position:relative;
+}
+.how-grid::before{
+  content:'';position:absolute;top:36px;left:10%;right:10%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);
+  z-index:0;
+}
+@media(max-width:768px){.how-grid::before{display:none;}}
+.how-step{
+  text-align:center;padding:0 20px 40px;position:relative;z-index:1;
+}
+.step-circle{
+  width:72px;height:72px;border-radius:50%;margin:0 auto 20px;
+  background:linear-gradient(135deg,#4f8eff,#a78bfa);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;font-weight:900;color:#fff;
+  box-shadow:0 8px 32px rgba(79,142,255,.35);
+  position:relative;
+}
+.step-circle::after{
+  content:'';position:absolute;inset:-4px;border-radius:50%;
+  border:2px solid rgba(79,142,255,.25);
+}
+.how-step h4{font-size:1rem;font-weight:700;color:#fff;margin-bottom:8px;}
+.how-step p{font-size:.85rem;color:var(--muted);max-width:180px;margin:0 auto;}
+
+/* ── TOKENOMICS PREVIEW ── */
+.toko-preview{
+  display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;
+}
+@media(max-width:768px){.toko-preview{grid-template-columns:1fr;}}
+.toko-bars{display:flex;flex-direction:column;gap:16px;}
+.toko-bar-item{}
+.toko-bar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.toko-bar-label{font-size:.88rem;font-weight:600;color:var(--text);}
+.toko-bar-pct{font-size:.88rem;font-weight:700;}
+.toko-bar-track{height:8px;background:rgba(255,255,255,.05);border-radius:99px;overflow:hidden;}
+.toko-bar-fill{height:100%;border-radius:99px;transition:width 1s ease;}
+.toko-info{
+  background:linear-gradient(135deg,var(--bg2),var(--bg3));
+  border:1px solid var(--border);border-radius:20px;
+  padding:36px 32px;
+}
+.toko-info h3{font-size:1.5rem;font-weight:900;color:#fff;margin-bottom:8px;}
+.toko-info .sub{font-size:.9rem;color:var(--muted);margin-bottom:28px;}
+.toko-nums{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px;}
+.toko-num{background:var(--bg3);border-radius:12px;padding:16px;}
+.toko-num .n{font-size:1.2rem;font-weight:900;color:var(--accent);}
+.toko-num .l{font-size:.75rem;color:var(--muted);margin-top:2px;}
+
+/* ── ROADMAP ── */
+.roadmap-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;
+}
+.rm-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:18px;
+  padding:26px 22px;position:relative;overflow:hidden;
+  transition:transform .25s,box-shadow .25s;
+}
+.rm-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(79,142,255,.12);}
+.rm-card.active{border-color:var(--accent);background:linear-gradient(135deg,var(--bg2),rgba(79,142,255,.08));}
+.rm-card.active::after{
+  content:'NOW';position:absolute;top:14px;right:14px;
+  font-size:.62rem;letter-spacing:.1em;font-weight:700;
+  background:linear-gradient(135deg,#4f8eff,#a78bfa);
+  color:#fff;padding:3px 10px;border-radius:99px;
+}
+.rm-phase{font-size:.7rem;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+.rm-card h4{font-size:1rem;font-weight:800;color:#fff;margin-bottom:6px;}
+.rm-card .period{font-size:.78rem;color:var(--accent2);margin-bottom:14px;}
+.rm-items{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.rm-items li{font-size:.82rem;color:var(--muted);padding-left:16px;position:relative;}
+.rm-items li::before{content:'→';position:absolute;left:0;color:var(--accent);font-size:.72rem;}
+.rm-card.active .rm-items li::before{color:var(--accent3);}
+
+/* ── CTA BAND ── */
+.cta-band{
+  position:relative;z-index:1;
+  margin:0;padding:80px 24px;
+  background:linear-gradient(135deg,rgba(79,142,255,.08),rgba(167,139,250,.08));
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  text-align:center;
+}
+.cta-band h2{
+  font-size:clamp(1.8rem,4vw,3rem);font-weight:900;
+  background:linear-gradient(135deg,#fff,#a78bfa,#4f8eff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:16px;
+}
+.cta-band p{color:var(--muted);font-size:1rem;max-width:500px;margin:0 auto 36px;}
+.cta-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.cta-link{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 24px;border-radius:12px;font-size:.9rem;font-weight:600;
+  text-decoration:none;transition:transform .2s,box-shadow .2s;
+}
+.cta-link:hover{transform:translateY(-2px);}
+.cta-link.twitter{background:rgba(29,161,242,.12);border:1px solid rgba(29,161,242,.3);color:#1da1f2;}
+.cta-link.telegram{background:rgba(0,136,204,.12);border:1px solid rgba(0,136,204,.3);color:#0088cc;}
+.cta-link.pump{background:rgba(255,140,0,.12);border:1px solid rgba(255,140,0,.3);color:#ff8c00;}
+.cta-link.whitepaper{background:rgba(79,142,255,.12);border:1px solid rgba(79,142,255,.3);color:#4f8eff;}
+
+/* ── FOOTER ── */
+footer{
+  position:relative;z-index:1;
+  padding:48px 28px 32px;
+  border-top:1px solid var(--border);
+  background:var(--bg2);
+}
+.footer-inner{max-width:1100px;margin:0 auto;}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:32px;margin-bottom:40px;}
+.footer-brand .logo{
+  font-size:1.4rem;font-weight:900;letter-spacing:.06em;
+  background:linear-gradient(135deg,#4f8eff,#a78bfa);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:10px;
+}
+.footer-brand p{font-size:.85rem;color:var(--muted);max-width:280px;line-height:1.6;}
+.footer-links{display:flex;gap:48px;flex-wrap:wrap;}
+.footer-col h5{font-size:.78rem;font-weight:700;color:#fff;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;}
+.footer-col a{display:block;font-size:.85rem;color:var(--muted);text-decoration:none;margin-bottom:8px;transition:color .2s;}
+.footer-col a:hover{color:var(--accent);}
+.footer-bottom{
+  border-top:1px solid var(--border);padding-top:20px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+}
+.footer-bottom p{font-size:.78rem;color:var(--muted);}
+.footer-disclaimer{font-size:.72rem;color:rgba(148,163,184,.5);max-width:600px;line-height:1.5;}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ── MOBILE ── */
+@media(max-width:480px){
+  .hero-stats{gap:24px;}
+  .cta-band{padding:60px 20px;}
+  .footer-top{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<!-- Orbs -->
+<div class="orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="AIVA-logo3-128x128.png" alt="AIVA Logo"
+         style="width:36px;height:36px;border-radius:8px;flex-shrink:0;object-fit:contain;">
+    AIVA
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How It Works</a>
+    <a href="tokenomics.html">Tokenomics</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="whitepaper.html">Whitepaper</a>
+  </div>
+  <a href="#community" class="nav-cta">Join Community</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <span class="pulse"></span>
+      Now Live on Solana
+    </div>
+    <h1>Intelligence Meets<br/>Decentralized Finance</h1>
+    <p class="hero-sub">AIVA is an AI-powered virtual asset protocol built on Solana — making intelligent investing accessible to everyone.</p>
+    <p class="hero-tagline">🤖 AI-Driven &nbsp;·&nbsp; ⚡ Solana Speed &nbsp;·&nbsp; 💎 10B $AIVA</p>
+    <div class="hero-btns">
+      <a href="https://pump.fun" target="_blank" class="btn-primary">🚀 Buy $AIVA</a>
+      <a href="whitepaper.html" class="btn-secondary">📄 Read Whitepaper</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="val"><span>10B</span></div>
+        <div class="lbl">Total Supply</div>
+      </div>
+      <div class="hero-stat">
+        <div class="val"><span>SOL</span></div>
+        <div class="lbl">Built on Solana</div>
+      </div>
+      <div class="hero-stat">
+        <div class="val"><span>AI</span></div>
+        <div class="lbl">Powered Protocol</div>
+      </div>
+      <div class="hero-stat">
+        <div class="val"><span>0%</span></div>
+        <div class="lbl">Team Tax</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTRACT ADDRESS -->
+<div class="contract-section">
+  <div class="contract-box reveal">
+    <div class="contract-chain-badge">
+      ◎ Solana (SPL Token)
+    </div>
+    <div class="label"><span></span> $AIVA Contract Address <span></span></div>
+    <div class="contract-addr-wrap">
+      <div class="contract-addr-text" id="caText">
+        TBA — Contract address will be published at launch on Pump.fun
+      </div>
+      <button class="contract-copy-btn" id="copyBtn" onclick="copyCA()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy CA
+      </button>
+    </div>
+    <p class="contract-note">
+      ⚠️ Only trust addresses from our official channels:
+      <a href="https://twitter.com/AIVA_SOL" target="_blank">@AIVA_SOL</a> &amp;
+      <a href="https://t.me/AIVAprotocol" target="_blank">Telegram</a>.
+      Beware of scam tokens.
+    </p>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <div class="ticker-item">$AIVA <span class="chip">+∞%</span></div>
+    <div class="ticker-item">🤖 AI-Powered DeFi</div>
+    <div class="ticker-item">⚡ Built on Solana</div>
+    <div class="ticker-item">💎 10,000,000,000 Supply</div>
+    <div class="ticker-item">🔥 Community Driven</div>
+    <div class="ticker-item">🛡️ Fair Launch</div>
+    <div class="ticker-item">🌐 Global Community</div>
+    <div class="ticker-item">$AIVA <span class="chip">LIVE</span></div>
+    <div class="ticker-item">🤖 AI-Powered DeFi</div>
+    <div class="ticker-item">⚡ Built on Solana</div>
+    <div class="ticker-item">💎 10,000,000,000 Supply</div>
+    <div class="ticker-item">🔥 Community Driven</div>
+    <div class="ticker-item">🛡️ Fair Launch</div>
+    <div class="ticker-item">🌐 Global Community</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SOCIAL PROOF -->
+<div class="social-proof">
+  <div class="sp-inner">
+    <p class="sp-title">Why thousands choose AIVA</p>
+    <div class="sp-grid reveal">
+      <div class="sp-card">
+        <div class="icon">🚀</div>
+        <div class="num" data-target="10000000000">10B</div>
+        <div class="desc">Total Token Supply</div>
+      </div>
+      <div class="sp-card">
+        <div class="icon">⚡</div>
+        <div class="num">65K+</div>
+        <div class="desc">TPS on Solana</div>
+      </div>
+      <div class="sp-card">
+        <div class="icon">🌍</div>
+        <div class="num" id="holderCount">—</div>
+        <div class="desc">Community Members</div>
+      </div>
+      <div class="sp-card">
+        <div class="icon">💰</div>
+        <div class="num">$0.001</div>
+        <div class="desc">Avg Transaction Fee</div>
+      </div>
+      <div class="sp-card">
+        <div class="icon">🔒</div>
+        <div class="num">100%</div>
+        <div class="desc">LP Locked</div>
+      </div>
+      <div class="sp-card">
+        <div class="icon">🛡️</div>
+        <div class="num">0%</div>
+        <div class="desc">Buy / Sell Tax</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Core Features</span>
+      <h2 class="section-title">Why AIVA?</h2>
+      <p class="section-sub">Built from the ground up to combine the power of artificial intelligence with the transparency of blockchain.</p>
+    </div>
+    <div class="features-grid reveal">
+      <div class="feat-card">
+        <div class="feat-icon">🤖</div>
+        <h3>AI-Driven Intelligence</h3>
+        <p>AIVA leverages cutting-edge artificial intelligence to analyze market patterns, identify opportunities, and optimize decision-making in real time.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⚡</div>
+        <h3>Solana Speed</h3>
+        <p>Built on Solana's high-performance blockchain — 65,000+ TPS, sub-second finality, and transaction fees under $0.001.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔍</div>
+        <h3>Full Transparency</h3>
+        <p>Every transaction, every decision, every allocation is recorded on-chain. No hidden fees, no shadow trading. Complete auditability.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🏛️</div>
+        <h3>Community Governed</h3>
+        <p>$AIVA token holders shape the future of the protocol. Propose, vote, and implement changes through decentralized governance.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🛡️</div>
+        <h3>Fair Launch</h3>
+        <p>No pre-sale to VCs, no insider allocation. AIVA launched fairly via Pump.fun with equal access for all community members.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🌊</div>
+        <h3>Deep Liquidity</h3>
+        <p>Liquidity locked and verifiable on-chain. Trade $AIVA with confidence knowing liquidity is secured and transparently managed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="reveal" style="text-align:center;margin-bottom:60px;">
+      <span class="section-label">How It Works</span>
+      <h2 class="section-title">Simple. Powerful. Intelligent.</h2>
+      <p class="section-sub" style="margin:0 auto;">From acquisition to intelligent yield — AIVA works for you automatically.</p>
+    </div>
+    <div class="how-grid reveal">
+      <div class="how-step">
+        <div class="step-circle">1</div>
+        <h4>Acquire $AIVA</h4>
+        <p>Buy $AIVA on Pump.fun or Raydium using SOL in seconds.</p>
+      </div>
+      <div class="how-step">
+        <div class="step-circle">2</div>
+        <h4>AI Analyzes Markets</h4>
+        <p>AIVA's AI engine continuously scans on-chain data and market signals.</p>
+      </div>
+      <div class="how-step">
+        <div class="step-circle">3</div>
+        <h4>Protocol Executes</h4>
+        <p>Smart contracts execute optimal strategies based on AI recommendations.</p>
+      </div>
+      <div class="how-step">
+        <div class="step-circle">4</div>
+        <h4>Community Grows</h4>
+        <p>Holders benefit as the protocol scales and the community expands globally.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TOKENOMICS PREVIEW -->
+<section class="section" id="tokenomics">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Tokenomics</span>
+      <h2 class="section-title">Designed for Sustainability</h2>
+      <p class="section-sub">A transparent, community-first token distribution with built-in longevity mechanisms.</p>
+    </div>
+    <div class="toko-preview reveal">
+      <div class="toko-bars">
+        <div class="toko-bar-item">
+          <div class="toko-bar-header">
+            <span class="toko-bar-label">🌊 Liquidity Pool</span>
+            <span class="toko-bar-pct" style="color:#4f8eff">40%</span>
+          </div>
+          <div class="toko-bar-track"><div class="toko-bar-fill" style="width:40%;background:linear-gradient(90deg,#4f8eff,#60a5fa);"></div></div>
+        </div>
+        <div class="toko-bar-item">
+          <div class="toko-bar-header">
+            <span class="toko-bar-label">🔥 Community & Ecosystem</span>
+            <span class="toko-bar-pct" style="color:#a78bfa">30%</span>
+          </div>
+          <div class="toko-bar-track"><div class="toko-bar-fill" style="width:30%;background:linear-gradient(90deg,#a78bfa,#c4b5fd);"></div></div>
+        </div>
+        <div class="toko-bar-item">
+          <div class="toko-bar-header">
+            <span class="toko-bar-label">📈 Marketing & Growth</span>
+            <span class="toko-bar-pct" style="color:#34d399">15%</span>
+          </div>
+          <div class="toko-bar-track"><div class="toko-bar-fill" style="width:15%;background:linear-gradient(90deg,#34d399,#6ee7b7);"></div></div>
+        </div>
+        <div class="toko-bar-item">
+          <div class="toko-bar-header">
+            <span class="toko-bar-label">🏗️ Development</span>
+            <span class="toko-bar-pct" style="color:#fbbf24">10%</span>
+          </div>
+          <div class="toko-bar-track"><div class="toko-bar-fill" style="width:10%;background:linear-gradient(90deg,#fbbf24,#fde68a);"></div></div>
+        </div>
+        <div class="toko-bar-item">
+          <div class="toko-bar-header">
+            <span class="toko-bar-label">👥 Team (Locked 12mo)</span>
+            <span class="toko-bar-pct" style="color:#f87171">5%</span>
+          </div>
+          <div class="toko-bar-track"><div class="toko-bar-fill" style="width:5%;background:linear-gradient(90deg,#f87171,#fca5a5);"></div></div>
+        </div>
+      </div>
+      <div class="toko-info">
+        <h3>$AIVA Token</h3>
+        <p class="sub">SPL Token on Solana • Fair Launch</p>
+        <div class="toko-nums">
+          <div class="toko-num">
+            <div class="n">10B</div>
+            <div class="l">Total Supply</div>
+          </div>
+          <div class="toko-num">
+            <div class="n">SOL</div>
+            <div class="l">Native Chain</div>
+          </div>
+          <div class="toko-num">
+            <div class="n">0%</div>
+            <div class="l">Buy/Sell Tax</div>
+          </div>
+          <div class="toko-num">
+            <div class="n">✅</div>
+            <div class="l">LP Locked</div>
+          </div>
+        </div>
+        <a href="tokenomics.html" class="btn-primary" style="display:inline-block;font-size:.88rem;padding:11px 24px;">View Full Tokenomics →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ROADMAP -->
+<section class="section" id="roadmap">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Roadmap</span>
+      <h2 class="section-title">The Path Forward</h2>
+      <p class="section-sub">A clear vision from launch to full AI protocol deployment.</p>
+    </div>
+    <div class="roadmap-grid reveal">
+      <div class="rm-card active">
+        <div class="rm-phase">Phase 1</div>
+        <h4>Genesis Launch</h4>
+        <div class="period">Q1 2026</div>
+        <ul class="rm-items">
+          <li>Token Launch on Pump.fun</li>
+          <li>Official Website Live</li>
+          <li>Whitepaper Published</li>
+          <li>Community Building</li>
+          <li>Twitter & Telegram</li>
+        </ul>
+      </div>
+      <div class="rm-card">
+        <div class="rm-phase">Phase 2</div>
+        <h4>Community Growth</h4>
+        <div class="period">Q2 2026</div>
+        <ul class="rm-items">
+          <li>Raydium Listing</li>
+          <li>CMC & CoinGecko</li>
+          <li>5,000+ Holders</li>
+          <li>Smart Contract Audit</li>
+          <li>KOL Partnerships</li>
+        </ul>
+      </div>
+      <div class="rm-card">
+        <div class="rm-phase">Phase 3</div>
+        <h4>AI Integration</h4>
+        <div class="period">Q3 2026</div>
+        <ul class="rm-items">
+          <li>AI Dashboard Beta</li>
+          <li>Market Signal Engine</li>
+          <li>CEX Listings</li>
+          <li>Staking Protocol</li>
+          <li>DAO Governance</li>
+        </ul>
+      </div>
+      <div class="rm-card">
+        <div class="rm-phase">Phase 4</div>
+        <h4>Full Protocol</h4>
+        <div class="period">Q4 2026</div>
+        <ul class="rm-items">
+          <li>AI Agent v1.0 Launch</li>
+          <li>Cross-chain Bridge</li>
+          <li>Institutional Partnerships</li>
+          <li>100,000+ Holders</li>
+          <li>Top-tier CEX</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA BAND -->
+<div class="cta-band" id="community">
+  <h2>Join the AIVA Community</h2>
+  <p>Be part of the AI-powered DeFi revolution. Connect with thousands of holders worldwide.</p>
+  <div class="cta-links">
+    <a href="https://twitter.com/AIVA_SOL" target="_blank" class="cta-link twitter">
+      🐦 Twitter / X
+    </a>
+    <a href="https://t.me/AIVAprotocol" target="_blank" class="cta-link telegram">
+      ✈️ Telegram
+    </a>
+    <a href="https://pump.fun" target="_blank" class="cta-link pump">
+      🚀 Buy on Pump.fun
+    </a>
+    <a href="whitepaper.html" class="cta-link whitepaper">
+      📄 Whitepaper
+    </a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo" style="display:flex;align-items:center;gap:10px;">
+          <img src="AIVA-logo3-128x128.png" alt="AIVA" style="width:28px;height:28px;border-radius:6px;object-fit:contain;">
+          AIVA
+        </div>
+        <p>AI Value Agent — An AI-powered virtual asset protocol built on Solana. Making intelligent investing accessible to everyone.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Protocol</h5>
+          <a href="whitepaper.html">Whitepaper</a>
+          <a href="tokenomics.html">Tokenomics</a>
+          <a href="#roadmap">Roadmap</a>
+          <a href="#features">Features</a>
+        </div>
+        <div class="footer-col">
+          <h5>Community</h5>
+          <a href="https://twitter.com/AIVA_SOL" target="_blank">Twitter / X</a>
+          <a href="https://t.me/AIVAprotocol" target="_blank">Telegram</a>
+          <a href="https://pump.fun" target="_blank">Pump.fun</a>
+        </div>
+        <div class="footer-col">
+          <h5>Resources</h5>
+          <a href="whitepaper.html">White Paper</a>
+          <a href="marketing-kit.html">Marketing Kit</a>
+          <a href="logo-kit.html">Logo Kit</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 AIVA Protocol. All rights reserved.</p>
+      <p class="footer-disclaimer">⚠️ $AIVA is a community token. Crypto investments carry high risk. This is not financial advice. Always DYOR.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(el => {
+    if (el.isIntersecting) {
+      el.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.12 });
+reveals.forEach(el => observer.observe(el));
+
+// ── 进度条动画（修复版：先记录目标宽度，再触发动画）──
+const bars = document.querySelectorAll('.toko-bar-fill');
+// 先把宽度重置为 0，再用 IntersectionObserver 恢复
+bars.forEach(b => {
+  const target = b.style.width;
+  b.dataset.targetWidth = target;
+  b.style.width = '0%';
+});
+const barObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      el.style.width = el.dataset.targetWidth;
+      barObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+bars.forEach(b => barObserver.observe(b));
+
+// ── 复制合约地址 ──
+const CA_ADDRESS = 'TBA'; // ← 上线后替换为真实合约地址，如 "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAs"
+function copyCA() {
+  const btn = document.getElementById('copyBtn');
+  const text = document.getElementById('caText').textContent.trim();
+  if (CA_ADDRESS === 'TBA') {
+    btn.textContent = '⏳ Not yet live';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy CA`;
+      btn.classList.remove('copied');
+    }, 2000);
+    return;
+  }
+  navigator.clipboard.writeText(CA_ADDRESS).then(() => {
+    btn.innerHTML = '✅ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy CA`;
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    // 降级：execCommand
+    const el = document.createElement('input');
+    el.value = CA_ADDRESS;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    btn.innerHTML = '✅ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy CA`;
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ── 社区人数计数器（模拟动态增长效果）──
+function animateCount(el, from, to, duration) {
+  const start = performance.now();
+  function step(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    const val = Math.floor(from + (to - from) * eased);
+    el.textContent = val >= 1000 ? (val / 1000).toFixed(1) + 'K+' : val.toString();
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+const holderEl = document.getElementById('holderCount');
+if (holderEl) {
+  const spObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCount(holderEl, 0, 2400, 1800);
+        spObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  spObserver.observe(holderEl);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIVA — 推广材料包 | Marketing Kit</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root {
+    --primary: #00d4ff;
+    --secondary: #7c3aed;
+    --accent: #10b981;
+    --gold: #f59e0b;
+    --danger: #ef4444;
+    --bg: #020817;
+    --card: #0d1b2e;
+    --card2: #111827;
+    --border: rgba(0,212,255,0.15);
+    --text: #e2e8f0;
+    --muted: #64748b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 20%, rgba(0,212,255,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 60% at 80% 80%, rgba(124,58,237,0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+
+  /* Header */
+  header {
+    padding: 60px 0 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 50px;
+  }
+
+  .back-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--primary); text-decoration: none; font-size: 14px;
+    margin-bottom: 30px; opacity: 0.8; transition: opacity 0.2s;
+  }
+  .back-link:hover { opacity: 1; }
+
+  .header-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15));
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 6px 20px;
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: var(--primary);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .header-sub {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* Tab Navigation */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 8px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+
+  .tab-btn.active {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(0,212,255,0.3);
+  }
+
+  /* Tab Panels */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Section headers */
+  .section-header {
+    margin-bottom: 30px;
+  }
+
+  .section-header h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .section-header p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .card:hover { border-color: rgba(0,212,255,0.3); }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .card:hover::before { opacity: 1; }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  .badge-blue { background: rgba(0,212,255,0.15); color: var(--primary); border: 1px solid rgba(0,212,255,0.3); }
+  .badge-purple { background: rgba(124,58,237,0.15); color: #a78bfa; border: 1px solid rgba(124,58,237,0.3); }
+  .badge-green { background: rgba(16,185,129,0.15); color: var(--accent); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-gold { background: rgba(245,158,11,0.15); color: var(--gold); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-red { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+
+  /* Tweet card styles */
+  .tweet-box {
+    background: #0f1923;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #e7e9ea;
+    margin-bottom: 16px;
+  }
+
+  .tweet-box::before {
+    content: '𝕏';
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 18px;
+    color: var(--muted);
+  }
+
+  .tweet-meta {
+    display: flex;
+    gap: 20px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .tweet-stat { display: flex; align-items: center; gap: 5px; }
+
+  .tweet-tag {
+    color: #1d9bf0;
+    font-weight: 500;
+  }
+
+  .tweet-num { font-weight: 700; color: #fff; }
+
+  /* Copy button */
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 8px;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover {
+    background: rgba(0,212,255,0.2);
+    transform: translateY(-1px);
+  }
+
+  .copy-btn.copied {
+    background: rgba(16,185,129,0.15);
+    border-color: rgba(16,185,129,0.3);
+    color: var(--accent);
+  }
+
+  /* Thread numbering */
+  .thread-item {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .thread-num {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .thread-content {
+    flex: 1;
+    background: #0f1923;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #e7e9ea;
+    position: relative;
+  }
+
+  .thread-content::before {
+    content: '𝕏';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  /* Telegram message styles */
+  .tg-message {
+    background: #1c2b3a;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #e7e9ea;
+    border-left: 3px solid #2481cc;
+    position: relative;
+  }
+
+  .tg-header {
+    font-size: 12px;
+    color: #2481cc;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* KOL template */
+  .kol-card {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .kol-tier {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .kol-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+
+  .tier-gold { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); }
+  .tier-silver { background: rgba(148,163,184,0.15); border: 1px solid rgba(148,163,184,0.3); }
+  .tier-micro { background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); }
+
+  .kol-info h3 { font-size: 1rem; font-weight: 700; color: #fff; }
+  .kol-info p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .email-body {
+    background: #0f1923;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 20px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #e7e9ea;
+    font-family: 'Courier New', monospace;
+  }
+
+  .email-header-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 4px;
+    font-size: 13px;
+  }
+
+  .email-label { color: var(--primary); min-width: 60px; font-weight: 600; }
+  .email-val { color: var(--muted); }
+
+  .email-divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin: 12px 0;
+  }
+
+  .email-content { color: #e7e9ea; }
+
+  /* Strategy cards */
+  .strategy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .strategy-card {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.3s, transform 0.2s;
+  }
+
+  .strategy-card:hover {
+    border-color: rgba(0,212,255,0.3);
+    transform: translateY(-2px);
+  }
+
+  .strategy-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+
+  .strategy-card h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .strategy-card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 30px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--primary), var(--secondary), transparent);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 28px;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: -26px;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 8px var(--primary);
+  }
+
+  .timeline-day {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .timeline-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+
+  .timeline-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* Checklist */
+  .checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .check-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(16,185,129,0.15);
+    border: 1px solid rgba(16,185,129,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* Airdrop table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  th {
+    background: rgba(0,212,255,0.08);
+    color: var(--primary);
+    font-weight: 700;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    color: var(--text);
+  }
+
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* Progress bar */
+  .progress-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 10px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    transition: width 1s ease;
+  }
+
+  /* Highlight box */
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(124,58,237,0.08));
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .highlight-box strong { color: var(--primary); }
+
+  /* Nav buttons */
+  .nav-btns {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 40px 0 60px;
+  }
+
+  .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s;
+  }
+
+  .nav-btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(0,212,255,0.3);
+  }
+
+  .nav-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,212,255,0.4);
+  }
+
+  .nav-btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .nav-btn-outline:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: translateY(-2px);
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 30px;
+  }
+
+  .stat-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 1.6rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* Platform icons */
+  .platform-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .platform-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .tabs { flex-direction: column; }
+    .tab-btn { min-width: auto; }
+    .strategy-grid { grid-template-columns: 1fr; }
+    header { padding: 40px 0 30px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="back-link">← 返回官网</a>
+    <div class="header-badge">📣 Marketing Kit v1.0</div>
+    <h1>AIVA 推广材料包</h1>
+    <p class="header-sub">完整的病毒式传播物料 · Twitter 推文 · 社区话术 · KOL 合作模板 · 空投策略</p>
+  </header>
+
+  <!-- Stats Overview -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num">30+</div>
+      <div class="stat-label">推文模板</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">3</div>
+      <div class="stat-label">完整发帖 Thread</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">5</div>
+      <div class="stat-label">社区话术场景</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">3</div>
+      <div class="stat-label">KOL 合作模板</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">30天</div>
+      <div class="stat-label">冷启动作战计划</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">免费可用</div>
+    </div>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('twitter')">🐦 Twitter / X</button>
+    <button class="tab-btn" onclick="switchTab('community')">💬 社区话术</button>
+    <button class="tab-btn" onclick="switchTab('kol')">🌟 KOL 合作</button>
+    <button class="tab-btn" onclick="switchTab('airdrop')">🎁 空投策略</button>
+    <button class="tab-btn" onclick="switchTab('calendar')">📅 30天作战计划</button>
+  </div>
+
+  <!-- ====== TAB 1: TWITTER ====== -->
+  <div id="tab-twitter" class="tab-panel active">
+    <div class="section-header">
+      <h2>🐦 Twitter / X 推广物料</h2>
+      <p>从项目发布到日常运营，覆盖所有场景的高转化推文模板</p>
+    </div>
+
+    <!-- Launch Thread -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          🚀 项目发布大 Thread（必发）
+          <span class="badge badge-gold">⭐ 核心</span>
+        </div>
+        <button class="copy-btn" onclick="copyAll('thread1')">📋 复制全部</button>
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:20px;">这是你发布项目时的第一条 Thread，格式经过验证，能最大化曝光和转发。</p>
+
+      <div id="thread1">
+        <div class="thread-item">
+          <div class="thread-num">1</div>
+          <div class="thread-content">
+            🤖 Introducing <span class="tweet-tag">$AIVA</span> — the AI agents that never sleep, never stop, and generate value for YOU while you sleep.<br><br>
+            We're building the world's first autonomous AI Agent Economy on <span class="tweet-tag">@Solana</span> 🧵<br><br>
+            <div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="copy-btn" onclick="copyText(this, `🤖 Introducing $AIVA — the AI agents that never sleep, never stop, and generate value for YOU while you sleep.\n\nWe're building the world's first autonomous AI Agent Economy on @Solana 🧵`)">📋 复制</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="thread-item">
+          <div class="thread-num">2</div>
+          <div class="thread-content">
+            🔴 The Problem:<br><br>
+            • Most AI projects = vaporware. Pretty websites, empty promises.<br>
+            • Most DeFi = complex. Normal people can't participate.<br>
+            • Your crypto just sits there. Doing nothing.<br><br>
+            There had to be a better way. So we built it. ↓
+            <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `🔴 The Problem:\n\n• Most AI projects = vaporware. Pretty websites, empty promises.\n• Most DeFi = complex. Normal people can't participate.\n• Your crypto just sits there. Doing nothing.\n\nThere had to be a better way. So we built it. ↓`)">📋 复制</button></div>
+          </div>
+        </div>
+
+        <div class="thread-item">
+          <div class="thread-num">3</div>
+          <div class="thread-content">
+            ✅ The Solution — AIVA Network:<br><br>
+            A network of AI agents that:<br>
+            🧠 Autonomously execute on-chain strategies<br>
+            💰 Generate real yield across DeFi protocols<br>
+            🔄 Return profits to $AIVA token holders<br>
+            📈 Self-optimize using machine learning<br><br>
+            Passive income. Powered by AI. Secured by Solana.
+            <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `✅ The Solution — AIVA Network:\n\nA network of AI agents that:\n🧠 Autonomously execute on-chain strategies\n💰 Generate real yield across DeFi protocols\n🔄 Return profits to $AIVA token holders\n📈 Self-optimize using machine learning\n\nPassive income. Powered by AI. Secured by Solana.`)">📋 复制</button></div>
+          </div>
+        </div>
+
+        <div class="thread-item">
+          <div class="thread-num">4</div>
+          <div class="thread-content">
+            🏗️ Tokenomics that ACTUALLY favor the community:<br><br>
+            • Total Supply: 1,000,000,000 $AIVA<br>
+            • 0% Pre-sale — Fair launch only<br>
+            • 40% Community & Ecosystem<br>
+            • 25% AI Protocol Reserve (locked 12 months)<br>
+            • 20% Development (3-year vesting)<br>
+            • 0 VC dumps. 0 insider advantage.<br><br>
+            Fair. Transparent. Community-first. 🫡
+            <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `🏗️ Tokenomics that ACTUALLY favor the community:\n\n• Total Supply: 1,000,000,000 $AIVA\n• 0% Pre-sale — Fair launch only\n• 40% Community & Ecosystem\n• 25% AI Protocol Reserve (locked 12 months)\n• 20% Development (3-year vesting)\n• 0 VC dumps. 0 insider advantage.\n\nFair. Transparent. Community-first. 🫡`)">📋 复制</button></div>
+          </div>
+        </div>
+
+        <div class="thread-item">
+          <div class="thread-num">5</div>
+          <div class="thread-content">
+            📍 Roadmap:<br><br>
+            Q2 2025 — Token launch + community building<br>
+            Q3 2025 — AIVA Agent v1.0: first strategy deployed<br>
+            Q4 2025 — Multi-protocol yield aggregation<br>
+            2026 — Cross-chain expansion + Agent Marketplace<br><br>
+            This isn't just a token. It's infrastructure for the AI economy.
+            <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `📍 Roadmap:\n\nQ2 2025 — Token launch + community building\nQ3 2025 — AIVA Agent v1.0: first strategy deployed\nQ4 2025 — Multi-protocol yield aggregation\n2026 — Cross-chain expansion + Agent Marketplace\n\nThis isn't just a token. It's infrastructure for the AI economy.`)">📋 复制</button></div>
+          </div>
+        </div>
+
+        <div class="thread-item">
+          <div class="thread-num">6</div>
+          <div class="thread-content">
+            🎁 Early Supporter Airdrop:<br><br>
+            To celebrate launch, we're airdropping <span class="tweet-tag">$AIVA</span> to early believers:<br><br>
+            ✅ Follow <span class="tweet-tag">@AIVANetwork</span><br>
+            ✅ Retweet this thread<br>
+            ✅ Tag 2 friends who deserve passive income<br>
+            ✅ Join our Telegram: [link]<br><br>
+            500 winners · Snapshot in 72 hours ⏰
+            <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `🎁 Early Supporter Airdrop:\n\nTo celebrate launch, we're airdropping $AIVA to early believers:\n\n✅ Follow @AIVANetwork\n✅ Retweet this thread\n✅ Tag 2 friends who deserve passive income\n✅ Join our Telegram: [link]\n\n500 winners · Snapshot in 72 hours ⏰`)">📋 复制</button></div>
+          </div>
+        </div>
+
+        <div class="thread-item">
+          <div class="thread-num">7</div>
+          <div class="thread-content">
+            🌐 Join the AIVA Network:<br><br>
+            🌍 Website: aiva.network<br>
+            📄 Whitepaper: [link]<br>
+            💬 Telegram: t.me/AIVANetwork<br>
+            🎮 Discord: discord.gg/aiva<br>
+            📊 Tokenomics: [link]<br><br>
+            The AI economy is being built. You can be early.<br><br>
+            RT + Follow to join the movement. Let's go 🚀
+            <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `🌐 Join the AIVA Network:\n\n🌍 Website: aiva.network\n📄 Whitepaper: [link]\n💬 Telegram: t.me/AIVANetwork\n🎮 Discord: discord.gg/aiva\n📊 Tokenomics: [link]\n\nThe AI economy is being built. You can be early.\n\nRT + Follow to join the movement. Let's go 🚀`)">📋 复制</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alpha Thread -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          🔥 "Alpha 爆料" Thread（高转发）
+          <span class="badge badge-red">🔥 病毒型</span>
+        </div>
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:20px;">模拟内部人员爆料风格，这种格式在 CT（Crypto Twitter）上转发率极高。</p>
+
+      <div class="thread-item">
+        <div class="thread-num">1</div>
+        <div class="thread-content">
+          🚨 I've been in crypto for 5 years. I've seen GOAT go 1000x. I've seen ai16z go 500x.<br><br>
+          And right now, I'm seeing the same early signals with <span class="tweet-tag">$AIVA</span><br><br>
+          Here's why I'm going heavy 🧵
+          <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `🚨 I've been in crypto for 5 years. I've seen GOAT go 1000x. I've seen ai16z go 500x.\n\nAnd right now, I'm seeing the same early signals with $AIVA\n\nHere's why I'm going heavy 🧵`)">📋 复制</button></div>
+        </div>
+      </div>
+
+      <div class="thread-item">
+        <div class="thread-num">2</div>
+        <div class="thread-content">
+          The AI Agent narrative is the biggest thing in crypto right now.<br><br>
+          Why? Because for the first time:<br>
+          • AI can HOLD crypto wallets ✅<br>
+          • AI can MAKE transactions ✅<br>
+          • AI can EARN yield for you ✅<br><br>
+          $AIVA is building the infrastructure layer for ALL of this.
+          <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `The AI Agent narrative is the biggest thing in crypto right now.\n\nWhy? Because for the first time:\n• AI can HOLD crypto wallets ✅\n• AI can MAKE transactions ✅\n• AI can EARN yield for you ✅\n\n$AIVA is building the infrastructure layer for ALL of this.`)">📋 复制</button></div>
+        </div>
+      </div>
+
+      <div class="thread-item">
+        <div class="thread-num">3</div>
+        <div class="thread-content">
+          What makes $AIVA different from every other "AI" token:<br><br>
+          1. Fair launch — no VC, no insider wallets<br>
+          2. Real utility from day 1 — agents are live<br>
+          3. Revenue share — holders literally earn<br>
+          4. On Solana — sub-cent transactions, instant finality<br><br>
+          This is the combo that creates 100x projects.
+          <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `What makes $AIVA different from every other "AI" token:\n\n1. Fair launch — no VC, no insider wallets\n2. Real utility from day 1 — agents are live\n3. Revenue share — holders literally earn\n4. On Solana — sub-cent transactions, instant finality\n\nThis is the combo that creates 100x projects.`)">📋 复制</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily Tweets -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          📅 日常推文模板（按场景分类）
+          <span class="badge badge-blue">30+ 条</span>
+        </div>
+      </div>
+
+      <h3 style="color:#fff;font-size:15px;margin-bottom:12px;padding-left:4px;">📣 项目更新类</h3>
+      <div class="tweet-box">
+        🤖 AIVA Agent Update:<br><br>
+        Our AI agents have been live for [X] days.<br>
+        Strategies executed: [X]<br>
+        Network uptime: 99.9%<br><br>
+        This is what "building in public" looks like. 💪<br><br>
+        <span class="tweet-tag">#AIVA #AIAgent #Solana #AI #Crypto</span>
+        <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `🤖 AIVA Agent Update:\n\nOur AI agents have been live for [X] days.\nStrategies executed: [X]\nNetwork uptime: 99.9%\n\nThis is what 'building in public' looks like. 💪\n\n#AIVA #AIAgent #Solana #AI #Crypto`)">📋 复制</button></div>
+      </div>
+
+      <div class="tweet-box">
+        💬 Hot take: In 2 years, most people's crypto portfolios will be managed by AI agents.<br><br>
+        The question isn't if — it's which network they'll run on.<br><br>
+        We're building that network. <span class="tweet-tag">$AIVA</span> 🧠
+        <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `💬 Hot take: In 2 years, most people's crypto portfolios will be managed by AI agents.\n\nThe question isn't if — it's which network they'll run on.\n\nWe're building that network. $AIVA 🧠`)">📋 复制</button></div>
+      </div>
+
+      <h3 style="color:#fff;font-size:15px;margin:20px 0 12px;padding-left:4px;">🙌 社区互动类</h3>
+      <div class="tweet-box">
+        GM to all the $AIVA holders 🌅<br><br>
+        While the world sleeps...<br>
+        Our AI agents are working. ⚡<br><br>
+        Have a great day, the agents got your back.
+        <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `GM to all the $AIVA holders 🌅\n\nWhile the world sleeps...\nOur AI agents are working. ⚡\n\nHave a great day, the agents got your back.`)">📋 复制</button></div>
+      </div>
+
+      <div class="tweet-box">
+        🔥 Fill in the blank:<br><br>
+        "I want AI agents to manage my ______ for me"<br><br>
+        Drop your answers 👇<br><br>
+        (Best answer gets featured + <span class="tweet-tag">$AIVA</span> airdrop)
+        <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `🔥 Fill in the blank:\n\n"I want AI agents to manage my ______ for me"\n\nDrop your answers 👇\n\n(Best answer gets featured + $AIVA airdrop)`)">📋 复制</button></div>
+      </div>
+
+      <h3 style="color:#fff;font-size:15px;margin:20px 0 12px;padding-left:4px;">📊 教育科普类（建立权威）</h3>
+      <div class="tweet-box">
+        🧵 What exactly IS an AI Agent? (Quick explainer)<br><br>
+        An AI Agent is software that:<br>
+        1. Perceives its environment<br>
+        2. Makes autonomous decisions<br>
+        3. Takes actions to achieve goals<br>
+        4. Learns from results<br><br>
+        Now imagine that agent living on-chain with a wallet.<br>
+        That's what $AIVA agents do. 🤯
+        <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `🧵 What exactly IS an AI Agent? (Quick explainer)\n\nAn AI Agent is software that:\n1. Perceives its environment\n2. Makes autonomous decisions\n3. Takes actions to achieve goals\n4. Learns from results\n\nNow imagine that agent living on-chain with a wallet.\nThat's what $AIVA agents do. 🤯`)">📋 复制</button></div>
+      </div>
+
+      <h3 style="color:#fff;font-size:15px;margin:20px 0 12px;padding-left:4px;">🌶️ FOMO 激发类</h3>
+      <div class="tweet-box">
+        People who bought GOAT at &lt;$1M mcap: 1000x ✅<br>
+        People who bought ai16z at &lt;$5M mcap: 500x ✅<br>
+        People who found $AIVA today: ???<br><br>
+        Early is everything in this game. 👀<br><br>
+        <span class="tweet-tag">#AIAgent #Solana #Crypto #DeFi</span>
+        <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `People who bought GOAT at <$1M mcap: 1000x ✅\nPeople who bought ai16z at <$5M mcap: 500x ✅\nPeople who found $AIVA today: ???\n\nEarly is everything in this game. 👀\n\n#AIAgent #Solana #Crypto #DeFi`)">📋 复制</button></div>
+      </div>
+
+      <div class="tweet-box">
+        Not financial advice but...<br><br>
+        If you're NOT paying attention to the AI Agent narrative on Solana right now...<br><br>
+        You might be making the same mistake people made ignoring DeFi in 2020.<br><br>
+        $AIVA is my bet. NFA DYOR 🫡
+        <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `Not financial advice but...\n\nIf you're NOT paying attention to the AI Agent narrative on Solana right now...\n\nYou might be making the same mistake people made ignoring DeFi in 2020.\n\n$AIVA is my bet. NFA DYOR 🫡`)">📋 复制</button></div>
+      </div>
+
+      <h3 style="color:#fff;font-size:15px;margin:20px 0 12px;padding-left:4px;">🌏 中文推文（面向中文社区）</h3>
+      <div class="tweet-box" style="font-size:14px;">
+        🤖 $AIVA 正式发布！<br><br>
+        我们在 Solana 上构建了一个 AI Agent 经济网络 —— 让 AI 替你在链上赚钱，收益自动回流给代币持有者。<br><br>
+        ✅ 公平发行，0预售，0私募<br>
+        ✅ 真实 AI Agent 产生真实收益<br>
+        ✅ 社区优先，40%代币归持币者<br><br>
+        早期机会转瞬即逝 👇<br>
+        <span class="tweet-tag">#AIVA #Solana #AI #加密货币 #Web3</span>
+        <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `🤖 $AIVA 正式发布！\n\n我们在 Solana 上构建了一个 AI Agent 经济网络 —— 让 AI 替你在链上赚钱，收益自动回流给代币持有者。\n\n✅ 公平发行，0预售，0私募\n✅ 真实 AI Agent 产生真实收益\n✅ 社区优先，40%代币归持币者\n\n早期机会转瞬即逝 👇\n#AIVA #Solana #AI #加密货币 #Web3`)">📋 复制</button></div>
+      </div>
+
+      <div class="tweet-box" style="font-size:14px;">
+        问一下大家：如果有一个 AI 可以帮你自动管理你的加密资产，24小时运转，赚到的钱自动分给你…<br><br>
+        你愿意试试吗？🤔<br><br>
+        这就是 $AIVA 在做的事。来聊聊 👇
+        <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `问一下大家：如果有一个 AI 可以帮你自动管理你的加密资产，24小时运转，赚到的钱自动分给你…\n\n你愿意试试吗？🤔\n\n这就是 $AIVA 在做的事。来聊聊 👇`)">📋 复制</button></div>
+      </div>
+    </div>
+
+    <!-- Hashtag Strategy -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🏷️ Hashtag 策略</div>
+      </div>
+      <div class="highlight-box">
+        <strong>核心标签（每帖必带 3~5 个）：</strong><br>
+        <span class="tweet-tag">#AIVA #AIAgent #Solana #AI #Crypto</span><br><br>
+        <strong>趋势标签（热点时蹭）：</strong><br>
+        <span class="tweet-tag">#DeAI #Web3AI #SolanaEcosystem #DeFi #CryptoTwitter #AIAgents #Altcoin</span><br><br>
+        <strong>中文标签：</strong><br>
+        <span class="tweet-tag">#加密货币 #虚拟货币 #Solana #AI #Web3 #区块链 #币圈</span><br><br>
+        <strong>最佳发帖时间（UTC）：</strong> 13:00-15:00 & 20:00-22:00（对应美国早晨和下午）
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== TAB 2: COMMUNITY ====== -->
+  <div id="tab-community" class="tab-panel">
+    <div class="section-header">
+      <h2>💬 社区话术模板</h2>
+      <p>Telegram、Discord、微信群的高质量话术，覆盖5大场景</p>
+    </div>
+
+    <!-- Welcome Message -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">👋 新成员欢迎话术</div>
+        <span class="badge badge-green">自动化</span>
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">设置为 Telegram Bot 自动回复，新成员加入时触发</p>
+      <div class="tg-message">
+        <div class="tg-header">📌 AIVA Network | Official</div>
+        🎉 Welcome to the AIVA Network, @{username}!<br><br>
+        You've just joined the early community of the <strong>AI Agent Economy</strong> on Solana.<br><br>
+        📌 <strong>Quick Links:</strong><br>
+        🌐 Website: aiva.network<br>
+        📄 Whitepaper: [link]<br>
+        📊 Tokenomics: [link]<br>
+        🐦 Twitter: @AIVANetwork<br><br>
+        📋 <strong>Community Rules:</strong><br>
+        ✅ Be respectful & helpful<br>
+        ✅ No spam or self-promotion<br>
+        ✅ English & 中文 both welcome<br>
+        ❌ No FUD without evidence<br><br>
+        Have questions? Ask away! 🤖
+        <div style="margin-top:12px;"><button class="copy-btn" onclick="copyText(this, `🎉 Welcome to the AIVA Network, @{username}!\n\nYou've just joined the early community of the AI Agent Economy on Solana.\n\n📌 Quick Links:\n🌐 Website: aiva.network\n📄 Whitepaper: [link]\n📊 Tokenomics: [link]\n🐦 Twitter: @AIVANetwork\n\n📋 Community Rules:\n✅ Be respectful & helpful\n✅ No spam or self-promotion\n✅ English & 中文 both welcome\n❌ No FUD without evidence\n\nHave questions? Ask away! 🤖`)">📋 复制</button></div>
+      </div>
+
+      <div class="tg-message" style="border-color:#25d366;margin-top:16px;">
+        <div class="tg-header" style="color:#25d366;">💚 中文群欢迎语</div>
+        欢迎来到 AIVA Network 中文社区！🎉<br><br>
+        你加入了一个正在改变加密世界的项目——<strong>AI Agent 经济网络</strong>。<br><br>
+        我们正在 Solana 上构建让 AI 替你赚钱的基础设施。<br><br>
+        📌 <strong>快速了解：</strong><br>
+        🌐 官网：aiva.network<br>
+        📄 白皮书：[链接]<br>
+        📊 代币经济：[链接]<br><br>
+        有任何问题都可以在群里问，社区小伙伴会帮你解答 🙌
+        <div style="margin-top:12px;"><button class="copy-btn" onclick="copyText(this, `欢迎来到 AIVA Network 中文社区！🎉\n\n你加入了一个正在改变加密世界的项目——AI Agent 经济网络。\n\n我们正在 Solana 上构建让 AI 替你赚钱的基础设施。\n\n📌 快速了解：\n🌐 官网：aiva.network\n📄 白皮书：[链接]\n📊 代币经济：[链接]\n\n有任何问题都可以在群里问，社区小伙伴会帮你解答 🙌`)">📋 复制</button></div>
+      </div>
+    </div>
+
+    <!-- AMA Script -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🎙️ AMA（Ask Me Anything）标准脚本</div>
+        <span class="badge badge-blue">互动活动</span>
+      </div>
+
+      <div class="tg-message">
+        <div class="tg-header">📌 AMA 开场话术</div>
+        🚀 <strong>AIVA Network AMA 正式开始！</strong><br><br>
+        大家好，我是 [名字]，AIVA 项目负责人。<br><br>
+        今天我们花 1 小时回答大家最关心的问题。<br><br>
+        规则：<br>
+        1️⃣ 请在下方提问，我会逐一回答<br>
+        2️⃣ 重复问题将跳过<br>
+        3️⃣ AMA 结束后，抽 5 名参与者赠送 $AIVA 空投<br><br>
+        Let's GO! 🔥
+        <div style="margin-top:12px;"><button class="copy-btn" onclick="copyText(this, `🚀 AIVA Network AMA 正式开始！\n\n大家好，我是 [名字]，AIVA 项目负责人。\n\n今天我们花 1 小时回答大家最关心的问题。\n\n规则：\n1️⃣ 请在下方提问，我会逐一回答\n2️⃣ 重复问题将跳过\n3️⃣ AMA 结束后，抽 5 名参与者赠送 $AIVA 空投\n\nLet's GO! 🔥`)">📋 复制</button></div>
+      </div>
+
+      <div class="tg-message" style="margin-top:12px;">
+        <div class="tg-header">💬 常见 Q&A 话术</div>
+        <strong>Q: 你们和其他 AI Token 有什么区别？</strong><br>
+        A: 大多数 AI token 只有概念，没有实际运行的 AI。AIVA 的差异在于：我们从第一天起就部署真实的 AI Agent，它们在链上执行策略、产生收益，这些收益直接回流给代币持有者。代码开源，数据上链，全程透明。<br><br>
+        <strong>Q: 团队是谁？</strong><br>
+        A: AIVA 是一个去中心化社区驱动的项目。核心贡献者来自 AI 研究和 DeFi 开发背景，我们选择匿名是为了让项目本身说话，而不是依赖个人光环。代码、数据、链上记录是我们的信誉。<br><br>
+        <strong>Q: 什么时候上 CEX？</strong><br>
+        A: 我们的策略是先把 DEX 流动性做深，社区做大，再自然被 CEX 注意到。我们不会为了上所而妥协代币经济学。
+        <div style="margin-top:12px;"><button class="copy-btn" onclick="copyText(this, `Q: 你们和其他 AI Token 有什么区别？\nA: 大多数 AI token 只有概念，没有实际运行的 AI。AIVA 的差异在于：我们从第一天起就部署真实的 AI Agent，它们在链上执行策略、产生收益，这些收益直接回流给代币持有者。代码开源，数据上链，全程透明。\n\nQ: 团队是谁？\nA: AIVA 是一个去中心化社区驱动的项目。核心贡献者来自 AI 研究和 DeFi 开发背景，我们选择匿名是为了让项目本身说话，而不是依赖个人光环。代码、数据、链上记录是我们的信誉。\n\nQ: 什么时候上 CEX？\nA: 我们的策略是先把 DEX 流动性做深，社区做大，再自然被 CEX 注意到。我们不会为了上所而妥协代币经济学。`)">📋 复制</button></div>
+      </div>
+    </div>
+
+    <!-- FUD Handling -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🛡️ 反 FUD 话术手册</div>
+        <span class="badge badge-red">必备</span>
+      </div>
+
+      <div class="tg-message" style="border-color:var(--danger);">
+        <div class="tg-header" style="color:var(--danger);">🚨 常见 FUD 及应对</div>
+        <strong>FUD: "这是 Rug Pull（跑路盘）"</strong><br>
+        ✅ 应对：代码已开源 [GitHub链接]，LP 已锁定 [链接]，开发团队代币 3 年线性解锁，链上可查。如果你有具体的担忧，请指出，我们会透明回应。<br><br>
+        <strong>FUD: "AI 项目都是骗局"</strong><br>
+        ✅ 应对：确实市场上存在很多空气项目。这也是为什么我们坚持把所有数据上链、代码开源。质疑是健康的，我们欢迎质疑，也接受审计。<br><br>
+        <strong>FUD: "市值已经太高了"</strong><br>
+        ✅ 应对：以 GOAT、ai16z 在同阶段的估值对比，AIVA 目前仍处于极早期。当然，这不是财务建议，DYOR。<br><br>
+        <strong>FUD: "没有真实技术"</strong><br>
+        ✅ 应对：我们的链上 Agent 活跃记录在这里 [链接]，可以看到具体执行的策略和时间戳。技术透明，数据说话。
+        <div style="margin-top:12px;"><button class="copy-btn" onclick="copyText(this, `FUD: 这是 Rug Pull\n应对：代码已开源，LP 已锁定，开发团队代币 3 年线性解锁，链上可查。\n\nFUD: AI 项目都是骗局\n应对：这也是为什么我们坚持把所有数据上链、代码开源。质疑是健康的，我们欢迎质疑，也接受审计。\n\nFUD: 市值已经太高了\n应对：以 GOAT、ai16z 在同阶段的估值对比，AIVA 目前仍处于极早期。这不是财务建议，DYOR。`)">📋 复制</button></div>
+      </div>
+    </div>
+
+    <!-- Engagement Activities -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🎮 社区活动话术</div>
+        <span class="badge badge-purple">提升活跃度</span>
+      </div>
+      <div class="tg-message">
+        <div class="tg-header">🎁 每日打卡活动</div>
+        📣 <strong>AIVA Daily Check-in！</strong><br><br>
+        每天回复「GM + 你对 AI 未来的一句话」<br>
+        参与即有机会获得 $AIVA 空投 🎉<br><br>
+        今日话题：<br>
+        <em>"5年后，你认为AI agent会帮你做什么？"</em><br><br>
+        👇 在下方留言，我们会选出最有趣的回答！
+        <div style="margin-top:12px;"><button class="copy-btn" onclick="copyText(this, `📣 AIVA Daily Check-in！\n\n每天回复「GM + 你对 AI 未来的一句话」\n参与即有机会获得 $AIVA 空投 🎉\n\n今日话题：\n"5年后，你认为AI agent会帮你做什么？"\n\n👇 在下方留言，我们会选出最有趣的回答！`)">📋 复制</button></div>
+      </div>
+      <div class="tg-message" style="margin-top:12px;">
+        <div class="tg-header">🏆 持币者福利公告</div>
+        🌟 <strong>AIVA 持币者专属福利</strong> 🌟<br><br>
+        持有 10,000 $AIVA 以上的地址将获得：<br><br>
+        🔵 优先参与下期空投<br>
+        🔵 Discord「Verified Holder」身份<br>
+        🔵 内测功能提前体验权<br>
+        🔵 月度收益报告（直接发送到你的钱包）<br><br>
+        持币，就是最好的支持。感谢每一位 AIVAer ❤️
+        <div style="margin-top:12px;"><button class="copy-btn" onclick="copyText(this, `🌟 AIVA 持币者专属福利 🌟\n\n持有 10,000 $AIVA 以上的地址将获得：\n\n🔵 优先参与下期空投\n🔵 Discord「Verified Holder」身份\n🔵 内测功能提前体验权\n🔵 月度收益报告（直接发送到你的钱包）\n\n持币，就是最好的支持。感谢每一位 AIVAer ❤️`)">📋 复制</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== TAB 3: KOL ====== -->
+  <div id="tab-kol" class="tab-panel">
+    <div class="section-header">
+      <h2>🌟 KOL 合作模板</h2>
+      <p>针对不同量级 KOL 的定制化合作邀请，以代币换曝光，零现金支出</p>
+    </div>
+
+    <div class="highlight-box" style="margin-bottom:24px;">
+      💡 <strong>核心策略：</strong>用代币而非现金换取推广。给 KOL 分配一部分代币（归属期1~3个月），让他们的利益与项目绑定，比付钱买推文效果好得多。KOL 持有代币后，会主动推广。
+    </div>
+
+    <!-- Mega KOL -->
+    <div class="kol-card">
+      <div class="kol-tier">
+        <div class="kol-icon tier-gold">👑</div>
+        <div class="kol-info">
+          <h3>大 KOL (100k+ 粉丝)</h3>
+          <p>推荐给 10+ 万粉的加密 KOL / 分析师，提供顾问代币</p>
+        </div>
+        <span class="badge badge-gold" style="margin-left:auto;">顾问席位</span>
+      </div>
+      <div class="email-body">
+        <div class="email-header-row"><span class="email-label">To:</span><span class="email-val">@[KOL Twitter Handle]</span></div>
+        <div class="email-header-row"><span class="email-label">Subject:</span><span class="email-val">AIVA Network — Advisor Opportunity | AI Agent Economy on Solana</span></div>
+        <hr class="email-divider">
+        <div class="email-content">
+Hi [Name],<br><br>
+
+I've been following your analysis on AI x Crypto — your thread on autonomous agents last month was exactly the kind of thinking AIVA is built on.<br><br>
+
+<strong>What is AIVA?</strong><br>
+AIVA Network is building the first autonomous AI Agent Economy on Solana. Our agents autonomously execute on-chain strategies and return yields to $AIVA token holders. Fair launch, no VCs, no pre-sale.<br><br>
+
+<strong>Why we're reaching out:</strong><br>
+We're building an Advisor Council of 5-10 respected voices in the AI x Crypto space. As an advisor, you would:<br>
+• Receive [X%] of total supply as advisor tokens (12-month vesting)<br>
+• Get early access to all protocol updates and features<br>
+• Shape the strategic direction of the network<br>
+• Join a private Telegram channel with the core team<br><br>
+
+No monetary commitment required. Just your insights and occasional amplification when you find our updates genuinely interesting.<br><br>
+
+Whitepaper: [link] | Tokenomics: [link]<br><br>
+
+Would you be open to a quick call this week?<br><br>
+
+Best,<br>
+[Your Name] — AIVA Network
+        </div>
+      </div>
+      <div style="margin-top:12px;"><button class="copy-btn" onclick="copyText(this, `Hi [Name],\n\nI've been following your analysis on AI x Crypto — your thread on autonomous agents last month was exactly the kind of thinking AIVA is built on.\n\nWhat is AIVA?\nAIVA Network is building the first autonomous AI Agent Economy on Solana. Our agents autonomously execute on-chain strategies and return yields to $AIVA token holders. Fair launch, no VCs, no pre-sale.\n\nWhy we're reaching out:\nWe're building an Advisor Council of 5-10 respected voices in the AI x Crypto space. As an advisor, you would:\n• Receive [X%] of total supply as advisor tokens (12-month vesting)\n• Get early access to all protocol updates and features\n• Shape the strategic direction of the network\n• Join a private Telegram channel with the core team\n\nNo monetary commitment required. Just your insights and occasional amplification when you find our updates genuinely interesting.\n\nWhitepaper: [link] | Tokenomics: [link]\n\nWould you be open to a quick call this week?\n\nBest,\n[Your Name] — AIVA Network`)">📋 复制邮件模板</button></div>
+    </div>
+
+    <!-- Mid KOL -->
+    <div class="kol-card">
+      <div class="kol-tier">
+        <div class="kol-icon tier-silver">⭐</div>
+        <div class="kol-info">
+          <h3>中型 KOL (10k-100k 粉丝)</h3>
+          <p>最高性价比，这类 KOL 通常愿意为有意思的项目做内容</p>
+        </div>
+        <span class="badge badge-blue">内容合作</span>
+      </div>
+      <div class="email-body">
+        <div class="email-header-row"><span class="email-label">To:</span><span class="email-val">@[KOL Twitter Handle]</span></div>
+        <div class="email-header-row"><span class="email-label">Subject:</span><span class="email-val">Collab? $AIVA x @[KOL] — AI Agent narrative on Solana</span></div>
+        <hr class="email-divider">
+        <div class="email-content">
+Hey [Name] 👋<br><br>
+
+Your audience loves early-stage AI plays. I think they'd be really interested in AIVA — we just launched an AI Agent economy on Solana with zero pre-sale and a genuinely novel tokenomics model.<br><br>
+
+<strong>Quick overview:</strong><br>
+• AI agents that autonomously generate yield for token holders<br>
+• Fair launch on pump.fun — no VCs, no insiders<br>
+• Built on Solana for near-zero fees<br><br>
+
+<strong>What we're offering:</strong><br>
+Instead of a flat fee, we'd love to give you a community allocation of $AIVA tokens — meaning if the project succeeds, you benefit too. We think that alignment creates better, more authentic content.<br><br>
+
+Allocation: [X,XXX,XXX $AIVA] with 30-day unlock<br>
+All we ask: 1 tweet or short thread sharing your honest take<br><br>
+
+Whitepaper: [link]<br><br>
+
+Interested? DM me or reply here 🤝
+        </div>
+      </div>
+      <div style="margin-top:12px;"><button class="copy-btn" onclick="copyText(this, `Hey [Name] 👋\n\nYour audience loves early-stage AI plays. I think they'd be really interested in AIVA — we just launched an AI Agent economy on Solana with zero pre-sale and a genuinely novel tokenomics model.\n\nQuick overview:\n• AI agents that autonomously generate yield for token holders\n• Fair launch on pump.fun — no VCs, no insiders\n• Built on Solana for near-zero fees\n\nWhat we're offering:\nInstead of a flat fee, we'd love to give you a community allocation of $AIVA tokens — meaning if the project succeeds, you benefit too.\n\nAllocation: [X,XXX,XXX $AIVA] with 30-day unlock\nAll we ask: 1 tweet or short thread sharing your honest take\n\nWhitepaper: [link]\n\nInterested? DM me or reply here 🤝`)">📋 复制</button></div>
+    </div>
+
+    <!-- Micro KOL -->
+    <div class="kol-card">
+      <div class="kol-tier">
+        <div class="kol-icon tier-micro">🌱</div>
+        <div class="kol-info">
+          <h3>微 KOL / 社区意见领袖 (&lt;10k)</h3>
+          <p>批量联系，数量取胜。这类 KOL 转化率更高，粉丝更忠实</p>
+        </div>
+        <span class="badge badge-green">批量联系</span>
+      </div>
+      <div class="email-body">
+        <div class="email-header-row"><span class="email-label">平台:</span><span class="email-val">Twitter DM / Telegram 私信</span></div>
+        <hr class="email-divider">
+        <div class="email-content">
+Hey! 👋 Love your content on [AI/Crypto/Solana].<br><br>
+
+Just launched $AIVA — AI agents that earn crypto for holders, fair launch on Solana, 0 presale.<br><br>
+
+Sending early supporter allocations to creators who vibe with the vision. Interested in a small $AIVA grant + being in our early community?<br><br>
+
+No commitment needed — just check it out: [whitepaper link]<br><br>
+
+LMK! 🤖
+        </div>
+      </div>
+      <div style="margin-top:12px;"><button class="copy-btn" onclick="copyText(this, `Hey! 👋 Love your content on [AI/Crypto/Solana].\n\nJust launched $AIVA — AI agents that earn crypto for holders, fair launch on Solana, 0 presale.\n\nSending early supporter allocations to creators who vibe with the vision. Interested in a small $AIVA grant + being in our early community?\n\nNo commitment needed — just check it out: [whitepaper link]\n\nLMK! 🤖`)">📋 复制</button></div>
+    </div>
+
+    <!-- KOL List -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📋 推荐寻找 KOL 的平台</div>
+      </div>
+      <div class="strategy-grid">
+        <div class="strategy-card">
+          <div class="strategy-icon">🐦</div>
+          <h4>Twitter / X 搜索</h4>
+          <p>搜索 #AIAgent #Solana #SolanaEcosystem，找到活跃发帖的账号，优先选 1~5 万粉的账号，更愿意合作</p>
+        </div>
+        <div class="strategy-card">
+          <div class="strategy-icon">💬</div>
+          <h4>Telegram 大群</h4>
+          <p>加入 Solana 官方群、各大 DeFi 群，找到活跃发言的意见领袖，私信合作</p>
+        </div>
+        <div class="strategy-card">
+          <div class="strategy-icon">🎮</div>
+          <h4>Discord 社区</h4>
+          <p>加入 Solana、Jupiter、Raydium 的 Discord，活跃于 #alpha 频道，自然建立人脉</p>
+        </div>
+        <div class="strategy-card">
+          <div class="strategy-icon">📰</div>
+          <h4>Medium / Substack</h4>
+          <p>联系写 AI Crypto 文章的博主，他们的受众精准，影响力持续时间更长</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== TAB 4: AIRDROP ====== -->
+  <div id="tab-airdrop" class="tab-panel">
+    <div class="section-header">
+      <h2>🎁 空投策略设计</h2>
+      <p>科学设计空投方案，最大化拉新效果同时避免纯薅羊毛</p>
+    </div>
+
+    <!-- Airdrop Tiers -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🏆 空投层级设计</div>
+        <span class="badge badge-gold">推荐方案</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>层级</th>
+            <th>条件</th>
+            <th>奖励</th>
+            <th>目的</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-gold">🥇 Diamond</span></td>
+            <td>关注 + RT + 加 TG + 邀请3人</td>
+            <td>50,000 $AIVA</td>
+            <td>核心传播者</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-blue">🥈 Gold</span></td>
+            <td>关注 + RT + 加 TG</td>
+            <td>20,000 $AIVA</td>
+            <td>社区扩张</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-green">🥉 Silver</span></td>
+            <td>关注 + 加 TG</td>
+            <td>8,000 $AIVA</td>
+            <td>基础关注</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-purple">🌱 Early Bird</span></td>
+            <td>最早 1000 名进群</td>
+            <td>10,000 $AIVA（额外加成）</td>
+            <td>奖励先行者</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-red">🎨 Content</span></td>
+            <td>发布原创介绍内容</td>
+            <td>100,000 $AIVA</td>
+            <td>内容传播</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Airdrop Announcement -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📣 空投公告模板</div>
+      </div>
+      <div class="tweet-box">
+        🚨 <strong>$AIVA GENESIS AIRDROP — 10,000,000 tokens to the community</strong><br><br>
+        We're giving back to our earliest believers. Here's how to qualify:<br><br>
+        🥇 <strong>Diamond (50,000 $AIVA):</strong><br>
+        ✅ Follow @AIVANetwork<br>
+        ✅ RT this tweet<br>
+        ✅ Join t.me/AIVANetwork<br>
+        ✅ Invite 3 friends to TG<br><br>
+        🥈 <strong>Gold (20,000 $AIVA):</strong><br>
+        ✅ Follow + RT + Join TG<br><br>
+        🥉 <strong>Silver (8,000 $AIVA):</strong><br>
+        ✅ Follow + Join TG<br><br>
+        ⏰ Snapshot: 72 hours from now<br>
+        💰 Total pool: 10,000,000 $AIVA<br><br>
+        Submit wallet: [Google Form link]<br><br>
+        <span class="tweet-tag">#AIVA #Airdrop #Solana #FreeToken #Crypto</span>
+        <div style="margin-top:8px;"><button class="copy-btn" onclick="copyText(this, `🚨 $AIVA GENESIS AIRDROP — 10,000,000 tokens to the community\n\nWe're giving back to our earliest believers. Here's how to qualify:\n\n🥇 Diamond (50,000 $AIVA):\n✅ Follow @AIVANetwork\n✅ RT this tweet\n✅ Join t.me/AIVANetwork\n✅ Invite 3 friends to TG\n\n🥈 Gold (20,000 $AIVA):\n✅ Follow + RT + Join TG\n\n🥉 Silver (8,000 $AIVA):\n✅ Follow + Join TG\n\n⏰ Snapshot: 72 hours from now\n💰 Total pool: 10,000,000 $AIVA\n\nSubmit wallet: [Google Form link]\n\n#AIVA #Airdrop #Solana #FreeToken #Crypto`)">📋 复制</button></div>
+      </div>
+
+      <div class="highlight-box" style="margin-top:16px;">
+        💡 <strong>收集钱包地址的免费工具：</strong>用 Google Forms（免费）创建表单，字段包括：Twitter用户名、Telegram用户名、Solana钱包地址。发布空投公告时附上表单链接。
+      </div>
+    </div>
+
+    <!-- Anti-sybil -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🛡️ 防女巫攻击策略</div>
+        <span class="badge badge-red">安全必备</span>
+      </div>
+      <div class="checklist">
+        <div class="check-item">
+          <div class="check-icon">✓</div>
+          要求 Twitter 账号注册时间 > 3 个月，粉丝数 > 10
+        </div>
+        <div class="check-item">
+          <div class="check-icon">✓</div>
+          同一 IP 地址只能提交一次（Google Forms 可以检测）
+        </div>
+        <div class="check-item">
+          <div class="check-icon">✓</div>
+          空投分批发放（先发 50%，1 个月后发剩余）
+        </div>
+        <div class="check-item">
+          <div class="check-icon">✓</div>
+          要求接收者在社区中有实际互动记录
+        </div>
+        <div class="check-item">
+          <div class="check-icon">✓</div>
+          大额空投要求视频验证或简短自我介绍
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== TAB 5: CALENDAR ====== -->
+  <div id="tab-calendar" class="tab-panel">
+    <div class="section-header">
+      <h2>📅 30 天冷启动作战计划</h2>
+      <p>从零开始，30天内建立有影响力的社区和品牌认知</p>
+    </div>
+
+    <div class="card">
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-day">Day 1-2 | 准备期</div>
+          <div class="timeline-title">🏗️ 基础设施搭建</div>
+          <div class="timeline-desc">
+            创建 Twitter @AIVANetwork 账号 · 创建 Telegram 群 · 设置机器人欢迎语 · 
+            申请 Discord 服务器 · 将官网/白皮书/Tokenomics 页面部署上线（GitHub Pages 免费）
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-day">Day 3 | 冷启动</div>
+          <div class="timeline-title">🚀 发布项目发布大 Thread</div>
+          <div class="timeline-desc">
+            发布 7 条 Thread · 同时在 Reddit r/CryptoMoonShots 发帖 · 
+            在 Solana 相关 Discord 宣布 · 通知所有朋友转发 · 发布创世空投公告
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-day">Day 4-7 | 发酵期</div>
+          <div class="timeline-title">📊 每日内容 + 社区建设</div>
+          <div class="timeline-desc">
+            每天发 3 条推文（早/午/晚） · 每天在 TG 群发起话题互动 · 
+            开始批量联系 50+ 微 KOL · 
+            在 pump.fun 正式发行 $AIVA 代币
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-day">Day 8-14 | 第一个里程碑</div>
+          <div class="timeline-title">🎙️ 首次 AMA + 第一批空投发放</div>
+          <div class="timeline-desc">
+            在 TG 举行首次 AMA（1小时） · 发放第一批空投 · 
+            发布第一份周报（链上数据 + 社区增长） · 
+            申请 CoinGecko / CoinMarketCap 收录 · 
+            联系 3-5 个中型 KOL
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-day">Day 15-21 | 扩散期</div>
+          <div class="timeline-title">📣 KOL 内容发布波</div>
+          <div class="timeline-desc">
+            协调 KOL 集中在同一天发布内容（造势效果最强） · 
+            发起 Community Takeover（社区接管）活动 ·  
+            发布技术更新推文（AI Agent 进展） · 
+            开始 #AIVA 话题标签运营
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-day">Day 22-30 | 固化期</div>
+          <div class="timeline-title">🏆 社区固化 + 下一阶段预告</div>
+          <div class="timeline-desc">
+            发布月度总结报告 · 举行持币者专属活动 · 
+            宣布下一阶段路线图里程碑 · 启动第二轮空投（奖励老社区成员）· 
+            开始与更大的 KOL 洽谈 · 
+            申请第一个 CEX 上币（Gate.io、MEXC 接受社区提名）
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Platform Strategy -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🌐 平台矩阵策略</div>
+      </div>
+      <div class="strategy-grid">
+        <div class="strategy-card">
+          <div class="strategy-icon">🐦</div>
+          <h4>Twitter / X</h4>
+          <p><strong>主战场</strong>：每天 3 条推文，每周 1 条 Thread。这是加密社区最重要的声誉建设平台。</p>
+        </div>
+        <div class="strategy-card">
+          <div class="strategy-icon">💬</div>
+          <h4>Telegram</h4>
+          <p><strong>社区枢纽</strong>：实时互动、公告发布、AMA 举办。中英双群，分别运营。</p>
+        </div>
+        <div class="strategy-card">
+          <div class="strategy-icon">🎮</div>
+          <h4>Discord</h4>
+          <p><strong>忠实粉丝</strong>：设置身份组（持币者、贡献者），建立频道结构。</p>
+        </div>
+        <div class="strategy-card">
+          <div class="strategy-icon">📖</div>
+          <h4>Reddit</h4>
+          <p>r/CryptoMoonShots, r/Solana, r/CryptoCurrency — 新项目重要的曝光渠道。</p>
+        </div>
+        <div class="strategy-card">
+          <div class="strategy-icon">📝</div>
+          <h4>Medium</h4>
+          <p>发布深度文章（白皮书解读、技术介绍），建立专业形象。Google 可搜索。</p>
+        </div>
+        <div class="strategy-card">
+          <div class="strategy-icon">🎥</div>
+          <h4>YouTube / 抖音</h4>
+          <p>后期资源充足后布局。项目介绍视频 + AMA 录像 = 持续引流。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📊 30天 KPI 目标</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>指标</th>
+            <th>Day 7 目标</th>
+            <th>Day 14 目标</th>
+            <th>Day 30 目标</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Twitter 粉丝</td>
+            <td>500+</td>
+            <td>2,000+</td>
+            <td>10,000+</td>
+          </tr>
+          <tr>
+            <td>Telegram 成员</td>
+            <td>200+</td>
+            <td>1,000+</td>
+            <td>5,000+</td>
+          </tr>
+          <tr>
+            <td>Discord 成员</td>
+            <td>100+</td>
+            <td>500+</td>
+            <td>2,000+</td>
+          </tr>
+          <tr>
+            <td>空投参与者</td>
+            <td>300+</td>
+            <td>1,000+</td>
+            <td>5,000+</td>
+          </tr>
+          <tr>
+            <td>合作 KOL 数量</td>
+            <td>5+</td>
+            <td>15+</td>
+            <td>50+</td>
+          </tr>
+          <tr>
+            <td>CMC/CG 收录</td>
+            <td>申请中</td>
+            <td>✅</td>
+            <td>✅ 已收录</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav-btns">
+    <a href="index.html" class="nav-btn nav-btn-outline">🏠 返回官网</a>
+    <a href="whitepaper.html" class="nav-btn nav-btn-outline">📄 查看白皮书</a>
+    <a href="tokenomics.html" class="nav-btn nav-btn-outline">📊 代币经济模型</a>
+    <button class="nav-btn nav-btn-primary" onclick="window.print()">🖨️ 打印材料包</button>
+  </div>
+
+</div>
+
+<script>
+  // Tab switching
+  function switchTab(name) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.closest('.tab-btn').classList.add('active');
+  }
+
+  // Copy text to clipboard
+  function copyText(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.innerHTML;
+      btn.innerHTML = '✅ 已复制';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = orig;
+        btn.classList.remove('copied');
+      }, 2000);
+    }).catch(() => {
+      // Fallback
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      const orig = btn.innerHTML;
+      btn.innerHTML = '✅ 已复制';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  // Copy all thread
+  function copyAll(id) {
+    const el = document.getElementById(id);
+    const texts = [];
+    el.querySelectorAll('.thread-content').forEach((c, i) => {
+      const clone = c.cloneNode(true);
+      clone.querySelectorAll('button').forEach(b => b.remove());
+      texts.push((i+1) + '/' + el.querySelectorAll('.thread-content').length + '\n' + clone.innerText.trim());
+    });
+    copyText(event.target, texts.join('\n\n---\n\n'));
+  }
+
+  // Animate elements on scroll
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.card, .kol-card, .strategy-card, .timeline-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
