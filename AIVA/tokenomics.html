@@ -168,6 +168,29 @@
     padding:7px 16px;border:1px solid var(--border);border-radius:99px;
     transition:background .2s;}
   .nav-back:hover{background:rgba(79,142,255,.1);}
+
+  /* ── LANGUAGE SWITCHER ── */
+  .topbar-row{
+    display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;gap:12px;margin-bottom:12px;
+  }
+  .lang-switcher{
+    display:flex;align-items:center;gap:0;
+    background:rgba(79,142,255,.08);
+    border:1px solid rgba(79,142,255,.18);
+    border-radius:99px;
+    overflow:hidden;
+  }
+  .lang-btn{
+    padding:5px 11px;font-size:.72rem;font-weight:600;
+    cursor:pointer;border:none;background:transparent;
+    color:#94a3b8;transition:all .2s;white-space:nowrap;
+  }
+  .lang-btn.active{
+    background:linear-gradient(135deg,#4f8eff,#a78bfa);
+    color:#fff;
+  }
+  .lang-btn:hover:not(.active){color:#4f8eff;}
 </style>
 </head>
 <body>
@@ -182,11 +205,16 @@
 
   <!-- HEADER -->
   <div class="hdr">
-    <a class="nav-back" href="whitepaper.html">← Back to White Paper</a>
-    <a class="nav-back" href="marketing-kit.html" style="margin-left:16px;">📣 Marketing Kit</a>
-    <div class="tag">📊 Token Economics · $AIVA</div>
-    <h1>Tokenomics</h1>
-    <p>A transparent, community-first token design built for long-term sustainable growth — not short-term pumps.</p>
+    <div class="topbar-row">
+      <div>
+        <a class="nav-back" href="whitepaper.html">← Back to White Paper</a>
+        <a class="nav-back" href="marketing-kit.html" style="margin-left:16px;">📣 Marketing Kit</a>
+      </div>
+      <div class="lang-switcher-slot"></div>
+    </div>
+    <div class="tag" data-i18n="toko.label">📊 Token Economics · $AIVA</div>
+    <h1 data-i18n="toko.title">Tokenomics</h1>
+    <p data-i18n="toko.sub">A transparent, community-first token design built for long-term sustainable growth — not short-term pumps.</p>
   </div>
 
   <!-- SUPPLY HERO STRIP -->
@@ -661,5 +689,6 @@ new Chart(document.getElementById('burnChart'),{
   }
 });
 </script>
+<script src="i18n.js"></script>
 </body>
 </html>

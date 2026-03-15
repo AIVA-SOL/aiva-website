@@ -99,6 +99,21 @@
     position:relative;z-index:1;text-align:center;
   }
   .tip-box strong{color:var(--accent);}
+
+  /* ── LANGUAGE SWITCHER ── */
+  .lang-switcher{
+    display:inline-flex;align-items:center;gap:0;
+    background:rgba(79,142,255,.08);
+    border:1px solid rgba(79,142,255,.18);
+    border-radius:99px;overflow:hidden;
+  }
+  .lang-btn{
+    padding:5px 11px;font-size:.72rem;font-weight:600;
+    cursor:pointer;border:none;background:transparent;
+    color:#94a3b8;transition:all .2s;white-space:nowrap;
+  }
+  .lang-btn.active{background:linear-gradient(135deg,#4f8eff,#a78bfa);color:#fff;}
+  .lang-btn:hover:not(.active){color:#4f8eff;}
 </style>
 </head>
 <body>
@@ -109,7 +124,10 @@
     <div class="logo">AIVA</div>
     <div class="sub">Logo Kit · Brand Assets</div>
   </div>
-  <a href="whitepaper.html" class="back-btn">← White Paper</a>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="lang-switcher-slot"></div>
+    <a href="whitepaper.html" class="back-btn">← White Paper</a>
+  </div>
 </header>
 
 <!-- HERO -->
@@ -691,5 +709,6 @@ function downloadLogo(logo, size) {
 const grid = document.getElementById('logoGrid');
 LOGOS.forEach(logo => grid.appendChild(buildCard(logo)));
 </script>
+<script src="i18n.js"></script>
 </body>
 </html>

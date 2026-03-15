@@ -428,6 +428,30 @@ footer{
   .cta-band{padding:60px 20px;}
   .footer-top{flex-direction:column;}
 }
+
+/* ── LANGUAGE SWITCHER ── */
+.lang-switcher{
+  display:flex;align-items:center;gap:0;
+  background:rgba(79,142,255,.08);
+  border:1px solid var(--border);
+  border-radius:99px;
+  overflow:hidden;
+  flex-shrink:0;
+}
+.lang-btn{
+  padding:5px 11px;font-size:.72rem;font-weight:600;
+  cursor:pointer;border:none;background:transparent;
+  color:var(--muted);transition:all .2s;letter-spacing:.03em;
+  white-space:nowrap;
+}
+.lang-btn.active{
+  background:linear-gradient(135deg,#4f8eff,#a78bfa);
+  color:#fff;
+}
+.lang-btn:hover:not(.active){color:var(--accent);}
+@media(max-width:768px){
+  .lang-switcher{display:none;}
+}
 </style>
 </head>
 <body>
@@ -447,13 +471,14 @@ footer{
     AIVA
   </a>
   <div class="nav-links">
-    <a href="#features">Features</a>
-    <a href="#how">How It Works</a>
-    <a href="tokenomics.html">Tokenomics</a>
-    <a href="#roadmap">Roadmap</a>
-    <a href="whitepaper.html">Whitepaper</a>
+    <a href="#features" data-i18n="nav.features">Features</a>
+    <a href="#how" data-i18n="nav.how">How It Works</a>
+    <a href="tokenomics.html" data-i18n="nav.tokenomics">Tokenomics</a>
+    <a href="#roadmap" data-i18n="nav.roadmap">Roadmap</a>
+    <a href="whitepaper.html" data-i18n="nav.whitepaper">Whitepaper</a>
   </div>
-  <a href="#community" class="nav-cta">Join Community</a>
+  <div class="lang-switcher-slot"></div>
+  <a href="#community" class="nav-cta" data-i18n="nav.join">Join Community</a>
 </nav>
 
 <!-- HERO -->
@@ -461,31 +486,31 @@ footer{
   <div class="hero-inner">
     <div class="hero-badge">
       <span class="pulse"></span>
-      Now Live on Solana
+      <span data-i18n="hero.badge">Now Live on Solana</span>
     </div>
-    <h1>Intelligence Meets<br/>Decentralized Finance</h1>
-    <p class="hero-sub">AIVA is an AI-powered virtual asset protocol built on Solana — making intelligent investing accessible to everyone.</p>
-    <p class="hero-tagline">🤖 AI-Driven &nbsp;·&nbsp; ⚡ Solana Speed &nbsp;·&nbsp; 💎 10B $AIVA</p>
+    <h1 data-i18n="hero.h1">Intelligence Meets<br/>Decentralized Finance</h1>
+    <p class="hero-sub" data-i18n="hero.sub">AIVA is an AI-powered virtual asset protocol built on Solana — making intelligent investing accessible to everyone.</p>
+    <p class="hero-tagline" data-i18n="hero.tagline">🤖 AI-Driven &nbsp;·&nbsp; ⚡ Solana Speed &nbsp;·&nbsp; 💎 10B $AIVA</p>
     <div class="hero-btns">
-      <a href="https://pump.fun" target="_blank" class="btn-primary">🚀 Buy $AIVA</a>
-      <a href="whitepaper.html" class="btn-secondary">📄 Read Whitepaper</a>
+      <a href="https://pump.fun" target="_blank" class="btn-primary" data-i18n="hero.buy">🚀 Buy $AIVA</a>
+      <a href="whitepaper.html" class="btn-secondary" data-i18n="hero.whitepaper">📄 Read Whitepaper</a>
     </div>
     <div class="hero-stats">
       <div class="hero-stat">
         <div class="val"><span>10B</span></div>
-        <div class="lbl">Total Supply</div>
+        <div class="lbl" data-i18n="hero.stat.supply">Total Supply</div>
       </div>
       <div class="hero-stat">
         <div class="val"><span>SOL</span></div>
-        <div class="lbl">Built on Solana</div>
+        <div class="lbl" data-i18n="hero.stat.chain">Built on Solana</div>
       </div>
       <div class="hero-stat">
         <div class="val"><span>AI</span></div>
-        <div class="lbl">Powered Protocol</div>
+        <div class="lbl" data-i18n="hero.stat.ai">Powered Protocol</div>
       </div>
       <div class="hero-stat">
         <div class="val"><span>0%</span></div>
-        <div class="lbl">Team Tax</div>
+        <div class="lbl" data-i18n="hero.stat.tax">Team Tax</div>
       </div>
     </div>
   </div>
@@ -497,23 +522,22 @@ footer{
     <div class="contract-chain-badge">
       ◎ Solana (SPL Token)
     </div>
-    <div class="label"><span></span> $AIVA Contract Address <span></span></div>
+    <div class="label"><span></span> <span data-i18n="ca.label">$AIVA Contract Address</span> <span></span></div>
     <div class="contract-addr-wrap">
-      <div class="contract-addr-text" id="caText">
+      <div class="contract-addr-text" id="caText" data-i18n="ca.tba">
         TBA — Contract address will be published at launch on Pump.fun
       </div>
       <button class="contract-copy-btn" id="copyBtn" onclick="copyCA()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        Copy CA
+        <span data-i18n="ca.copy">Copy CA</span>
       </button>
     </div>
     <p class="contract-note">
-      ⚠️ Only trust addresses from our official channels:
+      <span data-i18n="ca.note">⚠️ Only trust addresses from our official channels:</span>
       <a href="https://twitter.com/AIVA_SOL" target="_blank">@AIVA_SOL</a> &amp;
       <a href="https://s.share11.top/AIVA_ONSOL" target="_blank">Telegram EN</a> /
       <a href="https://s.share11.top/AIVAONSOL" target="_blank">Telegram CN</a>.
-
-      Beware of scam tokens.
+      <span data-i18n="ca.scam">Beware of scam tokens.</span>
     </p>
   </div>
 </div>
@@ -543,37 +567,37 @@ footer{
 <!-- SOCIAL PROOF -->
 <div class="social-proof">
   <div class="sp-inner">
-    <p class="sp-title">Why thousands choose AIVA</p>
+    <p class="sp-title" data-i18n="sp.title">Why thousands choose AIVA</p>
     <div class="sp-grid reveal">
       <div class="sp-card">
         <div class="icon">🚀</div>
         <div class="num" data-target="10000000000">10B</div>
-        <div class="desc">Total Token Supply</div>
+        <div class="desc" data-i18n="sp.supply">Total Token Supply</div>
       </div>
       <div class="sp-card">
         <div class="icon">⚡</div>
         <div class="num">65K+</div>
-        <div class="desc">TPS on Solana</div>
+        <div class="desc" data-i18n="sp.tps">TPS on Solana</div>
       </div>
       <div class="sp-card">
         <div class="icon">🌍</div>
         <div class="num" id="holderCount">—</div>
-        <div class="desc">Community Members</div>
+        <div class="desc" data-i18n="sp.community">Community Members</div>
       </div>
       <div class="sp-card">
         <div class="icon">💰</div>
         <div class="num">$0.001</div>
-        <div class="desc">Avg Transaction Fee</div>
+        <div class="desc" data-i18n="sp.fee">Avg Transaction Fee</div>
       </div>
       <div class="sp-card">
         <div class="icon">🔒</div>
         <div class="num">100%</div>
-        <div class="desc">LP Locked</div>
+        <div class="desc" data-i18n="sp.lp">LP Locked</div>
       </div>
       <div class="sp-card">
         <div class="icon">🛡️</div>
         <div class="num">0%</div>
-        <div class="desc">Buy / Sell Tax</div>
+        <div class="desc" data-i18n="sp.tax">Buy / Sell Tax</div>
       </div>
     </div>
   </div>
@@ -583,40 +607,40 @@ footer{
 <section class="section" id="features">
   <div class="container">
     <div class="reveal">
-      <span class="section-label">Core Features</span>
-      <h2 class="section-title">Why AIVA?</h2>
-      <p class="section-sub">Built from the ground up to combine the power of artificial intelligence with the transparency of blockchain.</p>
+      <span class="section-label" data-i18n="feat.label">Core Features</span>
+      <h2 class="section-title" data-i18n="feat.title">Why AIVA?</h2>
+      <p class="section-sub" data-i18n="feat.sub">Built from the ground up to combine the power of artificial intelligence with the transparency of blockchain.</p>
     </div>
     <div class="features-grid reveal">
       <div class="feat-card">
         <div class="feat-icon">🤖</div>
-        <h3>AI-Driven Intelligence</h3>
-        <p>AIVA leverages cutting-edge artificial intelligence to analyze market patterns, identify opportunities, and optimize decision-making in real time.</p>
+        <h3 data-i18n="feat.ai.title">AI-Driven Intelligence</h3>
+        <p data-i18n="feat.ai.desc">AIVA leverages cutting-edge artificial intelligence to analyze market patterns, identify opportunities, and optimize decision-making in real time.</p>
       </div>
       <div class="feat-card">
         <div class="feat-icon">⚡</div>
-        <h3>Solana Speed</h3>
-        <p>Built on Solana's high-performance blockchain — 65,000+ TPS, sub-second finality, and transaction fees under $0.001.</p>
+        <h3 data-i18n="feat.sol.title">Solana Speed</h3>
+        <p data-i18n="feat.sol.desc">Built on Solana's high-performance blockchain — 65,000+ TPS, sub-second finality, and transaction fees under $0.001.</p>
       </div>
       <div class="feat-card">
         <div class="feat-icon">🔍</div>
-        <h3>Full Transparency</h3>
-        <p>Every transaction, every decision, every allocation is recorded on-chain. No hidden fees, no shadow trading. Complete auditability.</p>
+        <h3 data-i18n="feat.trans.title">Full Transparency</h3>
+        <p data-i18n="feat.trans.desc">Every transaction, every decision, every allocation is recorded on-chain. No hidden fees, no shadow trading. Complete auditability.</p>
       </div>
       <div class="feat-card">
         <div class="feat-icon">🏛️</div>
-        <h3>Community Governed</h3>
-        <p>$AIVA token holders shape the future of the protocol. Propose, vote, and implement changes through decentralized governance.</p>
+        <h3 data-i18n="feat.gov.title">Community Governed</h3>
+        <p data-i18n="feat.gov.desc">$AIVA token holders shape the future of the protocol. Propose, vote, and implement changes through decentralized governance.</p>
       </div>
       <div class="feat-card">
         <div class="feat-icon">🛡️</div>
-        <h3>Fair Launch</h3>
-        <p>No pre-sale to VCs, no insider allocation. AIVA launched fairly via Pump.fun with equal access for all community members.</p>
+        <h3 data-i18n="feat.fair.title">Fair Launch</h3>
+        <p data-i18n="feat.fair.desc">No pre-sale to VCs, no insider allocation. AIVA launched fairly via Pump.fun with equal access for all community members.</p>
       </div>
       <div class="feat-card">
         <div class="feat-icon">🌊</div>
-        <h3>Deep Liquidity</h3>
-        <p>Liquidity locked and verifiable on-chain. Trade $AIVA with confidence knowing liquidity is secured and transparently managed.</p>
+        <h3 data-i18n="feat.liq.title">Deep Liquidity</h3>
+        <p data-i18n="feat.liq.desc">Liquidity locked and verifiable on-chain. Trade $AIVA with confidence knowing liquidity is secured and transparently managed.</p>
       </div>
     </div>
   </div>
@@ -628,30 +652,30 @@ footer{
 <section class="section" id="how">
   <div class="container">
     <div class="reveal" style="text-align:center;margin-bottom:60px;">
-      <span class="section-label">How It Works</span>
-      <h2 class="section-title">Simple. Powerful. Intelligent.</h2>
-      <p class="section-sub" style="margin:0 auto;">From acquisition to intelligent yield — AIVA works for you automatically.</p>
+      <span class="section-label" data-i18n="how.label">How It Works</span>
+      <h2 class="section-title" data-i18n="how.title">Simple. Powerful. Intelligent.</h2>
+      <p class="section-sub" style="margin:0 auto;" data-i18n="how.sub">From acquisition to intelligent yield — AIVA works for you automatically.</p>
     </div>
     <div class="how-grid reveal">
       <div class="how-step">
         <div class="step-circle">1</div>
-        <h4>Acquire $AIVA</h4>
-        <p>Buy $AIVA on Pump.fun or Raydium using SOL in seconds.</p>
+        <h4 data-i18n="how.step1.title">Acquire $AIVA</h4>
+        <p data-i18n="how.step1.desc">Buy $AIVA on Pump.fun or Raydium using SOL in seconds.</p>
       </div>
       <div class="how-step">
         <div class="step-circle">2</div>
-        <h4>AI Analyzes Markets</h4>
-        <p>AIVA's AI engine continuously scans on-chain data and market signals.</p>
+        <h4 data-i18n="how.step2.title">AI Analyzes Markets</h4>
+        <p data-i18n="how.step2.desc">AIVA's AI engine continuously scans on-chain data and market signals.</p>
       </div>
       <div class="how-step">
         <div class="step-circle">3</div>
-        <h4>Protocol Executes</h4>
-        <p>Smart contracts execute optimal strategies based on AI recommendations.</p>
+        <h4 data-i18n="how.step3.title">Protocol Executes</h4>
+        <p data-i18n="how.step3.desc">Smart contracts execute optimal strategies based on AI recommendations.</p>
       </div>
       <div class="how-step">
         <div class="step-circle">4</div>
-        <h4>Community Grows</h4>
-        <p>Holders benefit as the protocol scales and the community expands globally.</p>
+        <h4 data-i18n="how.step4.title">Community Grows</h4>
+        <p data-i18n="how.step4.desc">Holders benefit as the protocol scales and the community expands globally.</p>
       </div>
     </div>
   </div>
@@ -663,43 +687,43 @@ footer{
 <section class="section" id="tokenomics">
   <div class="container">
     <div class="reveal">
-      <span class="section-label">Tokenomics</span>
-      <h2 class="section-title">Designed for Sustainability</h2>
-      <p class="section-sub">A transparent, community-first token distribution with built-in longevity mechanisms.</p>
+      <span class="section-label" data-i18n="toko.label">Tokenomics</span>
+      <h2 class="section-title" data-i18n="toko.title">Designed for Sustainability</h2>
+      <p class="section-sub" data-i18n="toko.sub">A transparent, community-first token distribution with built-in longevity mechanisms.</p>
     </div>
     <div class="toko-preview reveal">
       <div class="toko-bars">
         <div class="toko-bar-item">
           <div class="toko-bar-header">
-            <span class="toko-bar-label">🌊 Liquidity Pool</span>
+            <span class="toko-bar-label" data-i18n="toko.lp">🌊 Liquidity Pool</span>
             <span class="toko-bar-pct" style="color:#4f8eff">40%</span>
           </div>
           <div class="toko-bar-track"><div class="toko-bar-fill" style="width:40%;background:linear-gradient(90deg,#4f8eff,#60a5fa);"></div></div>
         </div>
         <div class="toko-bar-item">
           <div class="toko-bar-header">
-            <span class="toko-bar-label">🔥 Community & Ecosystem</span>
+            <span class="toko-bar-label" data-i18n="toko.community">🔥 Community & Ecosystem</span>
             <span class="toko-bar-pct" style="color:#a78bfa">30%</span>
           </div>
           <div class="toko-bar-track"><div class="toko-bar-fill" style="width:30%;background:linear-gradient(90deg,#a78bfa,#c4b5fd);"></div></div>
         </div>
         <div class="toko-bar-item">
           <div class="toko-bar-header">
-            <span class="toko-bar-label">📈 Marketing & Growth</span>
+            <span class="toko-bar-label" data-i18n="toko.marketing">📈 Marketing & Growth</span>
             <span class="toko-bar-pct" style="color:#34d399">15%</span>
           </div>
           <div class="toko-bar-track"><div class="toko-bar-fill" style="width:15%;background:linear-gradient(90deg,#34d399,#6ee7b7);"></div></div>
         </div>
         <div class="toko-bar-item">
           <div class="toko-bar-header">
-            <span class="toko-bar-label">🏗️ Development</span>
+            <span class="toko-bar-label" data-i18n="toko.dev">🏗️ Development</span>
             <span class="toko-bar-pct" style="color:#fbbf24">10%</span>
           </div>
           <div class="toko-bar-track"><div class="toko-bar-fill" style="width:10%;background:linear-gradient(90deg,#fbbf24,#fde68a);"></div></div>
         </div>
         <div class="toko-bar-item">
           <div class="toko-bar-header">
-            <span class="toko-bar-label">👥 Team (Locked 12mo)</span>
+            <span class="toko-bar-label" data-i18n="toko.team">👥 Team (Locked 12mo)</span>
             <span class="toko-bar-pct" style="color:#f87171">5%</span>
           </div>
           <div class="toko-bar-track"><div class="toko-bar-fill" style="width:5%;background:linear-gradient(90deg,#f87171,#fca5a5);"></div></div>
@@ -707,26 +731,26 @@ footer{
       </div>
       <div class="toko-info">
         <h3>$AIVA Token</h3>
-        <p class="sub">SPL Token on Solana • Fair Launch</p>
+        <p class="sub" data-i18n="toko.fairlaunch">SPL Token on Solana • Fair Launch</p>
         <div class="toko-nums">
           <div class="toko-num">
             <div class="n">10B</div>
-            <div class="l">Total Supply</div>
+            <div class="l" data-i18n="toko.supply.label">Total Supply</div>
           </div>
           <div class="toko-num">
             <div class="n">SOL</div>
-            <div class="l">Native Chain</div>
+            <div class="l" data-i18n="toko.chain">Native Chain</div>
           </div>
           <div class="toko-num">
             <div class="n">0%</div>
-            <div class="l">Buy/Sell Tax</div>
+            <div class="l" data-i18n="toko.tax">Buy/Sell Tax</div>
           </div>
           <div class="toko-num">
             <div class="n">✅</div>
-            <div class="l">LP Locked</div>
+            <div class="l" data-i18n="toko.lplocked">LP Locked</div>
           </div>
         </div>
-        <a href="tokenomics.html" class="btn-primary" style="display:inline-block;font-size:.88rem;padding:11px 24px;">View Full Tokenomics →</a>
+        <a href="tokenomics.html" class="btn-primary" style="display:inline-block;font-size:.88rem;padding:11px 24px;" data-i18n="toko.viewfull">View Full Tokenomics →</a>
       </div>
     </div>
   </div>
@@ -738,57 +762,57 @@ footer{
 <section class="section" id="roadmap">
   <div class="container">
     <div class="reveal">
-      <span class="section-label">Roadmap</span>
-      <h2 class="section-title">The Path Forward</h2>
-      <p class="section-sub">A clear vision from launch to full AI protocol deployment.</p>
+      <span class="section-label" data-i18n="rm.label">Roadmap</span>
+      <h2 class="section-title" data-i18n="rm.title">The Path Forward</h2>
+      <p class="section-sub" data-i18n="rm.sub">A clear vision from launch to full AI protocol deployment.</p>
     </div>
     <div class="roadmap-grid reveal">
       <div class="rm-card active">
         <div class="rm-phase">Phase 1</div>
-        <h4>Genesis Launch</h4>
+        <h4 data-i18n="rm.p1.title">Genesis Launch</h4>
         <div class="period">Q1 2026</div>
         <ul class="rm-items">
-          <li>Token Launch on Pump.fun</li>
-          <li>Official Website Live</li>
-          <li>Whitepaper Published</li>
-          <li>Community Building</li>
-          <li>Twitter & Telegram</li>
+          <li data-i18n="rm.p1.1">Token Launch on Pump.fun</li>
+          <li data-i18n="rm.p1.2">Official Website Live</li>
+          <li data-i18n="rm.p1.3">Whitepaper Published</li>
+          <li data-i18n="rm.p1.4">Community Building</li>
+          <li data-i18n="rm.p1.5">Twitter & Telegram</li>
         </ul>
       </div>
       <div class="rm-card">
         <div class="rm-phase">Phase 2</div>
-        <h4>Community Growth</h4>
+        <h4 data-i18n="rm.p2.title">Community Growth</h4>
         <div class="period">Q2 2026</div>
         <ul class="rm-items">
-          <li>Raydium Listing</li>
-          <li>CMC & CoinGecko</li>
-          <li>5,000+ Holders</li>
-          <li>Smart Contract Audit</li>
-          <li>KOL Partnerships</li>
+          <li data-i18n="rm.p2.1">Raydium Listing</li>
+          <li data-i18n="rm.p2.2">CMC & CoinGecko</li>
+          <li data-i18n="rm.p2.3">5,000+ Holders</li>
+          <li data-i18n="rm.p2.4">Smart Contract Audit</li>
+          <li data-i18n="rm.p2.5">KOL Partnerships</li>
         </ul>
       </div>
       <div class="rm-card">
         <div class="rm-phase">Phase 3</div>
-        <h4>AI Integration</h4>
+        <h4 data-i18n="rm.p3.title">AI Integration</h4>
         <div class="period">Q3 2026</div>
         <ul class="rm-items">
-          <li>AI Dashboard Beta</li>
-          <li>Market Signal Engine</li>
-          <li>CEX Listings</li>
-          <li>Staking Protocol</li>
-          <li>DAO Governance</li>
+          <li data-i18n="rm.p3.1">AI Dashboard Beta</li>
+          <li data-i18n="rm.p3.2">Market Signal Engine</li>
+          <li data-i18n="rm.p3.3">CEX Listings</li>
+          <li data-i18n="rm.p3.4">Staking Protocol</li>
+          <li data-i18n="rm.p3.5">DAO Governance</li>
         </ul>
       </div>
       <div class="rm-card">
         <div class="rm-phase">Phase 4</div>
-        <h4>Full Protocol</h4>
+        <h4 data-i18n="rm.p4.title">Full Protocol</h4>
         <div class="period">Q4 2026</div>
         <ul class="rm-items">
-          <li>AI Agent v1.0 Launch</li>
-          <li>Cross-chain Bridge</li>
-          <li>Institutional Partnerships</li>
-          <li>100,000+ Holders</li>
-          <li>Top-tier CEX</li>
+          <li data-i18n="rm.p4.1">AI Agent v1.0 Launch</li>
+          <li data-i18n="rm.p4.2">Cross-chain Bridge</li>
+          <li data-i18n="rm.p4.3">Institutional Partnerships</li>
+          <li data-i18n="rm.p4.4">100,000+ Holders</li>
+          <li data-i18n="rm.p4.5">Top-tier CEX</li>
         </ul>
       </div>
     </div>
@@ -799,22 +823,22 @@ footer{
 
 <!-- CTA BAND -->
 <div class="cta-band" id="community">
-  <h2>Join the AIVA Community</h2>
-  <p>Be part of the AI-powered DeFi revolution. Connect with thousands of holders worldwide.</p>
+  <h2 data-i18n="cta.title">Join the AIVA Community</h2>
+  <p data-i18n="cta.sub">Be part of the AI-powered DeFi revolution. Connect with thousands of holders worldwide.</p>
   <div class="cta-links">
-    <a href="https://twitter.com/AIVA_SOL" target="_blank" class="cta-link twitter">
+    <a href="https://twitter.com/AIVA_SOL" target="_blank" class="cta-link twitter" data-i18n="cta.twitter">
       🐦 Twitter / X
     </a>
-    <a href="https://s.share11.top/AIVA_ONSOL" target="_blank" class="cta-link telegram">
+    <a href="https://s.share11.top/AIVA_ONSOL" target="_blank" class="cta-link telegram" data-i18n="cta.tg_en">
       ✈️ Telegram EN
     </a>
-    <a href="https://s.share11.top/AIVAONSOL" target="_blank" class="cta-link telegram">
+    <a href="https://s.share11.top/AIVAONSOL" target="_blank" class="cta-link telegram" data-i18n="cta.tg_cn">
       ✈️ Telegram 中文
     </a>
-    <a href="https://pump.fun" target="_blank" class="cta-link pump">
+    <a href="https://pump.fun" target="_blank" class="cta-link pump" data-i18n="cta.pump">
       🚀 Buy on Pump.fun
     </a>
-    <a href="whitepaper.html" class="cta-link whitepaper">
+    <a href="whitepaper.html" class="cta-link whitepaper" data-i18n="cta.whitepaper">
       📄 Whitepaper
     </a>
   </div>
@@ -829,38 +853,39 @@ footer{
           <img src="AIVA-logo3-128x128.png" alt="AIVA" style="width:28px;height:28px;border-radius:6px;object-fit:contain;">
           AIVA
         </div>
-        <p>AI Value Agent — An AI-powered virtual asset protocol built on Solana. Making intelligent investing accessible to everyone.</p>
+        <p data-i18n="footer.brand">AI Value Agent — An AI-powered virtual asset protocol built on Solana. Making intelligent investing accessible to everyone.</p>
       </div>
       <div class="footer-links">
         <div class="footer-col">
-          <h5>Protocol</h5>
-          <a href="whitepaper.html">Whitepaper</a>
-          <a href="tokenomics.html">Tokenomics</a>
-          <a href="#roadmap">Roadmap</a>
-          <a href="#features">Features</a>
+          <h5 data-i18n="footer.protocol">Protocol</h5>
+          <a href="whitepaper.html" data-i18n="nav.whitepaper">Whitepaper</a>
+          <a href="tokenomics.html" data-i18n="nav.tokenomics">Tokenomics</a>
+          <a href="#roadmap" data-i18n="nav.roadmap">Roadmap</a>
+          <a href="#features" data-i18n="nav.features">Features</a>
         </div>
         <div class="footer-col">
-          <h5>Community</h5>
+          <h5 data-i18n="footer.community">Community</h5>
           <a href="https://twitter.com/AIVA_SOL" target="_blank">Twitter / X</a>
           <a href="https://s.share11.top/AIVA_ONSOL" target="_blank">Telegram EN</a>
           <a href="https://s.share11.top/AIVAONSOL" target="_blank">Telegram 中文</a>
           <a href="https://pump.fun" target="_blank">Pump.fun</a>
         </div>
         <div class="footer-col">
-          <h5>Resources</h5>
-          <a href="whitepaper.html">White Paper</a>
-          <a href="marketing-kit.html">Marketing Kit</a>
-          <a href="logo-kit.html">Logo Kit</a>
+          <h5 data-i18n="footer.resources">Resources</h5>
+          <a href="whitepaper.html" data-i18n="nav.whitepaper">White Paper</a>
+          <a href="marketing-kit.html" data-i18n="footer.marketing">Marketing Kit</a>
+          <a href="logo-kit.html" data-i18n="footer.logokit">Logo Kit</a>
         </div>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2026 AIVA Protocol. All rights reserved.</p>
-      <p class="footer-disclaimer">⚠️ $AIVA is a community token. Crypto investments carry high risk. This is not financial advice. Always DYOR.</p>
+      <p data-i18n="footer.copyright">© 2026 AIVA Protocol. All rights reserved.</p>
+      <p class="footer-disclaimer" data-i18n="footer.disclaimer">⚠️ $AIVA is a community token. Crypto investments carry high risk. This is not financial advice. Always DYOR.</p>
     </div>
   </div>
 </footer>
 
+<script src="i18n.js"></script>
 <script>
 // Scroll reveal
 const reveals = document.querySelectorAll('.reveal');
