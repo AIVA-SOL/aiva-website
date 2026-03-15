@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AIVA — AI Value Agent | White Paper v1.0</title>
+<title>AIVA — Virtual Asset Protocol | White Paper v1.0</title>
 <style>
   :root {
     --bg: #04060f;
@@ -62,26 +62,7 @@
   .topbar nav a{color:var(--muted);text-decoration:none;font-size:.82rem;transition:color .2s;}
   .topbar nav a:hover{color:var(--accent);}
 
-  /* ── LANGUAGE SWITCHER ── */
-  .lang-switcher{
-    display:flex;align-items:center;gap:0;
-    background:rgba(79,142,255,.08);
-    border:1px solid var(--border);
-    border-radius:99px;
-    overflow:hidden;
-    flex-shrink:0;
-  }
-  .lang-btn{
-    padding:5px 11px;font-size:.72rem;font-weight:600;
-    cursor:pointer;border:none;background:transparent;
-    color:var(--muted);transition:all .2s;letter-spacing:.03em;
-    white-space:nowrap;
-  }
-  .lang-btn.active{
-    background:linear-gradient(135deg,#4f8eff,#a78bfa);
-    color:#fff;
-  }
-  .lang-btn:hover:not(.active){color:var(--accent);}
+  /* lang-switcher styles injected by i18n.js */
   .wp-lang-notice{
     display:none;
     margin:0 0 24px;
@@ -297,19 +278,14 @@
 <header class="topbar">
   <div class="logo">AIVA</div>
   <nav>
+    <a href="index.html">Home</a>
     <a href="#abstract">Abstract</a>
     <a href="#technology">Technology</a>
     <a href="#tokenomics">Tokenomics</a>
     <a href="#roadmap">Roadmap</a>
   </nav>
-  <!-- LANGUAGE SWITCHER — 5 languages -->
-  <div class="lang-switcher" id="langSwitcher">
-    <button class="lang-btn active" onclick="wpSetLang('en')">EN</button>
-    <button class="lang-btn" onclick="wpSetLang('zh')">简中</button>
-    <button class="lang-btn" onclick="wpSetLang('zht')">繁中</button>
-    <button class="lang-btn" onclick="wpSetLang('ja')">日本語</button>
-    <button class="lang-btn" onclick="wpSetLang('ko')">한국어</button>
-  </div>
+  <!-- LANGUAGE DROPDOWN — injected by i18n.js -->
+  <div class="lang-switcher-slot"></div>
   <div class="badge" id="topBadge">WHITE PAPER v1.0</div>
 </header>
 
@@ -317,17 +293,17 @@
 <div id="wpNotice" class="wp-lang-notice container" style="margin-top:80px;"></div>
 <section class="hero">
   <div class="hero-inner fade-in">
-    <div class="hero-tag" id="heroTag">🤖 AI Value Agent Protocol · Solana</div>
+    <div class="hero-tag" id="heroTag">⚡ Smart Protocol · Solana</div>
     <h1>AIVA</h1>
     <p class="subtitle" id="heroSubtitle">
-      The first autonomous AI Agent network on Solana that works on-chain 24/7 —
+      The first autonomous protocol network on Solana that works on-chain 24/7 —
       generating yield, optimizing liquidity, and redistributing value directly to token holders.
     </p>
     <div class="hero-meta">
       <div class="m"><div class="val">10B</div><div class="lbl" data-en="Total Supply" data-zh="代币总量">Total Supply</div></div>
       <div class="m"><div class="val">SOL</div><div class="lbl" data-en="Native Chain" data-zh="主链">Native Chain</div></div>
       <div class="m"><div class="val">60%</div><div class="lbl" data-en="Community Owned" data-zh="社区持有">Community Owned</div></div>
-      <div class="m"><div class="val">∞</div><div class="lbl" data-en="Agents Working" data-zh="AI代理运行">Agents Working</div></div>
+      <div class="m"><div class="val">∞</div><div class="lbl" data-en="Strategies Running" data-zh="策略运行中">Strategies Running</div></div>
     </div>
   </div>
 </section>
@@ -785,7 +761,7 @@
 <footer>
   <div class="container">
     <div class="footer-logo">AIVA</div>
-    <p data-en="AI Value Agent Protocol · Built on Solana" data-zh="AI价值代理协议 · 构建于Solana">AI Value Agent Protocol · Built on Solana</p>
+    <p data-en="AIVA Protocol · Built on Solana" data-zh="AIVA协议 · 构建于Solana">AIVA Protocol · Built on Solana</p>
     <p style="margin-top:8px;" data-en="White Paper v1.0 · March 2026" data-zh="白皮书 v1.0 · 2026年3月">White Paper v1.0 · March 2026</p>
     <div style="margin-top:16px;display:flex;justify-content:center;gap:24px;flex-wrap:wrap;">
       <span style="color:var(--border);">Twitter/X: @AIVAprotocol</span>
@@ -793,6 +769,7 @@
       <span style="color:var(--border);">Discord: discord.gg/AIVA</span>
     </div>
     <div style="margin-top:24px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+      <a href="index.html" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:rgba(79,142,255,0.12);border:1px solid rgba(79,142,255,0.3);border-radius:10px;color:#4f8eff;font-size:13px;font-weight:600;text-decoration:none;">🏠 <span data-en="Home" data-zh="首页">Home</span></a>
       <a href="tokenomics.html" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:rgba(79,142,255,0.12);border:1px solid rgba(79,142,255,0.3);border-radius:10px;color:#4f8eff;font-size:13px;font-weight:600;text-decoration:none;">📊 <span data-en="Tokenomics" data-zh="代币经济模型">Tokenomics</span></a>
       <a href="marketing-kit.html" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);border-radius:10px;color:#a78bfa;font-size:13px;font-weight:600;text-decoration:none;">📣 <span data-en="Marketing Kit" data-zh="推广材料包">Marketing Kit</span></a>
       <a href="logo-kit.html" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);border-radius:10px;color:#34d399;font-size:13px;font-weight:600;text-decoration:none;">🎨 <span data-en="Logo Kit" data-zh="品牌图标">Logo Kit</span></a>
@@ -801,83 +778,92 @@
 </footer>
 
 <script>
-// ── WHITEPAPER LANGUAGE SWITCH (5 languages) ──
-// Full translation: EN + ZH (简体). ZHT / JA / KO show EN content + notice.
+// ── WHITEPAPER LANGUAGE SYNC WITH i18n.js ──
+// The whitepaper has its own EN/ZH dual-content blocks (.lang-en / .lang-zh)
+// We listen for language changes from i18n.js and apply the whitepaper-specific logic.
+
 const WP_NOTICE = {
   zht: '繁體中文白皮書翻譯準備中，目前顯示英文版本。',
   ja:  'ホワイトペーパーの日本語訳を準備中です。現在は英語版を表示しています。',
   ko:  '한국어 백서 번역 준비 중입니다. 현재 영어 버전을 표시합니다.',
 };
-const WP_BADGE = { en:'WHITE PAPER v1.0', zh:'白皮书 v1.0', zht:'白皮書 v1.0', ja:'ホワイトペーパー v1.0', ko:'백서 v1.0' };
+const WP_BADGE = {
+  en:'WHITE PAPER v1.0', zh:'白皮书 v1.0', zht:'白皮書 v1.0',
+  ja:'ホワイトペーパー v1.0', ko:'백서 v1.0'
+};
 
-let wpCurrentLang = localStorage.getItem('aiva_lang') || 'en';
-
-function wpSetLang(lang) {
-  wpCurrentLang = lang;
-  localStorage.setItem('aiva_lang', lang);
-
-  // update buttons
-  document.querySelectorAll('#langSwitcher .lang-btn').forEach((btn, i) => {
-    const map = ['en','zh','zht','ja','ko'];
-    btn.classList.toggle('active', map[i] === lang);
-  });
-
-  // html lang
-  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang === 'zht' ? 'zh-TW' : lang;
-
+function applyWPLang(lang) {
   // Notice bar
   const notice = document.getElementById('wpNotice');
-  if (WP_NOTICE[lang]) {
-    notice.textContent = WP_NOTICE[lang];
-    notice.classList.add('show');
-  } else {
-    notice.classList.remove('show');
+  if (notice) {
+    if (WP_NOTICE[lang]) {
+      notice.textContent = WP_NOTICE[lang];
+      notice.classList.add('show');
+    } else {
+      notice.classList.remove('show');
+    }
   }
-
   // Badge
-  document.getElementById('topBadge').textContent = WP_BADGE[lang] || WP_BADGE.en;
+  const badge = document.getElementById('topBadge');
+  if (badge) badge.textContent = WP_BADGE[lang] || WP_BADGE.en;
 
-  // For ZHT/JA/KO we display English content
-  const displayLang = (lang === 'zh') ? 'zh' : 'en';
+  // For ZHT/JA/KO — display English content
+  const displayLang = lang === 'zh' ? 'zh' : 'en';
 
-  // Fade
-  document.body.style.opacity = '0.85';
-  document.body.style.transition = 'opacity .2s';
+  document.body.style.opacity = '0.88';
+  document.body.style.transition = 'opacity .18s';
 
   setTimeout(() => {
-    // ── Update all [data-en] / [data-zh] elements ──
+    // [data-en] / [data-zh] elements
     document.querySelectorAll('[data-en]').forEach(el => {
       const txt = displayLang === 'zh' ? el.getAttribute('data-zh') : el.getAttribute('data-en');
-      if (txt) el.textContent = txt;
+      if (txt !== null) el.textContent = txt;
     });
-
-    // ── Toggle .lang-en / .lang-zh blocks ──
+    // .lang-en / .lang-zh blocks
     document.querySelectorAll('.lang-en').forEach(el => {
       el.style.display = displayLang === 'en' ? '' : 'none';
     });
     document.querySelectorAll('.lang-zh').forEach(el => {
       el.style.display = displayLang === 'zh' ? '' : 'none';
     });
-
-    // ── Hero subtitle ──
+    // Hero subtitle
     const heroSub = document.getElementById('heroSubtitle');
-    if (displayLang === 'zh') {
-      heroSub.textContent = '首个部署在Solana上的自主AI代理网络，24/7全天候链上运行——持续产生收益、优化流动性，并将价值直接再分配给代币持有者。';
-    } else {
-      heroSub.textContent = 'The first autonomous AI Agent network on Solana that works on-chain 24/7 — generating yield, optimizing liquidity, and redistributing value directly to token holders.';
+    if (heroSub) {
+      heroSub.textContent = displayLang === 'zh'
+        ? '首个部署在Solana上的自主协议网络，24/7全天候链上运行——持续产生收益、优化流动性，并将价值直接再分配给代币持有者。'
+        : 'The first autonomous protocol network on Solana that works on-chain 24/7 — generating yield, optimizing liquidity, and redistributing value directly to token holders.';
     }
-
-    // ── Hero tag ──
+    // Hero tag
     const heroTag = document.getElementById('heroTag');
-    heroTag.textContent = displayLang === 'zh' ? '🤖 AI价值代理协议 · Solana' : '🤖 AI Value Agent Protocol · Solana';
-
+    if (heroTag) {
+      heroTag.textContent = displayLang === 'zh' ? '⚡ 智能协议 · Solana' : '⚡ Smart Protocol · Solana';
+    }
     document.body.style.opacity = '1';
   }, 150);
 }
 
-// ── Init ──
+// Hook into i18n.js: wrap setLang to also call applyWPLang
 document.addEventListener('DOMContentLoaded', () => {
-  wpSetLang(wpCurrentLang);
+  // Apply initial lang
+  const initialLang = localStorage.getItem('aiva_lang') || 'en';
+  applyWPLang(initialLang);
+
+  // Monkey-patch AIVAi18n.setLang to also update whitepaper content
+  const origSet = window.AIVAi18n?.setLang;
+  if (origSet) {
+    window.AIVAi18n.setLang = function(lang) {
+      origSet(lang);
+      applyWPLang(lang);
+    };
+  }
+
+  // Also patch any lang-item clicks that fire before AIVAi18n is patched
+  document.addEventListener('click', (e) => {
+    if (e.target.matches('.lang-item[data-lang]')) {
+      const lang = e.target.dataset.lang;
+      setTimeout(() => applyWPLang(lang), 10);
+    }
+  });
 });
 
 // ── SCROLL FADE-IN ──

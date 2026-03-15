@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>AIVA — AI Value Agent | Official Website</title>
-<meta name="description" content="AIVA is an AI-powered virtual asset protocol built on Solana. Combining artificial intelligence with decentralized finance."/>
-<meta property="og:title" content="AIVA — AI Value Agent"/>
-<meta property="og:description" content="AI-powered virtual asset protocol on Solana. 10B Supply. Built for the future of DeFi."/>
+<title>AIVA — Virtual Asset Protocol on Solana | Official Website</title>
+<meta name="description" content="AIVA is a virtual asset protocol built on Solana. Combining smart on-chain automation with decentralized finance."/>
+<meta property="og:title" content="AIVA — Virtual Asset Protocol on Solana"/>
+<meta property="og:description" content="Virtual asset protocol on Solana. 10B Supply. Built for the future of DeFi."/>
 <style>
 :root{
   --bg:#04060f;--bg2:#080d1e;--bg3:#0d1530;--bg4:#111827;
@@ -429,29 +429,7 @@ footer{
   .footer-top{flex-direction:column;}
 }
 
-/* ── LANGUAGE SWITCHER ── */
-.lang-switcher{
-  display:flex;align-items:center;gap:0;
-  background:rgba(79,142,255,.08);
-  border:1px solid var(--border);
-  border-radius:99px;
-  overflow:hidden;
-  flex-shrink:0;
-}
-.lang-btn{
-  padding:5px 11px;font-size:.72rem;font-weight:600;
-  cursor:pointer;border:none;background:transparent;
-  color:var(--muted);transition:all .2s;letter-spacing:.03em;
-  white-space:nowrap;
-}
-.lang-btn.active{
-  background:linear-gradient(135deg,#4f8eff,#a78bfa);
-  color:#fff;
-}
-.lang-btn:hover:not(.active){color:var(--accent);}
-@media(max-width:768px){
-  .lang-switcher{display:none;}
-}
+/* lang-switcher styles injected by i18n.js */
 </style>
 </head>
 <body>
@@ -471,6 +449,7 @@ footer{
     AIVA
   </a>
   <div class="nav-links">
+    <a href="index.html" data-i18n="nav.home">Home</a>
     <a href="#features" data-i18n="nav.features">Features</a>
     <a href="#how" data-i18n="nav.how">How It Works</a>
     <a href="tokenomics.html" data-i18n="nav.tokenomics">Tokenomics</a>
@@ -489,8 +468,8 @@ footer{
       <span data-i18n="hero.badge">Now Live on Solana</span>
     </div>
     <h1 data-i18n="hero.h1">Intelligence Meets<br/>Decentralized Finance</h1>
-    <p class="hero-sub" data-i18n="hero.sub">AIVA is an AI-powered virtual asset protocol built on Solana — making intelligent investing accessible to everyone.</p>
-    <p class="hero-tagline" data-i18n="hero.tagline">🤖 AI-Driven &nbsp;·&nbsp; ⚡ Solana Speed &nbsp;·&nbsp; 💎 10B $AIVA</p>
+    <p class="hero-sub" data-i18n="hero.sub">AIVA is a virtual asset protocol built on Solana — combining smart automation with decentralized finance to make strategic investing accessible to everyone.</p>
+    <p class="hero-tagline" data-i18n="hero.tagline">⚡ On-Chain &nbsp;·&nbsp; 🔒 Transparent &nbsp;·&nbsp; 💎 10B $AIVA</p>
     <div class="hero-btns">
       <a href="https://pump.fun" target="_blank" class="btn-primary" data-i18n="hero.buy">🚀 Buy $AIVA</a>
       <a href="whitepaper.html" class="btn-secondary" data-i18n="hero.whitepaper">📄 Read Whitepaper</a>
@@ -506,11 +485,11 @@ footer{
       </div>
       <div class="hero-stat">
         <div class="val"><span>AI</span></div>
-        <div class="lbl" data-i18n="hero.stat.ai">Powered Protocol</div>
+        <div class="lbl" data-i18n="hero.stat.ai">Smart Protocol</div>
       </div>
       <div class="hero-stat">
         <div class="val"><span>0%</span></div>
-        <div class="lbl" data-i18n="hero.stat.tax">Team Tax</div>
+        <div class="lbl" data-i18n="hero.stat.tax">Zero Tax</div>
       </div>
     </div>
   </div>
@@ -546,14 +525,14 @@ footer{
 <div class="ticker-wrap">
   <div class="ticker-track">
     <div class="ticker-item">$AIVA <span class="chip">+∞%</span></div>
-    <div class="ticker-item">🤖 AI-Powered DeFi</div>
+    <div class="ticker-item">⚡ On-Chain DeFi</div>
     <div class="ticker-item">⚡ Built on Solana</div>
     <div class="ticker-item">💎 10,000,000,000 Supply</div>
     <div class="ticker-item">🔥 Community Driven</div>
     <div class="ticker-item">🛡️ Fair Launch</div>
     <div class="ticker-item">🌐 Global Community</div>
     <div class="ticker-item">$AIVA <span class="chip">LIVE</span></div>
-    <div class="ticker-item">🤖 AI-Powered DeFi</div>
+    <div class="ticker-item">⚡ On-Chain DeFi</div>
     <div class="ticker-item">⚡ Built on Solana</div>
     <div class="ticker-item">💎 10,000,000,000 Supply</div>
     <div class="ticker-item">🔥 Community Driven</div>
@@ -609,13 +588,13 @@ footer{
     <div class="reveal">
       <span class="section-label" data-i18n="feat.label">Core Features</span>
       <h2 class="section-title" data-i18n="feat.title">Why AIVA?</h2>
-      <p class="section-sub" data-i18n="feat.sub">Built from the ground up to combine the power of artificial intelligence with the transparency of blockchain.</p>
+      <p class="section-sub" data-i18n="feat.sub">Built from the ground up to combine smart automation with the transparency of blockchain.</p>
     </div>
     <div class="features-grid reveal">
       <div class="feat-card">
         <div class="feat-icon">🤖</div>
-        <h3 data-i18n="feat.ai.title">AI-Driven Intelligence</h3>
-        <p data-i18n="feat.ai.desc">AIVA leverages cutting-edge artificial intelligence to analyze market patterns, identify opportunities, and optimize decision-making in real time.</p>
+        <h3 data-i18n="feat.ai.title">Smart Decision Engine</h3>
+        <p data-i18n="feat.ai.desc">AIVA's protocol leverages advanced on-chain analysis to identify market opportunities and optimize trading decisions in real time.</p>
       </div>
       <div class="feat-card">
         <div class="feat-icon">⚡</div>
@@ -653,8 +632,8 @@ footer{
   <div class="container">
     <div class="reveal" style="text-align:center;margin-bottom:60px;">
       <span class="section-label" data-i18n="how.label">How It Works</span>
-      <h2 class="section-title" data-i18n="how.title">Simple. Powerful. Intelligent.</h2>
-      <p class="section-sub" style="margin:0 auto;" data-i18n="how.sub">From acquisition to intelligent yield — AIVA works for you automatically.</p>
+      <h2 class="section-title" data-i18n="how.title">Simple. Powerful. Reliable.</h2>
+      <p class="section-sub" style="margin:0 auto;" data-i18n="how.sub">From acquisition to on-chain yield — AIVA works for you automatically.</p>
     </div>
     <div class="how-grid reveal">
       <div class="how-step">
@@ -664,13 +643,13 @@ footer{
       </div>
       <div class="how-step">
         <div class="step-circle">2</div>
-        <h4 data-i18n="how.step2.title">AI Analyzes Markets</h4>
-        <p data-i18n="how.step2.desc">AIVA's AI engine continuously scans on-chain data and market signals.</p>
+        <h4 data-i18n="how.step2.title">Protocol Analyzes Markets</h4>
+        <p data-i18n="how.step2.desc">AIVA's on-chain engine continuously scans market data and identifies opportunities.</p>
       </div>
       <div class="how-step">
         <div class="step-circle">3</div>
         <h4 data-i18n="how.step3.title">Protocol Executes</h4>
-        <p data-i18n="how.step3.desc">Smart contracts execute optimal strategies based on AI recommendations.</p>
+        <p data-i18n="how.step3.desc">Smart contracts execute optimal strategies based on protocol recommendations.</p>
       </div>
       <div class="how-step">
         <div class="step-circle">4</div>
@@ -793,10 +772,10 @@ footer{
       </div>
       <div class="rm-card">
         <div class="rm-phase">Phase 3</div>
-        <h4 data-i18n="rm.p3.title">AI Integration</h4>
+        <h4 data-i18n="rm.p3.title">Protocol Integration</h4>
         <div class="period">Q3 2026</div>
         <ul class="rm-items">
-          <li data-i18n="rm.p3.1">AI Dashboard Beta</li>
+          <li data-i18n="rm.p3.1">Analytics Dashboard Beta</li>
           <li data-i18n="rm.p3.2">Market Signal Engine</li>
           <li data-i18n="rm.p3.3">CEX Listings</li>
           <li data-i18n="rm.p3.4">Staking Protocol</li>
@@ -808,7 +787,7 @@ footer{
         <h4 data-i18n="rm.p4.title">Full Protocol</h4>
         <div class="period">Q4 2026</div>
         <ul class="rm-items">
-          <li data-i18n="rm.p4.1">AI Agent v1.0 Launch</li>
+          <li data-i18n="rm.p4.1">Protocol v1.0 Launch</li>
           <li data-i18n="rm.p4.2">Cross-chain Bridge</li>
           <li data-i18n="rm.p4.3">Institutional Partnerships</li>
           <li data-i18n="rm.p4.4">100,000+ Holders</li>
@@ -824,7 +803,7 @@ footer{
 <!-- CTA BAND -->
 <div class="cta-band" id="community">
   <h2 data-i18n="cta.title">Join the AIVA Community</h2>
-  <p data-i18n="cta.sub">Be part of the AI-powered DeFi revolution. Connect with thousands of holders worldwide.</p>
+  <p data-i18n="cta.sub">Be part of the DeFi revolution on Solana. Connect with thousands of holders worldwide.</p>
   <div class="cta-links">
     <a href="https://twitter.com/AIVA_SOL" target="_blank" class="cta-link twitter" data-i18n="cta.twitter">
       🐦 Twitter / X
@@ -853,11 +832,12 @@ footer{
           <img src="AIVA-logo3-128x128.png" alt="AIVA" style="width:28px;height:28px;border-radius:6px;object-fit:contain;">
           AIVA
         </div>
-        <p data-i18n="footer.brand">AI Value Agent — An AI-powered virtual asset protocol built on Solana. Making intelligent investing accessible to everyone.</p>
+        <p data-i18n="footer.brand">AIVA Protocol — A virtual asset protocol built on Solana. Combining smart automation with decentralized finance.</p>
       </div>
       <div class="footer-links">
         <div class="footer-col">
           <h5 data-i18n="footer.protocol">Protocol</h5>
+          <a href="index.html" data-i18n="nav.home">Home</a>
           <a href="whitepaper.html" data-i18n="nav.whitepaper">Whitepaper</a>
           <a href="tokenomics.html" data-i18n="nav.tokenomics">Tokenomics</a>
           <a href="#roadmap" data-i18n="nav.roadmap">Roadmap</a>
@@ -923,10 +903,10 @@ function copyCA() {
   const btn = document.getElementById('copyBtn');
   const text = document.getElementById('caText').textContent.trim();
   if (CA_ADDRESS === 'TBA') {
-    btn.textContent = '⏳ Not yet live';
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> ⏳`;
     btn.classList.add('copied');
     setTimeout(() => {
-      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy CA`;
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> <span data-i18n="ca.copy">Copy CA</span>`;
       btn.classList.remove('copied');
     }, 2000);
     return;
