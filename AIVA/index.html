@@ -503,8 +503,8 @@ footer{
     </div>
     <div class="label"><span></span> <span data-i18n="ca.label">$AIVA Contract Address</span> <span></span></div>
     <div class="contract-addr-wrap">
-      <div class="contract-addr-text" id="caText" data-i18n="ca.tba">
-        TBA — Contract address will be published at launch on Pump.fun
+      <div class="contract-addr-text" id="caText">
+        FMKA3FQBu5qqPLxAvf7YTpmP3GpLsSENQYu4xJ72pump
       </div>
       <button class="contract-copy-btn" id="copyBtn" onclick="copyCA()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -898,7 +898,7 @@ const barObserver = new IntersectionObserver((entries) => {
 bars.forEach(b => barObserver.observe(b));
 
 // ── 复制合约地址 ──
-const CA_ADDRESS = 'TBA'; // ← 上线后替换为真实合约地址，如 "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAs"
+const CA_ADDRESS = 'FMKA3FQBu5qqPLxAvf7YTpmP3GpLsSENQYu4xJ72pump';
 function copyCA() {
   const btn = document.getElementById('copyBtn');
   const text = document.getElementById('caText').textContent.trim();

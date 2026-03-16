@@ -27,7 +27,7 @@ const AIVA_I18N = {
 
   /* ─── CONTRACT ─── */
   'ca.label':         { en:'$AIVA Contract Address', zh:'$AIVA 合约地址', zht:'$AIVA 合約地址', ja:'$AIVA コントラクトアドレス', ko:'$AIVA 컨트랙트 주소' },
-  'ca.tba':           { en:'TBA — Contract address will be published at launch on Pump.fun', zh:'待公布 — 合约地址将在 Pump.fun 上线时发布', zht:'待公布 — 合約地址將於 Pump.fun 上線時發佈', ja:'TBA — コントラクトアドレスはローンチ時に公開されます', ko:'TBA — 컨트랙트 주소는 런치 시 공개됩니다' },
+  'ca.tba':           { en:'FMKA3FQBu5qqPLxAvf7YTpmP3GpLsSENQYu4xJ72pump', zh:'FMKA3FQBu5qqPLxAvf7YTpmP3GpLsSENQYu4xJ72pump', zht:'FMKA3FQBu5qqPLxAvf7YTpmP3GpLsSENQYu4xJ72pump', ja:'FMKA3FQBu5qqPLxAvf7YTpmP3GpLsSENQYu4xJ72pump', ko:'FMKA3FQBu5qqPLxAvf7YTpmP3GpLsSENQYu4xJ72pump' },
   'ca.copy':          { en:'Copy CA',    zh:'复制',   zht:'複製',   ja:'コピー',    ko:'복사' },
   'ca.copied':        { en:'✅ Copied!', zh:'✅ 已复制！', zht:'✅ 已複製！', ja:'✅ コピー済み！', ko:'✅ 복사됨!' },
   'ca.note':          { en:'⚠️ Only trust addresses from our official channels:', zh:'⚠️ 仅信任来自官方渠道的地址：', zht:'⚠️ 僅信任來自官方渠道的地址：', ja:'⚠️ 公式チャンネルのアドレスのみ信頼してください：', ko:'⚠️ 공식 채널의 주소만 신뢰하세요:' },
@@ -154,7 +154,12 @@ const AIVA_I18N = {
   const LS_KEY = 'aiva_lang';
 
   function getLang() {
-    return localStorage.getItem(LS_KEY) || 'en';
+    const saved = localStorage.getItem(LS_KEY);
+    // Validate saved value is one of the supported langs
+    if (saved && ['en','zh','zht','ja','ko'].includes(saved)) return saved;
+    // Default to English and save it
+    localStorage.setItem(LS_KEY, 'en');
+    return 'en';
   }
 
   function setLang(lang) {
