@@ -1,0 +1,10 @@
+2026-03-17 22:18:13,374 INFO [ArbEngine v3] 第 1 次扫描 | 数据源: Jupiter API v2
+2026-03-17 22:18:14,290 WARNING HTTP 404 ← https://api.jup.ag/price/v2
+2026-03-17 22:18:14,393 INFO [Price] 使用 DexScreener 备用数据源
+2026-03-17 22:18:22,900 INFO [Price] Jupiter: {'USDC': 0.9998, 'SOL': 93.86, 'USDT': 1.000095, 'BONK': 6e-06, 'JUP': 0.1656, 'WIF': 0.1862}
+2026-03-17 22:18:25,734 INFO [Arb] SOL: ❌ spread=+0.010% net=$-0.2908 [jupiter_api_v2]
+2026-03-17 22:18:29,965 INFO [Arb] JUP: ❌ spread=-0.037% net=$-0.3384 [jupiter_api_v2]
+2026-03-17 22:18:32,861 INFO [Arb] BONK: ❌ spread=-0.100% net=$-0.4010 [jupiter_api_v2]
+2026-03-17 22:18:35,737 INFO [Arb] WIF: ❌ spread=-0.160% net=$-0.4610 [jupiter_api_v2]
+2026-03-17 22:18:38,223 INFO [APY] 获取 8 个收益池
+2026-03-17 22:18:38,223 INFO [ArbEngine] 完成 24.85s | 有效套利: 0 | 最优: 存款: Kamino-Liquidity KMNO-USDC 4.8%

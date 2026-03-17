@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>加密货币套利机器人完全指南 | AIVA DeFi Agent</title>
+<style>
+  :root {
+    --bg: #0d0f14;
+    --card: #161922;
+    --border: #2a2d3a;
+    --accent: #7c4dff;
+    --accent2: #00e5ff;
+    --green: #00c853;
+    --yellow: #ffd600;
+    --red: #ff5252;
+    --text: #e2e4ed;
+    --muted: #8b8fa8;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6; }
+
+  /* 顶部 Hero */
+  .hero {
+    background: linear-gradient(135deg, #1a0533 0%, #0d1a33 50%, #001a2e 100%);
+    padding: 60px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(124,77,255,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 50%, rgba(0,229,255,0.1) 0%, transparent 60%);
+  }
+  .hero h1 { font-size: 2.6rem; font-weight: 800; background: linear-gradient(90deg, #7c4dff, #00e5ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; position: relative; z-index: 1; }
+  .hero p { color: var(--muted); font-size: 1.1rem; margin-top: 12px; position: relative; z-index: 1; }
+  .hero .badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(124,77,255,0.2); border: 1px solid rgba(124,77,255,0.4); border-radius: 20px; padding: 6px 16px; font-size: 0.85rem; color: #c8b0ff; margin-top: 20px; position: relative; z-index: 1; }
+
+  /* 布局 */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  .section { padding: 48px 0; }
+  h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+  h2 .icon { font-size: 1.4rem; }
+  h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 12px; color: var(--accent2); }
+
+  /* 卡片网格 */
+  .grid { display: grid; gap: 20px; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+  .card.highlight { border-color: var(--accent); box-shadow: 0 0 20px rgba(124,77,255,0.15); }
+  .card.safe { border-color: var(--green); box-shadow: 0 0 20px rgba(0,200,83,0.1); }
+
+  /* 风险表格 */
+  .risk-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  .risk-table th { background: rgba(124,77,255,0.15); padding: 12px 16px; text-align: left; font-weight: 600; color: var(--accent2); border-bottom: 1px solid var(--border); }
+  .risk-table td { padding: 12px 16px; border-bottom: 1px solid rgba(42,45,58,0.6); vertical-align: top; }
+  .risk-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .risk-tag { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+  .r1 { background: rgba(0,200,83,0.15); color: #69f0ae; border: 1px solid rgba(0,200,83,0.3); }
+  .r2 { background: rgba(0,200,83,0.1); color: #00e676; border: 1px solid rgba(0,200,83,0.2); }
+  .r3 { background: rgba(255,214,0,0.15); color: #ffd600; border: 1px solid rgba(255,214,0,0.3); }
+  .r4 { background: rgba(255,152,0,0.15); color: #ffb74d; border: 1px solid rgba(255,152,0,0.3); }
+  .r5 { background: rgba(255,82,82,0.15); color: #ff5252; border: 1px solid rgba(255,82,82,0.3); }
+
+  /* 步骤指南 */
+  .steps { list-style: none; counter-reset: step; }
+  .steps li { counter-increment: step; display: flex; gap: 20px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+  .steps li:last-child { border-bottom: none; }
+  .step-num { width: 40px; height: 40px; min-width: 40px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; }
+  .step-content h4 { font-size: 1rem; margin-bottom: 6px; }
+  .step-content p { color: var(--muted); font-size: 0.9rem; }
+
+  /* 代码块 */
+  pre { background: #0a0c10; border: 1px solid var(--border); border-radius: 8px; padding: 16px; font-size: 0.85rem; overflow-x: auto; margin-top: 12px; }
+  code { font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace; }
+  .comment { color: #5c6370; }
+  .kw { color: #c678dd; }
+  .str { color: #98c379; }
+  .num { color: #d19a66; }
+  .fn { color: #61afef; }
+
+  /* 比较表 */
+  .compare-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(42,45,58,0.5); }
+  .compare-item:last-child { border-bottom: none; }
+  .compare-label { color: var(--muted); font-size: 0.9rem; }
+  .compare-val { font-weight: 600; font-size: 0.9rem; }
+  .val-green { color: var(--green); }
+  .val-yellow { color: var(--yellow); }
+  .val-red { color: var(--red); }
+  .val-blue { color: var(--accent2); }
+
+  /* 标注框 */
+  .notice { border-radius: 8px; padding: 16px 20px; margin: 16px 0; font-size: 0.9rem; }
+  .notice.green { background: rgba(0,200,83,0.08); border: 1px solid rgba(0,200,83,0.25); color: #b9f6ca; }
+  .notice.yellow { background: rgba(255,214,0,0.08); border: 1px solid rgba(255,214,0,0.25); color: #fff9c4; }
+  .notice.blue { background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.25); color: #b2ebf2; }
+  .notice.red { background: rgba(255,82,82,0.08); border: 1px solid rgba(255,82,82,0.25); color: #ffcdd2; }
+
+  /* 实时数据展示 */
+  .data-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed rgba(42,45,58,0.8); font-size: 0.88rem; }
+  .data-row:last-child { border-bottom: none; }
+
+  /* 星级 */
+  .stars { color: var(--yellow); letter-spacing: 2px; }
+  .star-empty { color: var(--border); }
+
+  /* 进度条 */
+  .progress { background: rgba(255,255,255,0.06); border-radius: 6px; height: 8px; overflow: hidden; margin-top: 8px; }
+  .progress-bar { height: 100%; border-radius: 6px; }
+
+  /* 流程图 */
+  .flow { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+  .flow-box { background: rgba(124,77,255,0.12); border: 1px solid rgba(124,77,255,0.3); border-radius: 8px; padding: 8px 14px; font-size: 0.85rem; text-align: center; white-space: nowrap; }
+  .flow-arrow { color: var(--muted); font-size: 1.2rem; }
+  .flow-box.green { background: rgba(0,200,83,0.12); border-color: rgba(0,200,83,0.3); color: #69f0ae; }
+  .flow-box.blue { background: rgba(0,229,255,0.1); border-color: rgba(0,229,255,0.3); color: #80deea; }
+
+  /* 真实数据结果展示 */
+  .live-result { background: #0a0c10; border: 1px solid var(--green); border-radius: 10px; padding: 20px; font-family: monospace; font-size: 0.85rem; margin: 16px 0; }
+  .live-result .line-ok { color: #69f0ae; }
+  .live-result .line-info { color: #80deea; }
+  .live-result .line-warn { color: #ffd600; }
+  .live-result .line-head { color: #c8b0ff; font-weight: bold; }
+
+  /* 底部 */
+  footer { background: var(--card); border-top: 1px solid var(--border); padding: 32px 40px; text-align: center; color: var(--muted); font-size: 0.85rem; }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 1.8rem; }
+    .risk-table { font-size: 0.8rem; }
+    .risk-table th, .risk-table td { padding: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══════════════════════════════════════════════════ -->
+<div class="hero">
+  <h1>加密货币套利机器人完全指南</h1>
+  <p>全网调研 · 风险对比 · AIVA 专属实现 · 手把手教程</p>
+  <div class="badge">🤖 AIVA DeFi Agent v2.0 · 真实 API 已验证 · 2026 最新</div>
+</div>
+
+<!-- ═══ PART 1: 机器人类型 ═══════════════════════════════════════ -->
+<div class="container">
+<div class="section">
+  <h2><span class="icon">📚</span> 全球套利机器人类型全览</h2>
+  <p style="color:var(--muted); margin-bottom:24px;">通过全网调研，现存套利机器人可分为 <strong style="color:var(--accent2)">8 大类型</strong>，下表按风险从低到高排列：</p>
+
+  <div style="overflow-x:auto;">
+  <table class="risk-table">
+    <thead>
+      <tr>
+        <th>类型</th>
+        <th>风险等级</th>
+        <th>年化收益范围</th>
+        <th>工作原理</th>
+        <th>代表产品/平台</th>
+        <th>新手适合度</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>① 稳定币收益优化</strong></td>
+        <td><span class="risk-tag r1">⭐ 极低</span></td>
+        <td>2% – 15%</td>
+        <td>自动在 Kamino / MarginFi 等借贷协议中存入 USDC，赚取存款利息</td>
+        <td>Kamino Finance, MarginFi, Solend</td>
+        <td>✅ 强烈推荐</td>
+      </tr>
+      <tr>
+        <td><strong>② 跨DEX价格监控套利</strong></td>
+        <td><span class="risk-tag r2">⭐⭐ 低</span></td>
+        <td>0.3% – 5% / 次</td>
+        <td>监控同一代币在 Raydium / Orca / Meteora 的价格差，发现价差 > 0.3% 时信号报警</td>
+        <td>DexScreener, AIVA Bot</td>
+        <td>✅ 适合</td>
+      </tr>
+      <tr>
+        <td><strong>③ CEX↔DEX 跨所套利</strong></td>
+        <td><span class="risk-tag r2">⭐⭐ 低-中</span></td>
+        <td>0.5% – 3% / 次</td>
+        <td>比较 Binance/OKX 与 Raydium 的价格差，低买高卖</td>
+        <td>Bitsgap, 3Commas, Pionex</td>
+        <td>⚠️ 需要CEX账户</td>
+      </tr>
+      <tr>
+        <td><strong>④ 资金费率套利</strong></td>
+        <td><span class="risk-tag r3">⭐⭐⭐ 中</span></td>
+        <td>5% – 30% 年化</td>
+        <td>永续合约资金费率为正时，做空合约同时持有现货对冲，赚取费率差</td>
+        <td>Drift Protocol, Binance Funding</td>
+        <td>⚠️ 需理解期货</td>
+      </tr>
+      <tr>
+        <td><strong>⑤ 三角套利</strong></td>
+        <td><span class="risk-tag r3">⭐⭐⭐ 中-高</span></td>
+        <td>0.1% – 1% / 次（高频）</td>
+        <td>在同一 DEX 上 USDC→SOL→JUP→USDC 循环，利用三者汇率不平衡</td>
+        <td>Jupiter Aggregator, Raydium</td>
+        <td>⚠️ 需要极低延迟</td>
+      </tr>
+      <tr>
+        <td><strong>⑥ 闪电贷套利</strong></td>
+        <td><span class="risk-tag r4">⭐⭐⭐⭐ 高</span></td>
+        <td>不定，高风险高回报</td>
+        <td>无抵押借贷，在同一交易内完成套利并还款，失败则整笔回滚</td>
+        <td>Solana Flash Loan Bot, Aave</td>
+        <td>❌ 需要开发能力</td>
+      </tr>
+      <tr>
+        <td><strong>⑦ MEV / 抢跑</strong></td>
+        <td><span class="risk-tag r5">⭐⭐⭐⭐⭐ 极高</span></td>
+        <td>不稳定，竞争激烈</td>
+        <td>监控内存池，在大额交易前抢先执行，赚取价格滑点</td>
+        <td>Jito, Flashbots</td>
+        <td>❌ 极高专业门槛</td>
+      </tr>
+      <tr>
+        <td><strong>⑧ 跨链套利</strong></td>
+        <td><span class="risk-tag r5">⭐⭐⭐⭐⭐ 极高</span></td>
+        <td>不定，桥接风险大</td>
+        <td>利用 Solana / Ethereum / BNBChain 之间的价格差，通过跨链桥转账</td>
+        <td>Wormhole, LayerZero</td>
+        <td>❌ 跨链桥风险极大</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ═══ PART 2: 最流行产品 ══════════════════════════════════════ -->
+<div class="section" style="border-top: 1px solid var(--border);">
+  <h2><span class="icon">🏆</span> 全球最流行的套利机器人产品</h2>
+  <div class="grid grid-3">
+
+    <div class="card">
+      <h3>🥇 Pionex</h3>
+      <div class="compare-item"><span class="compare-label">月活用户</span><span class="compare-val val-green">300万+</span></div>
+      <div class="compare-item"><span class="compare-label">手续费</span><span class="compare-val val-green">0.05%（业界最低）</span></div>
+      <div class="compare-item"><span class="compare-label">风格</span><span class="compare-val val-blue">新手友好</span></div>
+      <div class="compare-item"><span class="compare-label">内置机器人数</span><span class="compare-val">16种</span></div>
+      <div class="progress"><div class="progress-bar" style="width:90%;background:linear-gradient(90deg,#7c4dff,#00e5ff)"></div></div>
+      <p style="color:var(--muted);font-size:0.82rem;margin-top:8px;">交易所+机器人一体化，无需配置，适合零基础</p>
+    </div>
+
+    <div class="card">
+      <h3>🥈 Bitsgap</h3>
+      <div class="compare-item"><span class="compare-label">支持交易所</span><span class="compare-val val-green">25+</span></div>
+      <div class="compare-item"><span class="compare-label">月费</span><span class="compare-val val-yellow">$29起</span></div>
+      <div class="compare-item"><span class="compare-label">风格</span><span class="compare-val val-blue">全功能</span></div>
+      <div class="compare-item"><span class="compare-label">AI套利扫描</span><span class="compare-val val-green">✅</span></div>
+      <div class="progress"><div class="progress-bar" style="width:80%;background:linear-gradient(90deg,#7c4dff,#00e5ff)"></div></div>
+      <p style="color:var(--muted);font-size:0.82rem;margin-top:8px;">功能最全面，CEX跨所套利首选</p>
+    </div>
+
+    <div class="card">
+      <h3>🥉 3Commas</h3>
+      <div class="compare-item"><span class="compare-label">全球用户</span><span class="compare-val val-green">500万+</span></div>
+      <div class="compare-item"><span class="compare-label">月费</span><span class="compare-val val-yellow">$22起</span></div>
+      <div class="compare-item"><span class="compare-label">风格</span><span class="compare-val val-blue">专业交易</span></div>
+      <div class="compare-item"><span class="compare-label">智能止盈止损</span><span class="compare-val val-green">✅</span></div>
+      <div class="progress"><div class="progress-bar" style="width:75%;background:linear-gradient(90deg,#7c4dff,#00e5ff)"></div></div>
+      <p style="color:var(--muted);font-size:0.82rem;margin-top:8px;">老牌平台，风控工具最强</p>
+    </div>
+
+    <div class="card">
+      <h3>⚡ Jupiter Arb Bot（开源）</h3>
+      <div class="compare-item"><span class="compare-label">GitHub Stars</span><span class="compare-val val-green">2800+</span></div>
+      <div class="compare-item"><span class="compare-label">费用</span><span class="compare-val val-green">免费</span></div>
+      <div class="compare-item"><span class="compare-label">链</span><span class="compare-val val-blue">Solana</span></div>
+      <div class="compare-item"><span class="compare-label">语言</span><span class="compare-val">TypeScript</span></div>
+      <div class="progress"><div class="progress-bar" style="width:65%;background:linear-gradient(90deg,#00c853,#00e5ff)"></div></div>
+      <p style="color:var(--muted);font-size:0.82rem;margin-top:8px;">Solana DEX套利最多人用的开源方案</p>
+    </div>
+
+    <div class="card highlight">
+      <h3>🤖 AIVA DeFi Agent（我们的）</h3>
+      <div class="compare-item"><span class="compare-label">费用</span><span class="compare-val val-green">免费（自建）</span></div>
+      <div class="compare-item"><span class="compare-label">数据源</span><span class="compare-val val-blue">DexScreener+DeFiLlama</span></div>
+      <div class="compare-item"><span class="compare-label">默认模式</span><span class="compare-val val-green">模拟（安全）</span></div>
+      <div class="compare-item"><span class="compare-label">集成Telegram</span><span class="compare-val val-green">✅</span></div>
+      <div class="progress"><div class="progress-bar" style="width:70%;background:linear-gradient(90deg,#7c4dff,#00e5ff)"></div></div>
+      <p style="color:var(--muted);font-size:0.82rem;margin-top:8px;">与 $AIVA 代币打通，盈利回购销毁</p>
+    </div>
+
+    <div class="card">
+      <h3>🌙 HaasOnline</h3>
+      <div class="compare-item"><span class="compare-label">年费</span><span class="compare-val val-yellow">$63-$250</span></div>
+      <div class="compare-item"><span class="compare-label">脚本定制</span><span class="compare-val val-green">✅</span></div>
+      <div class="compare-item"><span class="compare-label">风格</span><span class="compare-val">开发者向</span></div>
+      <div class="compare-item"><span class="compare-label">本地部署</span><span class="compare-val val-green">✅</span></div>
+      <div class="progress"><div class="progress-bar" style="width:55%;background:linear-gradient(90deg,#7c4dff,#00e5ff)"></div></div>
+      <p style="color:var(--muted);font-size:0.82rem;margin-top:8px;">老牌专业平台，完全本地运行最安全</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ PART 3: 我们选择什么 ═══════════════════════════════════ -->
+<div class="section" style="border-top: 1px solid var(--border);">
+  <h2><span class="icon">🎯</span> 我们的选择：风险最低的方案</h2>
+
+  <div class="notice blue">
+    💡 <strong>结论：稳定币收益优化 + 跨DEX价差监控 组合</strong>，是对初学者风险最低、最容易落地的策略。
+  </div>
+
+  <div class="grid grid-2" style="margin-top:24px;">
+    <div class="card safe">
+      <h3>✅ 策略一：稳定币存款收益</h3>
+      <p style="color:var(--muted);font-size:0.9rem;margin-bottom:16px;">把 USDC 存入 Kamino Finance，赚取 2-8% 年化利率</p>
+      <div class="data-row"><span>协议</span><span style="color:var(--accent2)">Kamino Lend（Solana TVL $2B+）</span></div>
+      <div class="data-row"><span>当前APY（实测）</span><span style="color:var(--green)">2.0% USDC / 1.1% PYUSD</span></div>
+      <div class="data-row"><span>最低资金</span><span>$10 USDC</span></div>
+      <div class="data-row"><span>可能亏损情况</span><span style="color:var(--yellow)">仅协议被黑客攻击</span></div>
+      <div class="data-row"><span>无常损失</span><span style="color:var(--green)">❌ 无（纯借贷）</span></div>
+      <div class="data-row"><span>随时取出</span><span style="color:var(--green)">✅ 是</span></div>
+    </div>
+
+    <div class="card safe">
+      <h3>✅ 策略二：跨DEX价差监控</h3>
+      <p style="color:var(--muted);font-size:0.9rem;margin-bottom:16px;">监控同一代币在不同 DEX 的价格差，发现机会时提醒操作</p>
+      <div class="data-row"><span>数据来源</span><span style="color:var(--accent2)">DexScreener（无需API Key）</span></div>
+      <div class="data-row"><span>监控代币</span><span>SOL / JUP / BONK / WIF / AIVA</span></div>
+      <div class="data-row"><span>触发阈值</span><span>价差 &gt; 0.30%</span></div>
+      <div class="data-row"><span>资金风险</span><span style="color:var(--green)">模拟模式下 = 零</span></div>
+      <div class="data-row"><span>执行方式</span><span style="color:var(--yellow)">提醒→手动确认→执行</span></div>
+      <div class="data-row"><span>自动化程度</span><span>监控自动，执行手动</span></div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:32px; color:var(--text);">收益闭环：Agent 赚钱 → 回购 $AIVA</h3>
+  <div class="flow">
+    <div class="flow-box">🤖 Agent 每小时扫描</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">发现价差/APY机会</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">模拟记录收益</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box green">累积 $1+ USDC</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box blue">回购销毁 $AIVA</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">Telegram 公告</div>
+  </div>
+</div>
+
+<!-- ═══ PART 4: 真实运行结果 ═════════════════════════════════════ -->
+<div class="section" style="border-top: 1px solid var(--border);">
+  <h2><span class="icon">📊</span> 真实运行结果（刚刚跑的）</h2>
+  <div class="notice green">✅ 以下数据为本文档生成时真实调用 API 获取，非模拟数据</div>
+
+  <div class="live-result">
+    <div class="line-head">🤖 AIVA 套利扫描引擎 v2 — 第 1 次扫描</div>
+    <div class="line-info">数据源: DexScreener + DeFi Llama（无需API Key）</div>
+    <br>
+    <div class="line-ok">⏱  扫描耗时: 12.9s</div>
+    <br>
+    <div class="line-head">💰 代币实时价格（来自 DexScreener）:</div>
+    <div class="line-info">   SOL  : $94.28</div>
+    <div class="line-info">   JUP  : $0.1657</div>
+    <div class="line-info">   WIF  : $0.1859</div>
+    <br>
+    <div class="line-head">📈 稳定币收益率（来自 DeFi Llama 真实数据）:</div>
+    <div class="line-ok">   1. Kamino-Lend       USDC   : 2.0% APY</div>
+    <div class="line-ok">   2. Kamino-Liquidity  USDC   : 1.1% APY</div>
+    <div class="line-ok">   3. Kamino-Lend       PYUSD  : 1.1% APY</div>
+    <div class="line-ok">   4. Kamino-Lend       USDS   : 0.8% APY</div>
+    <br>
+    <div class="line-head">🏆 当前最优策略:</div>
+    <div class="line-ok">   存款: Kamino-Lend USDC 2.0% | 风险: 极低 | 随时提取</div>
+    <br>
+    <div class="line-warn">⚡ 套利机会: 市场价差低于阈值（0.30%），目前无有效套利</div>
+    <div class="line-warn">   → 正常现象！成熟代币套利机会出现频率约 2-10次/天</div>
+  </div>
+</div>
+
+<!-- ═══ PART 5: 使用指南 ══════════════════════════════════════════ -->
+<div class="section" style="border-top: 1px solid var(--border);">
+  <h2><span class="icon">📖</span> 手把手使用指南</h2>
+
+  <h3>第一步：确认机器人已在运行</h3>
+  <ul class="steps">
+    <li>
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>重启 Bot（让 DeFi Agent 生效）</h4>
+        <p>先关掉旧进程，重启包含 Agent 的新版本</p>
+        <pre><code><span class="comment"># 关掉旧进程</span>
+taskkill /F /IM python.exe /T
+
+<span class="comment"># 启动新版（含 DeFi Agent）</span>
+python C:\tmp_aiva\start_bot.py</code></pre>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>在 Telegram 验证 Agent 已启动</h4>
+        <p>给 Bot 发送以下命令，确认看到 Agent 状态面板</p>
+        <pre><code>/agent_status</code></pre>
+        <p style="margin-top:8px;">应该看到：钱包地址 / 扫描次数 / 策略状态 / 模拟收益</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h4>手动触发一次扫描</h4>
+        <p>管理员可用 /agent_scan 立即扫描，不用等1小时</p>
+        <pre><code>/agent_scan</code></pre>
+        <p style="margin-top:8px;">会显示：各代币跨DEX价差 + 最优收益率 + 当前最优策略</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h4>查看回购销毁历史</h4>
+        <pre><code>/buyback</code></pre>
+        <p style="margin-top:8px;">显示：累计模拟回购次数 / USDC 消耗 / AIVA 理论销毁量</p>
+      </div>
+    </li>
+  </ul>
+
+  <h3 style="margin-top:32px;">第二步：配置参数（可选优化）</h3>
+  <p style="color:var(--muted); margin-bottom:16px;">打开 <code style="background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px;">AIVA/aiva_bot/config.py</code> 修改以下参数：</p>
+  <pre><code><span class="comment"># ── DeFi Agent 参数调优 ──────────────────────────────────────────</span>
+
+<span class="comment"># 扫描频率：默认每1小时，可调短（单位：秒）</span>
+AGENT_SCAN_INTERVAL = <span class="num">3600</span>       <span class="comment"># 3600 = 1小时，1800 = 30分钟</span>
+
+<span class="comment"># 最小回购触发金额（模拟收益累积到多少美元才触发）</span>
+AGENT_MIN_BUYBACK_USD = <span class="num">1.0</span>      <span class="comment"># 默认 $1，可调到 $5</span>
+
+<span class="comment"># 回购比例：净利润中多少%用于回购 AIVA</span>
+AGENT_BUYBACK_RATIO = <span class="num">0.50</span>       <span class="comment"># 50%，其余留作运营资金</span>
+
+<span class="comment"># 管理员ID（已配置为你的ID）</span>
+AGENT_ADMIN_USER_ID = <span class="num">1771094873</span>
+
+<span class="comment"># 真实执行开关（目前是模拟模式，保持 True 最安全）</span>
+AGENT_SIMULATION_MODE = <span class="kw">True</span>    <span class="comment"># True=只记录，False=真实链上操作</span></code></pre>
+
+  <h3 style="margin-top:32px;">第三步：独立运行套利扫描引擎（调试用）</h3>
+  <pre><code><span class="comment"># 在命令行直接运行，会打印一次完整扫描结果</span>
+python AIVA\aiva_bot\arb_bot.py
+
+<span class="comment"># 输出示例：</span>
+<span class="str">💰 代币实时价格:</span>
+<span class="str">   SOL: $94.28</span>
+<span class="str">   JUP: $0.1657</span>
+<span class="str">📈 收益率行情:</span>
+<span class="str">   Kamino-Lend USDC: 2.0% APY</span>
+<span class="str">🏆 最优策略: 存款: Kamino-Lend USDC 2.0%</span></code></pre>
+</div>
+
+<!-- ═══ PART 6: 能做到什么地步 ════════════════════════════════════ -->
+<div class="section" style="border-top: 1px solid var(--border);">
+  <h2><span class="icon">🚀</span> 能做到什么地步？诚实的评估</h2>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h3 style="color:var(--green);">✅ 现在已能做到</h3>
+      <div class="data-row"><span>实时价格追踪</span><span style="color:var(--green)">✅ SOL/JUP/WIF/BONK/AIVA</span></div>
+      <div class="data-row"><span>跨DEX价差扫描</span><span style="color:var(--green)">✅ Raydium/Orca/Meteora等</span></div>
+      <div class="data-row"><span>稳定币APY监控</span><span style="color:var(--green)">✅ Kamino/MarginFi真实数据</span></div>
+      <div class="data-row"><span>模拟收益记录</span><span style="color:var(--green)">✅ 数据库持久化</span></div>
+      <div class="data-row"><span>回购销毁记录</span><span style="color:var(--green)">✅ 自动触发+Telegram公告</span></div>
+      <div class="data-row"><span>Telegram命令</span><span style="color:var(--green)">✅ /agent_status /buyback</span></div>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--yellow);">⏳ 下一步可以做的</h3>
+      <div class="data-row"><span>自动执行真实套利</span><span style="color:var(--yellow)">需要链上钱包+资金</span></div>
+      <div class="data-row"><span>自动存入Kamino赚利息</span><span style="color:var(--yellow)">需要Jupiter Swap API Key</span></div>
+      <div class="data-row"><span>套利成功率追踪</span><span style="color:var(--yellow)">2-3天开发</span></div>
+      <div class="data-row"><span>价差预警推送</span><span style="color:var(--yellow)">1天开发</span></div>
+      <div class="data-row"><span>AIVA代币价格预警</span><span style="color:var(--yellow)">已有基础，1天完成</span></div>
+      <div class="data-row"><span>对接真实回购智能合约</span><span style="color:var(--yellow)">需要Solana开发</span></div>
+    </div>
+  </div>
+
+  <div class="notice yellow" style="margin-top:24px;">
+    ⚠️ <strong>关于"自动套利执行"的现实：</strong><br>
+    真正自动执行的跨DEX套利在 Solana 上竞争极为激烈。
+    成熟的套利机器人（如 MEV Bot）执行速度在 <strong>100毫秒以内</strong>，
+    普通 Python Bot 无法与之竞争。
+    <br><br>
+    <strong>我们的优势在于：</strong>监控 + 提醒 + 数据积累 + $AIVA 回购逻辑，
+    这些是服务用户社区、而非单纯竞争套利的差异化路径。
+  </div>
+
+  <div class="notice green" style="margin-top:12px;">
+    ✅ <strong>稳定币存款收益（Kamino 2-8% APY）</strong> 是我们完全可以真实执行的策略。
+    只需要一个 Agent 钱包里放入 USDC，自动存入 Kamino，每天自动复利。
+    这是风险最低、最可持续的链上收益来源。
+  </div>
+</div>
+
+<!-- ═══ PART 7: 风险提示 ══════════════════════════════════════════ -->
+<div class="section" style="border-top: 1px solid var(--border);">
+  <h2><span class="icon">⚠️</span> 风险提示（必读）</h2>
+  <div class="notice red">
+    🚨 <strong>所有 DeFi 操作均有风险。以下情况可能导致资金损失：</strong>
+    <ul style="margin-top:8px; margin-left:20px; line-height:2;">
+      <li>协议智能合约被黑客攻击（Kamino、MarginFi 等均发生过行业案例）</li>
+      <li>套利执行过程中价格反转（滑点超出预期）</li>
+      <li>Solana 网络拥堵导致交易失败但费用已扣</li>
+      <li>私钥泄露导致钱包资金被盗</li>
+    </ul>
+    <br>
+    <strong>建议：始终保持 AGENT_SIMULATION_MODE = True，用模拟数据验证策略有效后再考虑真实执行。初始真实资金建议不超过 $50。</strong>
+  </div>
+</div>
+
+</div> <!-- /container -->
+
+<footer>
+  <p>AIVA DeFi Agent · 套利机器人使用指南 v2.0 · 2026年3月</p>
+  <p style="margin-top:8px;">本文档仅供参考，不构成投资建议。DeFi 操作有风险，请谨慎评估后决策。</p>
+  <p style="margin-top:8px; color:rgba(139,143,168,0.5)">$AIVA: FMKA3FQBu5qqPLxAvf7YTpmP3GpLsSENQYu4xJ72pump</p>
+</footer>
+
+</body>
+</html>

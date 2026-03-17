@@ -1,0 +1,30 @@
+
+🤖 AIVA 套利扫描引擎 v2 — 真实数据演示
+============================================================
+数据源: DexScreener + DeFi Llama（无需API Key）
+============================================================
+
+⏱  扫描耗时: 12.9s
+
+💰 代币实时价格:
+   SOL   : $94.2800
+   BONK  : $0.0000
+   JUP   : $0.1657
+   WIF   : $0.1859
+
+⚡ 跨DEX套利机会 (0 条):
+   暂无数据
+
+📈 稳定币收益率 (Top 5):
+   1. Kamino-Lend USDC: 2.0% APY
+   2. Kamino-Liquidity SYRUPUSDC-USDC: 1.1% APY
+   3. Kamino-Lend PYUSD: 1.1% APY
+   4. Kamino-Lend USDS: 0.8% APY
+   5. Kamino-Liquidity PYUSD-USDC: 0.4% APY
+
+🏆 当前最优策略:
+   存款: Kamino-Lend USDC 2.0%
+   类型: yield | 估算APY: 2.0%
+
+============================================================
+✅ 扫描完成！以上为模拟分析，不涉及任何资金操作。

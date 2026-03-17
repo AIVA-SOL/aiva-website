@@ -1,0 +1,41 @@
+
+🤖 AIVA 套利扫描引擎 v3 — 真实数据演示
+=================================================================
+数据源: Jupiter API v2（精准链上报价）
+Jupiter Key: 69175f3b...9cf8
+=================================================================
+
+⏱  扫描耗时: 24.85s
+📡 数据源:   Jupiter API v2
+
+💰 代币实时价格:
+   USDC  : $0.9998
+   SOL   : $93.8600
+   USDT  : $1.0001
+   BONK  : $0.0000
+   JUP   : $0.1656
+   WIF   : $0.1862
+
+⚡ 套利机会 (4 个代币):
+   SOL: ❌ 不足  价差=+0.010%  净利=$-0.2908  [jupiter_api_v2]
+        买: GoonFi V2  卖: HumidiFi
+   JUP: ❌ 不足  价差=-0.037%  净利=$-0.3384  [jupiter_api_v2]
+        买: HumidiFi  卖: Whirlpool → HumidiFi
+   BONK: ❌ 不足  价差=-0.100%  净利=$-0.4010  [jupiter_api_v2]
+        买: ZeroFi  卖: ZeroFi
+   WIF: ❌ 不足  价差=-0.160%  净利=$-0.4610  [jupiter_api_v2]
+        买: HumidiFi → Raydium  卖: Whirlpool → HumidiFi
+
+📈 稳定币收益率 (Top 5):
+   1. Kamino-Liquidity KMNO-USDC: 4.8% APY  $1M TVL
+   2. Kamino-Liquidity HYUSD-USDC: 4.7% APY  $2M TVL
+   3. Save USDC: 3.0% APY  $5M TVL
+   4. Kamino-Lend USDC: 2.0% APY  $69M TVL
+   5. Kamino-Lend USDT: 1.8% APY  $2M TVL
+
+🏆 当前最优策略:
+   名称: 存款: Kamino-Liquidity KMNO-USDC 4.8%
+   类型: yield | 估算年化: 4.8%
+
+=================================================================
+✅ 扫描完成！以上为监控分析，不涉及任何资金操作。

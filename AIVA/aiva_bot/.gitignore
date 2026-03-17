@@ -1,0 +1,6 @@
+# AIVA Bot — .gitignore
+config.py
+aiva_bot.db
+*.pyc
+__pycache__/
+.env

@@ -1,0 +1,11 @@
+2026-03-17 21:33:14,350 INFO [ArbEngine] 第 1 次扫描开始
+2026-03-17 21:33:15,204 WARNING HTTP 401 → https://api.jup.ag/price/v2
+2026-03-17 21:33:16,801 WARNING GET error https://quote-api.jup.ag/v6/quote: Cannot connect to host quote-api.jup.ag:443 ssl:False [None]
+2026-03-17 21:33:16,801 INFO [Arb] USDC → SOL → USDC: ❌ -100.000%  (net $-0.0030)
+2026-03-17 21:33:19,094 WARNING GET error https://quote-api.jup.ag/v6/quote: Cannot connect to host quote-api.jup.ag:443 ssl:False [None]
+2026-03-17 21:33:19,094 INFO [Arb] USDC → JUP → USDC: ❌ -100.000%  (net $-0.0030)
+2026-03-17 21:33:26,280 WARNING GET error https://quote-api.jup.ag/v6/quote: Cannot connect to host quote-api.jup.ag:443 ssl:False [None]
+2026-03-17 21:33:26,280 INFO [Arb] USDC → BONK → USDC: ❌ -100.000%  (net $-0.0030)
+2026-03-17 21:33:27,726 WARNING HTTP 400 → https://api.kamino.finance/strategies/allTokens/metrics
+2026-03-17 21:33:29,776 WARNING GET error https://marginfi-data.fly.dev/banks: Cannot connect to host marginfi-data.fly.dev:443 ssl:False [None]
+2026-03-17 21:33:29,776 INFO [ArbEngine] 扫描完成 15.43s | 套利机会: 0 个 | 最优: 存款: Kamino PYUSD 8.2%
